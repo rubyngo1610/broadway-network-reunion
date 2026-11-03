@@ -33,7 +33,14 @@ ROOT_CATEGORY = "Category:Broadway musicals"
 CATEGORY_MAX_DEPTH = 1         # depth-1 subcats are per-show categories (songs, films, ...); pages found there are flagged
 
 # --- Core show set (used by the coverage audit; raw data is never dropped) --
-CORE_MIN_YEAR = 1900           # shows with a known year before this are excluded; unknown years are kept
+CORE_MIN_YEAR = 1900           # shows with a year before this, or no year at all, are excluded
+
+# --- Network and time windows (step 08; see "Prediction test" in Pipeline Findings) ---
+NETWORK_ROLES = ["composer", "lyricist", "book_writer", "director", "choreographer"]
+NETWORK_WINDOW_YEARS = 10      # W: training window [T - W, T)
+NETWORK_HORIZON_YEARS = 10     # H: reunion window [T, T + H)
+NETWORK_CUTOFFS = list(range(1925, 2011, 5))   # cutoff years T, fixed before looking at results
+POSTHUMOUS_GRACE_YEARS = 1     # a credit is posthumous if the show opens more than this many years after death
 
 # --- Reproducibility --------------------------------------------------------
 RANDOM_SEED = 42

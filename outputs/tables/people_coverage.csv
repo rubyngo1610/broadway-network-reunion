@@ -1,85 +1,83 @@
 show_set,group,decade_first_credit,n_people,pct_with_qid,pct_birthplace,pct_coordinates,pct_citizenship,pct_birth_year
-core,all people,1900s,172,74.4,58.1,58.1,62.2,70.9
-core,all people,1910s,156,69.9,59.6,59.6,63.5,68.6
-core,all people,1920s,272,64.0,58.5,58.5,59.6,62.1
-core,all people,1930s,251,62.2,54.2,54.2,57.8,59.4
-core,all people,1940s,291,65.6,55.3,55.0,56.7,61.9
-core,all people,1950s,398,62.6,52.5,52.5,55.8,56.8
-core,all people,1960s,386,61.1,51.6,51.0,55.7,56.2
-core,all people,1970s,586,44.4,36.5,36.5,39.1,40.8
-core,all people,1980s,406,45.8,35.2,35.2,36.9,39.9
-core,all people,1990s,307,45.3,33.6,33.6,34.9,37.5
-core,all people,2000s,556,39.6,29.1,29.1,32.7,32.0
-core,all people,2010s,651,39.2,27.5,27.5,30.6,30.9
-core,all people,2020s,225,44.9,28.0,28.0,32.9,30.7
-core,all people,unknown,421,47.0,36.3,36.3,38.7,43.0
-core,all people,all,5078,51.2,40.8,40.8,43.7,45.6
-core,humans with QID,1900s,124,100.0,80.6,80.6,86.3,98.4
-core,humans with QID,1910s,109,100.0,85.3,85.3,90.8,98.2
-core,humans with QID,1920s,173,100.0,91.9,91.9,93.6,97.7
-core,humans with QID,1930s,152,100.0,89.5,89.5,95.4,98.0
-core,humans with QID,1940s,186,100.0,86.6,86.0,88.7,96.8
-core,humans with QID,1950s,234,100.0,89.3,89.3,94.9,96.6
-core,humans with QID,1960s,227,100.0,87.7,86.8,94.7,95.6
-core,humans with QID,1970s,253,100.0,84.6,84.6,90.5,94.5
-core,humans with QID,1980s,176,100.0,81.2,81.2,85.2,92.0
-core,humans with QID,1990s,129,100.0,79.8,79.8,82.9,89.1
-core,humans with QID,2000s,202,100.0,80.2,80.2,90.1,88.1
-core,humans with QID,2010s,226,100.0,79.2,79.2,88.1,88.9
-core,humans with QID,2020s,89,100.0,70.8,70.8,83.1,77.5
-core,humans with QID,unknown,195,100.0,78.5,78.5,83.6,92.3
-core,humans with QID,all,2475,100.0,83.8,83.7,89.7,93.5
+core,all people,1900s,226,63.3,47.8,47.8,51.3,60.6
+core,all people,1910s,187,65.8,56.1,56.1,59.9,63.6
+core,all people,1920s,301,61.8,54.5,54.5,56.8,59.8
+core,all people,1930s,265,59.6,52.1,52.1,55.5,57.0
+core,all people,1940s,313,63.3,52.4,52.1,53.4,58.8
+core,all people,1950s,392,59.4,49.7,49.7,53.1,54.3
+core,all people,1960s,382,59.4,50.0,49.5,53.9,54.7
+core,all people,1970s,596,43.6,35.9,35.9,38.6,40.6
+core,all people,1980s,416,44.7,34.4,34.4,36.3,39.2
+core,all people,1990s,303,45.9,34.3,34.3,36.3,38.3
+core,all people,2000s,589,38.4,28.2,28.2,31.6,30.9
+core,all people,2010s,647,37.4,26.3,26.3,29.4,29.4
+core,all people,2020s,218,43.1,27.1,27.1,32.1,29.4
+core,all people,all,4835,49.9,39.7,39.7,42.7,44.5
+core,humans with QID,1900s,139,100.0,77.7,77.7,83.5,98.6
+core,humans with QID,1910s,122,100.0,86.1,86.1,91.8,97.5
+core,humans with QID,1920s,184,100.0,89.1,89.1,92.9,97.3
+core,humans with QID,1930s,155,100.0,89.0,89.0,94.8,97.4
+core,humans with QID,1940s,192,100.0,85.4,84.9,87.0,95.8
+core,humans with QID,1950s,221,100.0,88.2,88.2,94.1,96.4
+core,humans with QID,1960s,219,100.0,87.2,86.3,94.1,95.4
+core,humans with QID,1970s,255,100.0,83.9,83.9,90.2,94.9
+core,humans with QID,1980s,178,100.0,80.3,80.3,84.8,91.6
+core,humans with QID,1990s,130,100.0,80.0,80.0,84.6,89.2
+core,humans with QID,2000s,206,100.0,80.6,80.6,90.3,88.3
+core,humans with QID,2010s,215,100.0,79.1,79.1,88.4,88.4
+core,humans with QID,2020s,84,100.0,70.2,70.2,83.3,76.2
+core,humans with QID,all,2300,100.0,83.5,83.4,89.7,93.4
 all_candidates,all people,1720s,6,100.0,100.0,100.0,100.0,83.3
 all_candidates,all people,1730s,2,100.0,100.0,100.0,50.0,100.0
 all_candidates,all people,1760s,1,100.0,100.0,100.0,100.0,100.0
 all_candidates,all people,1780s,2,100.0,100.0,100.0,50.0,100.0
 all_candidates,all people,1810s,2,100.0,100.0,100.0,50.0,100.0
-all_candidates,all people,1830s,5,100.0,80.0,80.0,80.0,100.0
-all_candidates,all people,1840s,17,94.1,94.1,94.1,94.1,94.1
-all_candidates,all people,1850s,28,92.9,89.3,89.3,85.7,92.9
-all_candidates,all people,1860s,36,75.0,63.9,63.9,66.7,72.2
-all_candidates,all people,1870s,57,87.7,78.9,78.9,80.7,86.0
-all_candidates,all people,1880s,47,63.8,55.3,55.3,57.4,59.6
-all_candidates,all people,1890s,72,70.8,61.1,61.1,58.3,68.1
-all_candidates,all people,1900s,152,71.1,55.3,55.3,60.5,67.1
-all_candidates,all people,1910s,151,69.5,58.9,58.9,62.9,68.2
-all_candidates,all people,1920s,279,64.5,58.4,58.4,59.9,62.4
-all_candidates,all people,1930s,265,62.6,54.7,54.7,58.1,59.6
-all_candidates,all people,1940s,297,66.3,56.2,55.9,57.9,63.0
-all_candidates,all people,1950s,433,63.5,53.6,53.6,56.8,57.5
-all_candidates,all people,1960s,410,62.9,52.4,52.0,56.6,57.3
-all_candidates,all people,1970s,590,44.6,36.4,36.4,39.0,40.7
-all_candidates,all people,1980s,412,45.9,35.0,35.0,36.9,39.8
-all_candidates,all people,1990s,338,47.9,34.3,34.3,35.8,38.2
-all_candidates,all people,2000s,578,40.3,29.2,29.2,32.7,31.8
-all_candidates,all people,2010s,720,41.9,28.6,28.6,32.1,32.2
-all_candidates,all people,2020s,233,45.5,28.3,28.3,33.0,30.9
-all_candidates,all people,unknown,429,45.2,35.2,35.2,36.8,40.6
-all_candidates,all people,all,5562,53.1,42.4,42.3,45.1,47.0
+all_candidates,all people,1830s,13,100.0,76.9,76.9,84.6,92.3
+all_candidates,all people,1840s,18,94.4,94.4,94.4,94.4,94.4
+all_candidates,all people,1850s,21,90.5,85.7,85.7,81.0,90.5
+all_candidates,all people,1860s,44,79.5,61.4,61.4,65.9,72.7
+all_candidates,all people,1870s,56,83.9,76.8,76.8,76.8,83.9
+all_candidates,all people,1880s,45,60.0,48.9,48.9,51.1,53.3
+all_candidates,all people,1890s,92,69.6,58.7,58.7,56.5,65.2
+all_candidates,all people,1900s,173,55.5,41.0,41.0,45.7,53.2
+all_candidates,all people,1910s,172,64.0,54.1,54.1,58.1,62.2
+all_candidates,all people,1920s,307,62.2,55.0,55.0,57.3,60.3
+all_candidates,all people,1930s,302,63.6,55.6,55.6,58.6,59.9
+all_candidates,all people,1940s,334,64.1,53.9,53.6,55.1,59.9
+all_candidates,all people,1950s,404,59.7,49.8,49.8,52.7,54.0
+all_candidates,all people,1960s,397,59.7,49.9,49.4,53.9,54.9
+all_candidates,all people,1970s,612,44.1,35.8,35.8,38.6,40.5
+all_candidates,all people,1980s,442,47.1,35.1,35.1,36.9,39.6
+all_candidates,all people,1990s,318,46.9,34.6,34.6,36.5,38.4
+all_candidates,all people,2000s,635,40.5,29.0,29.0,32.6,31.5
+all_candidates,all people,2010s,705,40.1,28.5,28.5,31.6,31.8
+all_candidates,all people,2020s,217,41.9,25.8,25.8,30.9,28.1
+all_candidates,all people,unknown,39,100.0,56.4,56.4,64.1,79.5
+all_candidates,all people,all,5359,52.5,41.6,41.6,44.4,46.4
 all_candidates,humans with QID,1720s,6,100.0,100.0,100.0,100.0,83.3
 all_candidates,humans with QID,1730s,2,100.0,100.0,100.0,50.0,100.0
 all_candidates,humans with QID,1760s,1,100.0,100.0,100.0,100.0,100.0
 all_candidates,humans with QID,1780s,2,100.0,100.0,100.0,50.0,100.0
 all_candidates,humans with QID,1810s,2,100.0,100.0,100.0,50.0,100.0
-all_candidates,humans with QID,1830s,5,100.0,80.0,80.0,80.0,100.0
-all_candidates,humans with QID,1840s,16,100.0,100.0,100.0,100.0,100.0
-all_candidates,humans with QID,1850s,26,100.0,96.2,96.2,92.3,100.0
-all_candidates,humans with QID,1860s,27,100.0,85.2,85.2,88.9,96.3
-all_candidates,humans with QID,1870s,49,100.0,91.8,91.8,93.9,100.0
-all_candidates,humans with QID,1880s,29,100.0,89.7,89.7,93.1,96.6
-all_candidates,humans with QID,1890s,50,100.0,88.0,88.0,84.0,98.0
-all_candidates,humans with QID,1900s,104,100.0,80.8,80.8,88.5,98.1
-all_candidates,humans with QID,1910s,105,100.0,84.8,84.8,90.5,98.1
-all_candidates,humans with QID,1920s,178,100.0,91.6,91.6,93.8,97.8
-all_candidates,humans with QID,1930s,161,100.0,90.1,90.1,95.7,98.1
-all_candidates,humans with QID,1940s,193,100.0,86.5,86.0,89.1,96.9
-all_candidates,humans with QID,1950s,257,100.0,90.3,90.3,95.3,96.9
-all_candidates,humans with QID,1960s,246,100.0,87.4,86.6,94.3,95.5
-all_candidates,humans with QID,1970s,254,100.0,84.6,84.6,90.6,94.5
-all_candidates,humans with QID,1980s,178,100.0,80.9,80.9,85.4,92.1
-all_candidates,humans with QID,1990s,147,100.0,78.9,78.9,82.3,87.8
-all_candidates,humans with QID,2000s,210,100.0,80.5,80.5,90.0,87.6
-all_candidates,humans with QID,2010s,262,100.0,78.6,78.6,88.2,88.5
-all_candidates,humans with QID,2020s,92,100.0,71.7,71.7,83.7,78.3
-all_candidates,humans with QID,unknown,187,100.0,80.7,80.7,84.5,92.5
-all_candidates,humans with QID,all,2789,100.0,84.5,84.4,89.9,93.7
+all_candidates,humans with QID,1830s,12,100.0,83.3,83.3,91.7,100.0
+all_candidates,humans with QID,1840s,17,100.0,100.0,100.0,100.0,100.0
+all_candidates,humans with QID,1850s,19,100.0,94.7,94.7,89.5,100.0
+all_candidates,humans with QID,1860s,34,100.0,79.4,79.4,85.3,94.1
+all_candidates,humans with QID,1870s,47,100.0,91.5,91.5,91.5,100.0
+all_candidates,humans with QID,1880s,25,100.0,88.0,88.0,92.0,96.0
+all_candidates,humans with QID,1890s,61,100.0,88.5,88.5,85.2,98.4
+all_candidates,humans with QID,1900s,94,100.0,75.5,75.5,84.0,97.9
+all_candidates,humans with QID,1910s,109,100.0,85.3,85.3,91.7,98.2
+all_candidates,humans with QID,1920s,189,100.0,89.4,89.4,93.1,97.4
+all_candidates,humans with QID,1930s,186,100.0,90.3,90.3,95.2,97.3
+all_candidates,humans with QID,1940s,208,100.0,86.5,86.1,88.0,96.2
+all_candidates,humans with QID,1950s,226,100.0,88.9,88.9,94.2,96.5
+all_candidates,humans with QID,1960s,228,100.0,86.8,86.0,93.9,95.6
+all_candidates,humans with QID,1970s,261,100.0,83.9,83.9,90.4,95.0
+all_candidates,humans with QID,1980s,191,100.0,81.2,81.2,85.3,91.6
+all_candidates,humans with QID,1990s,139,100.0,79.1,79.1,83.5,87.8
+all_candidates,humans with QID,2000s,230,100.0,80.0,80.0,90.0,87.0
+all_candidates,humans with QID,2010s,250,100.0,80.4,80.4,89.2,89.6
+all_candidates,humans with QID,2020s,81,100.0,69.1,69.1,82.7,75.3
+all_candidates,humans with QID,unknown,39,100.0,56.4,56.4,64.1,79.5
+all_candidates,humans with QID,all,2659,100.0,83.9,83.8,89.5,93.4

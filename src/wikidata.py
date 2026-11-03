@@ -69,8 +69,10 @@ PERSON_PROPS = {
     "place_of_birth":       ("P19",   {"place of birth"}),
     "citizenship":          ("P27",   {"country of citizenship"}),
     "date_of_birth":        ("P569",  {"date of birth"}),
+    "date_of_death":        ("P570",  {"date of death"}), # added to support original flag 
     "coordinates":          ("P625",  {"coordinate location"}),
     "ibdb_person_id":       ("P1220", {"internet broadway database person id"}),
+    
 }
 
 CLASSES = {

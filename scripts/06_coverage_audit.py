@@ -2,7 +2,7 @@
 
 Every table is computed for two show sets (column show_set):
   core            plausible Broadway musicals: drops pages found only in per-show subcategories
-                  and shows with a known year before config.CORE_MIN_YEAR (see src/filters.py)
+                  shows with a year before config.CORE_MIN_YEAR, and shows with no year (see src/filters.py)
   all_candidates  every row of shows.parquet
 
 Outputs
@@ -168,10 +168,9 @@ def main():
     shows["exclusion_reason"] = show_exclusion_reason(shows)
     shows[["show_id", "title", "year", "year_source", "ibdb_id", "enwiki_title", "wp_category_depth",
            "n_credits", "exclusion_reason"]].to_csv(config.OUTPUT_TABLES / "show_set.csv", index=False)
-    log.info("Show sets: %d candidates -> %d core (excluded: %s; core shows with unknown year: %d)",
+    log.info("Show sets: %d candidates -> %d core (excluded: %s)",
              len(shows), shows["exclusion_reason"].isna().sum(),
-             shows["exclusion_reason"].value_counts().to_dict(),
-             (shows["exclusion_reason"].isna() & shows["year"].isna()).sum())
+             shows["exclusion_reason"].value_counts().to_dict())
 
     covs, pcs, ccs = [], [], []
     for show_set in SHOW_SETS:

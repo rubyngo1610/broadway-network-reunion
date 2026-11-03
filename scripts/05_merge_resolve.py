@@ -33,6 +33,35 @@ from src.wikipedia import resolve_titles
 
 AUTHORSHIP = {"composer", "lyricist", "book_writer", "playwright", "conceived_by"}
 
+# Section names indicating revivals, adaptations, or non-broadway contexts
+FALSE_SECTIONS = {
+    "film",
+    "movie",
+    "adaptation",
+    "revival",
+    "tour",
+    "touring",
+    "london",
+    "west end",
+    "uk",
+    "cast recording",
+    "discography",
+    "soundtrack",
+    "reception",
+    "critical reception",
+}
+
+# Section names indicating original staging/production
+TRUE_SECTIONS = {
+    "original production",
+    "original broadway",
+    "broadway production",
+    "premiere",
+    "background",
+    "development",
+    "productions",
+    "synopsis",
+}
 
 def original_flag(row, orig_year):
     """is_original_production for one mention: True / False / <NA>, plus the reason."""
@@ -40,6 +69,14 @@ def original_flag(row, orig_year):
         return (True, "authorship credit on the work") if row["role"] in AUTHORSHIP else (pd.NA, "wikidata, not production-specific")
     if row["extraction"] == "infobox":
         return True, "infobox (original production)"
+
+    # ---- RULE 1: Section Context Check ----
+    sec = str(row.get("section", "")).lower() if pd.notna(row.get("section")) else ""
+    if any(s in sec for s in FALSE_SECTIONS):
+        return False, "rule_1_false_section"
+    if any(s in sec for s in TRUE_SECTIONS):
+        return True, "rule_1_true_section"
+    
     # prose
     if row["mentions_film_tv"]:
         return False, "prose: film/TV context"
@@ -79,7 +116,11 @@ def main():
     else:
         sh["has_infobox"], sh["original_broadway_year"], sh["premiere_year"] = False, pd.NA, pd.NA
     sh["year"], sh["year_source"] = pd.NA, None
-    for col, src in [("opening_year", "wikidata"), ("premiere_year", "infobox_premiere"),
+    # revues named by year ("Ziegfeld Follies of 1916"); lowest priority, so it only fills gaps
+    # (a title like "1776" always has a better year from its article)
+    sh["title_year"] = pd.to_numeric(
+        sh["title"].fillna("").str.extract(r"\b(1[89]\d\d|20\d\d)\b", expand=False), errors="coerce")
+    for col, src in [("title_year", "title"), ("opening_year", "wikidata"), ("premiere_year", "infobox_premiere"),
                      ("original_broadway_year", "infobox_productions")]:  # last wins = highest priority
         m = sh[col].notna()
         sh.loc[m, "year"] = sh.loc[m, col]
@@ -133,10 +174,75 @@ def main():
     show_idx = name_rows.dropna(subset=["show_id"]).groupby(["show_id", "norm"])["person_id"].agg(lambda s: sorted(set(s)))
     surname_idx = name_rows.dropna(subset=["show_id"]).groupby(["show_id", "surname"])["person_id"].agg(lambda s: sorted(set(s)))
 
+    # TASK 6: use resolved_qid_manual! 
+    # unresolved_file = config.OUTPUT_TABLES / "unresolved_names.csv"
+    # manual_map = {}
+    # if unresolved_file.exists():
+    #     prev_unres = pd.read_csv(unresolved_file, dtype=str)
+    #     if "resolved_qid_manual" in prev_unres.columns:
+    #         filled_manual = prev_unres.dropna(subset=["resolved_qid_manual"])
+    #         filled_manual = filled_manual[filled_manual["resolved_qid_manual"].str.strip() != ""]
+    #         for _, r in filled_manual.iterrows():
+    #             manual_map[(r["show_id"], r["person_name"])] = r["resolved_qid_manual"].strip()
+
+    # unresolved = []
+    # todo = wp["person_id"].isna()
+    # for i in wp.index[todo]:
+    #     name, show = wp.at[i, "person_name"], wp.at[i, "show_id"]
+
+    #     # Task 6: precedent check for QID override! 
+    #     if (show, name) in manual_map:
+    #         manual_qid = manual_map[(show, name)]
+    #         wp.at[i, "person_id"] = manual_qid
+    #         wp.at[i, "resolution"] = "manual_qid_override"
+    #         continue
+
+    # TASK 6: use resolved_qid_manual! 
+    unresolved_file = config.OUTPUT_TABLES / "unresolved_names.csv"
+    manual_qid_map = {}
+    manual_name_map = {}
+
+    if unresolved_file.exists():
+        prev_unres = pd.read_csv(unresolved_file, dtype=str)
+        
+        # 1. Map QID overrides
+        if "resolved_qid_manual" in prev_unres.columns:
+            q_df = prev_unres.dropna(subset=["resolved_qid_manual"])
+            q_df = q_df[q_df["resolved_qid_manual"].str.strip() != ""]
+            for _, r in q_df.iterrows():
+                manual_qid_map[(r["show_id"], r["person_name"])] = r["resolved_qid_manual"].strip()
+                
+        # 2. Map Name overrides (for people without a QID/did)
+        if "resolved_name_manual" in prev_unres.columns:
+            n_df = prev_unres.dropna(subset=["resolved_name_manual"])
+            n_df = n_df[n_df["resolved_name_manual"].str.strip() != ""]
+            for _, r in n_df.iterrows():
+                manual_name_map[(r["show_id"], r["person_name"])] = r["resolved_name_manual"].strip()
+
     unresolved = []
     todo = wp["person_id"].isna()
     for i in wp.index[todo]:
         name, show = wp.at[i, "person_name"], wp.at[i, "show_id"]
+
+        # Check 1: Manual QID / Exclusion override
+        if (show, name) in manual_qid_map:
+            val = manual_qid_map[(show, name)]
+            if val.upper() in {"EXCLUDE", "DROP", "REMOVE", "JUNK"}:
+                wp.at[i, "person_id"] = None
+                wp.at[i, "resolution"] = "manual_exclude"
+                continue
+            else:
+                wp.at[i, "person_id"] = val
+                wp.at[i, "resolution"] = "manual_qid_override"
+                continue
+
+        # Check 2: Manual Name override (prefix with name: and normalize)
+        if (show, name) in manual_name_map:
+            clean_name = manual_name_map[(show, name)]
+            wp.at[i, "person_id"] = "name:" + normalize_name(clean_name)
+            wp.at[i, "resolution"] = "manual_name_override"
+            continue
+
         norm = normalize_name(name)
         cands, method = show_idx.get((show, norm)), "name_same_show"
         if not cands and len(norm.split()) == 1:
@@ -160,23 +266,85 @@ def main():
                            "red_link": wp.at[i, "person_link"], "context": wp.at[i, "context"]})
 
     # Suggestions for manual review only (never applied automatically)
+    # unres = pd.DataFrame(unresolved)
+    # if not unres.empty:
+    #     names = unres.loc[unres["is_plausible_name"].astype(bool), "person_name"].unique()
+    #     sugg = resolve_titles(client, names)
+    #     unres["suggested_enwiki"] = unres["person_name"].map(
+    #         lambda n: (sugg.get(wiki_title(n)) or {}).get("resolved_title")
+    #         if not (sugg.get(wiki_title(n)) or {}).get("missing", True) else None)
+    #     unres["suggested_qid"] = unres["person_name"].map(lambda n: (sugg.get(wiki_title(n)) or {}).get("qid"))
+    #     unres["suggested_url"] = unres["suggested_enwiki"].map(lambda t: enwiki_url(t) if isinstance(t, str) else None)
+    #     unres = unres.merge(shows[["show_id", "title", "enwiki_title"]], on="show_id", how="left")
+    #     unres["show_url"] = unres["enwiki_title"].map(lambda t: enwiki_url(t) if isinstance(t, str) else None)
+    #     unres["resolved_qid_manual"] = ""  # to fill in by hand
+    # cols = ["status", "show_id", "title", "person_name", "normalized", "role", "extraction", "is_plausible_name",
+    #         "candidates", "suggested_enwiki", "suggested_qid", "suggested_url", "red_link", "show_url",
+    #         "context", "resolved_qid_manual"]
+    # (unres.reindex(columns=cols).sort_values(["status", "person_name"]) if not unres.empty
+    #  else pd.DataFrame(columns=cols)).to_csv(config.OUTPUT_TABLES / "unresolved_names.csv", index=False)
+
+    # ---- 3. Save unresolved_names.csv (Filtered & Deduplicated) ----
     unres = pd.DataFrame(unresolved)
     if not unres.empty:
-        names = unres.loc[unres["is_plausible_name"].astype(bool), "person_name"].unique()
+        # Keep only plausible human names to prevent noise buildup
+        unres = unres[unres["is_plausible_name"].astype(bool)].copy()
+
+        names = unres["person_name"].unique()
         sugg = resolve_titles(client, names)
         unres["suggested_enwiki"] = unres["person_name"].map(
             lambda n: (sugg.get(wiki_title(n)) or {}).get("resolved_title")
-            if not (sugg.get(wiki_title(n)) or {}).get("missing", True) else None)
-        unres["suggested_qid"] = unres["person_name"].map(lambda n: (sugg.get(wiki_title(n)) or {}).get("qid"))
-        unres["suggested_url"] = unres["suggested_enwiki"].map(lambda t: enwiki_url(t) if isinstance(t, str) else None)
-        unres = unres.merge(shows[["show_id", "title", "enwiki_title"]], on="show_id", how="left")
-        unres["show_url"] = unres["enwiki_title"].map(lambda t: enwiki_url(t) if isinstance(t, str) else None)
-        unres["resolved_qid_manual"] = ""  # to fill in by hand
-    cols = ["status", "show_id", "title", "person_name", "normalized", "role", "extraction", "is_plausible_name",
-            "candidates", "suggested_enwiki", "suggested_qid", "suggested_url", "red_link", "show_url",
-            "context", "resolved_qid_manual"]
-    (unres.reindex(columns=cols).sort_values(["status", "person_name"]) if not unres.empty
-     else pd.DataFrame(columns=cols)).to_csv(config.OUTPUT_TABLES / "unresolved_names.csv", index=False)
+            if not (sugg.get(wiki_title(n)) or {}).get("missing", True)
+            else None
+        )
+        unres["suggested_qid"] = unres["person_name"].map(
+            lambda n: (sugg.get(wiki_title(n)) or {}).get("qid")
+        )
+        unres["suggested_url"] = unres["suggested_enwiki"].map(
+            lambda t: enwiki_url(t) if isinstance(t, str) else None
+        )
+        unres = unres.merge(
+            shows[["show_id", "title", "enwiki_title"]], on="show_id", how="left"
+        )
+        unres["show_url"] = unres["enwiki_title"].map(
+            lambda t: enwiki_url(t) if isinstance(t, str) else None
+        )
+        unres["resolved_qid_manual"] = unres.apply(
+            lambda r: manual_qid_map.get((r["show_id"], r["person_name"]), ""),
+            axis=1,
+        )
+        unres["resolved_name_manual"] = unres.apply(
+            lambda r: manual_name_map.get((r["show_id"], r["person_name"]), ""),
+            axis=1,
+        )
+
+        # Deduplicate on show + person + role to prevent exponential row expansion
+        unres = unres.drop_duplicates(subset=["show_id", "person_name", "role"])
+
+    cols = [
+        "status",
+        "show_id",
+        "title",
+        "person_name",
+        "normalized",
+        "role",
+        "extraction",
+        "is_plausible_name",
+        "candidates",
+        "suggested_enwiki",
+        "suggested_qid",
+        "suggested_url",
+        "red_link",
+        "show_url",
+        "context",
+        "resolved_qid_manual",
+        "resolved_name_manual",
+    ]
+    (
+        unres.reindex(columns=cols).sort_values(["status", "person_name"])
+        if not unres.empty
+        else pd.DataFrame(columns=cols)
+    ).to_csv(config.OUTPUT_TABLES / "unresolved_names.csv", index=False)
 
     # ---- 4. Long table of every mention ---------------------------------------
     mention_cols = ["show_id", "person_id", "person_name", "role_norm", "role_raw", "source", "extraction",
@@ -184,9 +352,56 @@ def main():
                     "mentions_tour", "mentions_film_tv", "mentions_london", "mentions_original"]
     mentions = pd.concat([wd.reindex(columns=mention_cols), wp.reindex(columns=mention_cols)], ignore_index=True)
     mentions = mentions.rename(columns={"role_norm": "role"})
+
+    # --- TASK 5 EDIT: Drop film and album credit mentions ---
+    is_film = (
+        mentions["mentions_film_tv"]
+        .fillna(False)
+        .astype(bool)
+        .to_numpy()
+    )
+    mentions = mentions[~is_film].reset_index(drop=True)
+
     flags = [original_flag(r, orig_year.get(r["show_id"])) for _, r in mentions.iterrows()]
     mentions["is_original_production"] = pd.array([f[0] for f in flags], dtype="boolean")
     mentions["original_basis"] = [f[1] for f in flags]
+
+
+
+# ---- RULE 3: Wikidata P57 Director Match ----
+    wd_directors = wd[wd["role_norm"] == "director"].groupby("show_id")["person_id"].agg(set).to_dict()
+    r3_mask = mentions["is_original_production"].isna() & (mentions["role"] == "director")
+    for idx in mentions.index[r3_mask]:
+        p_id = mentions.at[idx, "person_id"]
+        s_id = mentions.at[idx, "show_id"]
+        if p_id and p_id in wd_directors.get(s_id, set()):
+            mentions.at[idx, "is_original_production"] = True
+            mentions.at[idx, "original_basis"] = "rule_3_wikidata_p57_match"
+
+    # ---- RULE 2: Uniqueness Rule ----
+    m_valid = mentions.dropna(subset=["person_id"])
+    role_counts = m_valid.groupby(["show_id", "role"])["person_id"].nunique()
+    unique_pairs = set(role_counts[role_counts == 1].index)
+    
+    r2_mask = mentions["is_original_production"].isna()
+    for idx in mentions.index[r2_mask]:
+        pair = (mentions.at[idx, "show_id"], mentions.at[idx, "role"])
+        if pair in unique_pairs:
+            mentions.at[idx, "is_original_production"] = True
+            mentions.at[idx, "original_basis"] = "rule_2_unique_role"
+
+    # ---- RULE 4: Posthumous Override ----
+    if "death_year" in people_wd.columns:
+        death_map = dict(zip(people_wd["person_qid"], people_wd["death_year"]))
+        for idx in mentions.index:
+            p_id = mentions.at[idx, "person_id"]
+            s_id = mentions.at[idx, "show_id"]
+            d_yr = death_map.get(p_id)
+            o_yr = orig_year.get(s_id)
+            if pd.notna(d_yr) and pd.notna(o_yr) and d_yr < o_yr:
+                mentions.at[idx, "is_original_production"] = False
+                mentions.at[idx, "original_basis"] = "rule_4_posthumous"
+
     write_parquet(mentions, config.DATA_INTERIM / "credit_mentions.parquet")
 
     # ---- 5. People --------------------------------------------------------------

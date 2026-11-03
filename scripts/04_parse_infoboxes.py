@@ -82,6 +82,71 @@ SENT_SPLIT = re.compile(r"(?<=[.!?])(?<!\b[A-Z]\.)(?<!\bMr\.)(?<!\bDr\.)(?<!\bJr
 def detokenize(text: str, links) -> str:
     return strip_markup(TOKEN_RE.sub(lambda m: links[int(m.group(1))][1], text))
 
+SECTION_TARGET_RE = re.compile(
+    r"\b(production\s+history|productions?|history|background|synopsis|premiere)\b", 
+    re.I
+)
+
+KEYWORD_PREMIERE_RE = re.compile(
+    r"\b(premiere[d]?|debuted|first\s+performed|opened|first\s+produced)\b", 
+    re.I
+)
+
+# Extract premiere year from the first few paragraphs of wikitext
+PREMIERE_KEYWORDS = re.compile(r"\b(produced|premiered|opened|written|composed|created|released|broadway|west end)\b", re.I)
+
+def extract_lead_year(code: mw.wikicode, max_paragraphs: int = 3) -> int | None:
+    lead_text = ""
+    for section in code.get_sections(flat=True, include_lead=True):
+        lead_text = section.strip_code()
+        break
+
+    if not lead_text:
+        return None
+
+    paragraphs = [p.strip() for p in lead_text.split("\n\n") if p.strip()]
+
+    # Step 1: Check paragraphs for premiere keywords + year
+    for paragraph in paragraphs[:max_paragraphs]:
+        for sentence in SENT_SPLIT.split(paragraph):
+            if PREMIERE_KEYWORDS.search(sentence):
+                years = YEAR_RE.findall(sentence)
+                if years:
+                    return int(years[0])
+
+    # Step 2: Fallback — grab first year in first two paragraphs
+    for paragraph in paragraphs[:min(2, len(paragraphs))]:
+        years = YEAR_RE.findall(paragraph)
+        if years:
+            return int(years[0])
+
+    return None
+
+# Extract premier year specifically from sections titled productions or similar in article
+
+def extract_section_premiere_year(code: mw.wikicode) -> int | None:
+    """Target production/history sections specifically for premiere years."""
+    # iterate through all parsed wikitext sections
+    for section_title, _, sec_code in sections(code):
+        if not SECTION_TARGET_RE.search(section_title):
+            continue
+
+        sec_text = sec_code.strip_code()
+        sentences = SENT_SPLIT.split(sec_text)
+
+        # Priority 1: Match sentence with explicit premiere verb + year
+        for sentence in sentences:
+            if KEYWORD_PREMIERE_RE.search(sentence):
+                years = YEAR_RE.findall(sentence)
+                if years:
+                    return int(years[0])
+
+        # Priority 2: Take first valid year in the section
+        years = YEAR_RE.findall(sec_text)
+        if years:
+            return int(years[0])
+
+    return None
 
 def context_flags(sentence: str, section: str) -> dict:
     s = (sentence + " " + section).lower()
@@ -207,17 +272,30 @@ def main():
             continue
         code = mw.parse(rec["wikitext"])
         boxes = find_infoboxes(code)
-        row = {"show_id": show_id, "enwiki_title": rec["resolved_title"], "has_infobox": bool(boxes),
-               "n_infoboxes": len(boxes)}
+
+        # Extract lead section/sentence year fallback
+        first_sent_year = extract_lead_year(code)
+        section_year = extract_section_premiere_year(code)
+       
+        row = {
+            "show_id": show_id,
+            "enwiki_title": rec["resolved_title"],
+            "has_infobox": bool(boxes),
+            "n_infoboxes": len(boxes),
+            "first_sentence_year": first_sent_year,
+            "section_premiere_year": section_year,
+        }
+
         if boxes:
             # Use the first infobox; later ones are usually films/recordings
             c, s, p = parse_infobox(show_id, boxes[0], issues)
             credits += c
             productions += p
-            row.update(s)
+            row.update(s) # Merges infobox keys (like productions_raw, infobox_premiere_date) into row
             templates[s["infobox_template"].lower()] += 1
         else:
             issues.append({"show_id": show_id, "field": None, "issue": "no infobox", "value": title})
+
         credits += parse_prose(show_id, code, issues)
         show_rows.append(row)
 
@@ -243,9 +321,42 @@ def main():
         orig = prod[prod["is_original_broadway"]].set_index("show_id")["year"]
         sh["original_broadway_year"] = sh["show_id"].map(orig).astype("Int64")
         sh["n_productions_listed"] = sh["show_id"].map(prod.groupby("show_id").size()).fillna(0).astype(int)
+
+    # -------------------------------------------------------------------------
+    # PREMIERE YEAR EXTRACTION & FALLBACK CHAIN
+    # -------------------------------------------------------------------------
+
+    # Step 1: Primary source — extract premiere_year from explicit infobox premiere/date fields
     prem_cols = [c for c in sh.columns if c.startswith("infobox_premiere") or c == "infobox_date"]
-    prem = sh[prem_cols].fillna("").astype(str).agg(" ".join, axis=1) if prem_cols else pd.Series("", index=sh.index)
-    sh["premiere_year"] = prem.str.extract(YEAR_RE, expand=False).astype("Int64")
+    if prem_cols:
+        prem = sh[prem_cols].fillna("").astype(str).agg(" ".join, axis=1)
+        sh["premiere_year"] = prem.str.extract(YEAR_RE, expand=False).astype("Int64")
+    else:
+        sh["premiere_year"] = pd.Series(dtype="Int64", index=sh.index)
+
+    # Step 2: Fallback 1 — use `original_broadway_year` calculated from parsed productions
+    if "original_broadway_year" in sh.columns:
+        sh["premiere_year"] = sh["premiere_year"].fillna(sh["original_broadway_year"])
+
+    # Step 3: Fallback 2 — extract the earliest year directly from raw infobox productions text
+    if "productions_raw" in sh.columns:
+        prod_raw_years = sh["productions_raw"].fillna("").str.extract(YEAR_RE, expand=False).astype("Int64")
+        sh["premiere_year"] = sh["premiere_year"].fillna(prod_raw_years)
+
+    # Step 4: Fallback 3 — legacy production_year column check (if present)
+    if "production_year" in sh.columns:
+        sh["premiere_year"] = sh["premiere_year"].fillna(sh["production_year"])
+
+    # Step 5: Fall back 4 - specifically listed in a separate sections (titled productions or similar) rather than first few paras
+    if "section_premiere_year" in sh.columns:
+        sh["premiere_year"] = sh["premiere_year"].fillna(sh["section_premiere_year"])     
+
+    # Step 6: Fallback 5 — lead paragraph/sentence year fallback & recovery logging
+    if "first_sentence_year" in sh.columns:
+        # Apply lead text fallback
+        sh["premiere_year"] = sh["premiere_year"].fillna(sh["first_sentence_year"]).astype("Int64")
+
+    
     write_parquet(sh, config.DATA_INTERIM / "infobox_shows.parquet")
 
     iss = pd.DataFrame(issues, columns=["show_id", "field", "issue", "value"])
