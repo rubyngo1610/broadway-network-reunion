@@ -1,18 +1,18 @@
 show_set,group,decade_first_credit,n_people,pct_with_qid,pct_birthplace,pct_coordinates,pct_citizenship,pct_birth_year
-core,all people,1900s,219,63.0,47.0,47.0,50.7,60.3
-core,all people,1910s,166,66.3,55.4,55.4,59.6,63.9
-core,all people,1920s,302,61.9,54.6,54.6,57.0,59.9
+core,all people,1900s,218,63.3,47.2,47.2,50.9,60.6
+core,all people,1910s,165,66.7,55.8,55.8,60.0,64.2
+core,all people,1920s,298,62.8,55.4,55.4,57.7,60.7
 core,all people,1930s,263,59.3,51.7,51.7,55.1,56.7
-core,all people,1940s,305,63.0,51.8,51.5,52.8,58.4
-core,all people,1950s,389,59.1,49.4,49.4,52.7,54.0
-core,all people,1960s,382,59.4,50.0,49.5,53.9,54.7
-core,all people,1970s,579,43.0,35.1,35.1,37.8,39.9
-core,all people,1980s,409,44.7,34.5,34.5,36.4,39.1
-core,all people,1990s,282,46.5,34.8,34.8,36.2,39.0
-core,all people,2000s,520,39.4,28.7,28.7,32.7,31.9
-core,all people,2010s,649,37.6,26.5,26.5,29.6,29.7
-core,all people,2020s,218,43.1,27.1,27.1,32.1,29.4
-core,all people,all,4683,50.1,39.7,39.6,42.7,44.6
+core,all people,1940s,302,63.6,52.3,52.0,53.3,58.9
+core,all people,1950s,387,59.4,49.6,49.6,53.0,54.3
+core,all people,1960s,379,59.9,50.4,49.9,54.4,55.1
+core,all people,1970s,570,43.7,35.6,35.6,38.4,40.5
+core,all people,1980s,407,45.0,34.6,34.6,36.6,39.3
+core,all people,1990s,281,46.6,34.9,34.9,36.3,39.1
+core,all people,2000s,516,39.7,28.9,28.9,32.9,32.2
+core,all people,2010s,641,38.1,26.8,26.8,30.0,30.1
+core,all people,2020s,216,44.0,27.8,27.8,32.9,30.1
+core,all people,all,4643,50.5,40.1,40.0,43.1,45.0
 core,humans with QID,1900s,134,100.0,76.9,76.9,82.8,98.5
 core,humans with QID,1910s,109,100.0,84.4,84.4,90.8,97.2
 core,humans with QID,1920s,185,100.0,89.2,89.2,93.0,97.3
@@ -25,8 +25,8 @@ core,humans with QID,1980s,175,100.0,80.6,80.6,85.1,91.4
 core,humans with QID,1990s,122,100.0,80.3,80.3,83.6,90.2
 core,humans with QID,2000s,189,100.0,78.8,78.8,89.9,87.8
 core,humans with QID,2010s,217,100.0,79.3,79.3,88.5,88.9
-core,humans with QID,2020s,84,100.0,70.2,70.2,83.3,76.2
-core,humans with QID,all,2235,100.0,83.2,83.0,89.5,93.4
+core,humans with QID,2020s,85,100.0,70.6,70.6,83.5,76.5
+core,humans with QID,all,2236,100.0,83.2,83.1,89.5,93.4
 all_candidates,all people,1720s,6,100.0,100.0,100.0,100.0,83.3
 all_candidates,all people,1730s,2,100.0,100.0,100.0,50.0,100.0
 all_candidates,all people,1760s,1,100.0,100.0,100.0,100.0,100.0
@@ -37,23 +37,23 @@ all_candidates,all people,1840s,18,94.4,94.4,94.4,94.4,94.4
 all_candidates,all people,1850s,21,90.5,85.7,85.7,81.0,90.5
 all_candidates,all people,1860s,44,79.5,61.4,61.4,65.9,72.7
 all_candidates,all people,1870s,56,83.9,76.8,76.8,76.8,83.9
-all_candidates,all people,1880s,45,60.0,48.9,48.9,51.1,53.3
+all_candidates,all people,1880s,44,61.4,50.0,50.0,52.3,54.5
 all_candidates,all people,1890s,92,69.6,58.7,58.7,56.5,65.2
-all_candidates,all people,1900s,173,55.5,41.0,41.0,45.7,53.2
-all_candidates,all people,1910s,172,64.0,54.1,54.1,58.1,62.2
-all_candidates,all people,1920s,307,62.2,55.0,55.0,57.3,60.3
+all_candidates,all people,1900s,172,55.8,41.3,41.3,45.9,53.5
+all_candidates,all people,1910s,171,64.3,54.4,54.4,58.5,62.6
+all_candidates,all people,1920s,303,63.0,55.8,55.8,58.1,61.1
 all_candidates,all people,1930s,302,63.6,55.6,55.6,58.6,59.9
-all_candidates,all people,1940s,334,64.1,53.9,53.6,55.1,59.9
-all_candidates,all people,1950s,404,59.7,49.8,49.8,52.7,54.0
-all_candidates,all people,1960s,397,59.7,49.9,49.4,53.9,54.9
-all_candidates,all people,1970s,612,44.1,35.8,35.8,38.6,40.5
-all_candidates,all people,1980s,435,47.1,35.2,35.2,37.0,39.5
-all_candidates,all people,1990s,318,46.9,34.6,34.6,36.5,38.4
-all_candidates,all people,2000s,635,40.5,29.0,29.0,32.6,31.5
-all_candidates,all people,2010s,712,40.2,28.5,28.5,31.6,31.9
-all_candidates,all people,2020s,217,41.9,25.8,25.8,30.9,28.1
+all_candidates,all people,1940s,331,64.7,54.4,54.1,55.6,60.4
+all_candidates,all people,1950s,403,59.8,49.9,49.9,52.9,54.1
+all_candidates,all people,1960s,394,60.2,50.3,49.7,54.3,55.3
+all_candidates,all people,1970s,603,44.8,36.3,36.3,39.1,41.1
+all_candidates,all people,1980s,433,47.3,35.3,35.3,37.2,39.7
+all_candidates,all people,1990s,317,47.0,34.7,34.7,36.6,38.5
+all_candidates,all people,2000s,631,40.7,29.2,29.2,32.8,31.7
+all_candidates,all people,2010s,701,40.8,29.0,29.0,32.1,32.4
+all_candidates,all people,2020s,214,42.5,26.2,26.2,31.3,28.5
 all_candidates,all people,unknown,39,100.0,56.4,56.4,64.1,79.5
-all_candidates,all people,all,5359,52.5,41.6,41.6,44.4,46.4
+all_candidates,all people,all,5315,52.9,42.0,41.9,44.8,46.8
 all_candidates,humans with QID,1720s,6,100.0,100.0,100.0,100.0,83.3
 all_candidates,humans with QID,1730s,2,100.0,100.0,100.0,50.0,100.0
 all_candidates,humans with QID,1760s,1,100.0,100.0,100.0,100.0,100.0
