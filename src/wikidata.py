@@ -79,10 +79,17 @@ CLASSES = {
     "musical":                 ("Q2743",     {"musical", "musical play", "musical theatre"}),
     "dramatico_musical_work":  ("Q58483083", {"dramatico-musical work"}),
     "broadway_theatre":        ("Q235065",   {"broadway theatre", "broadway theater"}),
+    "theatre_building":        ("Q24354",    {"theatre building", "theater building", "theatre"}),
     "human":                   ("Q5",        {"human"}),
 }
 
-ALL_IDS = {**SHOW_PROPS, **ROLE_PROPS, **QUALIFIER_PROPS, **CAST_PROPS, **PERSON_PROPS, **CLASSES}
+# Venue properties (step 09)
+VENUE_PROPS = {
+    "demolished":              ("P576",  {"dissolved, abolished or demolished", "dissolved, abolished or demolished date"}),
+    "official_opening":        ("P1619", {"date of official opening"}),
+}
+
+ALL_IDS = {**SHOW_PROPS, **ROLE_PROPS, **QUALIFIER_PROPS, **CAST_PROPS, **PERSON_PROPS, **CLASSES, **VENUE_PROPS}
 
 
 def P(key: str) -> str:

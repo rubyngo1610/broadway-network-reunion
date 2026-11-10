@@ -20,7 +20,7 @@ Q104792045,The Straw Hat Revue,1939,infobox_premiere,,The Straw Hat Revue,0,10,
 Q104792049,This Is The Army,1942,infobox_productions,,This Is the Army (musical),0,9,
 Q104792052,Fine and Dandy,1930,infobox_premiere,,Fine and Dandy (musical),0,12,
 Q104879160,Found/Tonight,2018,infobox_premiere,,Found/Tonight,1,3,subcategory_page
-Q1051695,We Will Rock You,2002,infobox_premiere,505301,We Will Rock You (musical),,16,
+Q1051695,We Will Rock You,2002,infobox_premiere,505301,We Will Rock You (musical),,16,never_on_broadway
 Q105718718,Little Simplicity,,,5484,,,2,no_year
 Q105719269,So Long Letty,,,11027,,,4,no_year
 Q105728809,George White's Scandals of 1922,1922,title,3823,,,1,
@@ -102,10 +102,10 @@ Q116846101,Apple Blossoms,1919,infobox_premiere,,Apple Blossoms,0,5,
 Q116846295,Babette,1903,infobox_premiere,,Babette (musical),0,3,
 Q116893847,The Blue Kitten,1922,infobox_premiere,,The Blue Kitten,0,6,
 Q116893951,Arms and the Girl,1950,infobox_premiere,1680,Arms and the Girl (musical),0,5,
-Q1169743,The Medium,1946,infobox_premiere,9762,The Medium,,2,
+Q1169743,The Medium,1946,infobox_premiere,9762,The Medium,,2,opera
 Q1169767,The Miracle,1924,infobox_premiere,6113,The Miracle (play),,4,
 Q11704376,The Best Little Whorehouse in Texas,1978,infobox_productions,1958,The Best Little Whorehouse in Texas,0,12,
-Q1170527,The Telephone,1947,infobox_premiere,8548,The Telephone (opera),,3,
+Q1170527,The Telephone,1947,infobox_premiere,8548,The Telephone (opera),,3,opera
 Q1171529,The Scarlet Pimpernel,1997,infobox_productions,7781,The Scarlet Pimpernel (musical),0,7,
 Q117451122,The Chocolate Dandies,1924,infobox_premiere,2570,The Chocolate Dandies,0,5,
 Q117661779,Shucked,2023,infobox_productions,535820,Shucked,0,16,
@@ -135,7 +135,7 @@ Q119682434,Follow the Girl,1918,infobox_premiere,,Follow the Girl (musical),0,0,
 Q119715791,The Velvet Lady,1919,infobox_premiere,,The Velvet Lady,0,0,
 Q119716547,Days of Wine and Roses,2024,infobox_productions,,Days of Wine and Roses (musical),0,11,
 Q1197244,H.M.S. Pinafore,1875,infobox_premiere,4143,H.M.S. Pinafore,,6,before_1900
-Q1197934,The Eternal Road,1937,infobox_premiere,3373,The Eternal Road (opera),,1,
+Q1197934,The Eternal Road,1937,infobox_premiere,3373,The Eternal Road (opera),,1,opera
 Q119805468,Stephen Sondheim's Old Friends,2025,infobox_productions,,Stephen Sondheim's Old Friends,0,16,
 Q1199246,Little Shop of Horrors,2003,infobox_productions,11223,Little Shop of Horrors (musical),0,17,
 Q120208282,The Whirl of the World,1914,infobox_premiere,,The Whirl of the World,0,4,
@@ -338,13 +338,13 @@ Q141641516,Warriors,2027,wikidata,,,,8,
 Q1416989,Titanic,1997,infobox_productions,8751,Titanic (musical),0,19,
 Q141805238,Earl Carroll's Sketch Book,1929,infobox_premiere,,Earl Carroll's Sketch Book,0,0,
 Q1424307,Lady in the Dark,1941,infobox_productions,5214,Lady in the Dark,0,15,
-Q1425565,"Tick, Tick... Boom!",2001,infobox_premiere,508328,"Tick, Tick... Boom!",,32,
+Q1425565,"Tick, Tick... Boom!",2001,infobox_premiere,508328,"Tick, Tick... Boom!",,32,never_on_broadway
 Q1430573,The Pirate Queen,2007,infobox_productions,426178,The Pirate Queen,0,19,
 Q1439127,La chanson de Fortunio,1861,infobox_premiere,434772,La chanson de Fortunio,,3,before_1900
 Q1440309,Fra Diavolo,1830,infobox_premiere,3706,Fra Diavolo (opera),,3,before_1900
 Q1455642,Out of This World,1950,infobox_productions,6854,Out of This World (musical),0,9,
 Q1457220,The Music Man,1957,infobox_productions,6353,The Music Man,0,26,
-Q1458184,Martin Guerre,1996,infobox_premiere,509360,Martin Guerre (musical),,11,
+Q1458184,Martin Guerre,1996,infobox_premiere,509360,Martin Guerre (musical),,11,never_on_broadway
 Q1460321,The Woman in White,2005,infobox_productions,400389,The Woman in White (musical),0,5,
 Q1469499,Prinz Methusalem,1877,infobox_premiere,10750,Prinz Methusalem,,2,before_1900
 Q1470358,Me and My Girl,1986,infobox_productions,5982,Me and My Girl,0,11,
@@ -409,7 +409,7 @@ Q16826771,A Christmas Story: The Musical,2012,infobox_productions,493217,A Chris
 Q16829006,A Catered Affair,2008,infobox_productions,466354,A Catered Affair,0,3,
 Q16837645,Everyday Rapture,2010,infobox_productions,487669,Everyday Rapture,0,9,
 Q16840262,Glory Days,2008,infobox_productions,478265,Glory Days (musical),0,12,
-Q16841823,Happy Days,2007,infobox_premiere,508340,Happy Days (musical),,8,
+Q16841823,Happy Days,2007,infobox_premiere,508340,Happy Days (musical),,8,never_on_broadway
 Q16844212,Bombshell,2015,infobox_premiere,,Bombshell (musical),0,4,
 Q168488,Martha,1847,infobox_premiere,5910,Martha (opera),,3,before_1900
 Q16851984,Kenton's West Side Story,1958,infobox_premiere,,Kenton's West Side Story,1,2,subcategory_page
@@ -513,7 +513,7 @@ Q189427,A Chorus Line,1975,infobox_productions,1058,A Chorus Line,0,15,
 Q19102810,The Yankee Prince,,,9502,,,2,no_year
 Q1920130,Memory,1981,infobox_premiere,,Memory (Cats song),1,4,subcategory_page
 Q1926191,Mexican Hayride,1944,infobox_productions,6053,Mexican Hayride (musical),0,8,
-Q192941,Tosca,1900,infobox_premiere,10427,Tosca,,5,
+Q192941,Tosca,1900,infobox_premiere,10427,Tosca,,5,opera
 Q1931598,Wiener Blut,2007,infobox_premiere,9091|9363,Wiener Blut (operetta),0,2,
 Q19320959,Hamilton,2015,infobox_productions,499520,Hamilton (musical),0,15,
 Q1956428,My One and Only,1983,infobox_productions,6395,My One and Only (musical),0,14,
@@ -548,7 +548,7 @@ Q2082212,Ziegfeld Girl,1936,infobox_premiere,,Ziegfeld Girl (film),1,9,subcatego
 Q20857787,A Night with Janis Joplin,2013,infobox_productions,494971,A Night with Janis Joplin,0,5,
 Q208659,The Barber of Seville,1816,infobox_premiere,10430,The Barber of Seville,,2,before_1900
 Q20899421,Dear Evan Hansen,2016,infobox_productions,508236,Dear Evan Hansen,0,33,
-Q20899494,Love Birds,2015,infobox_premiere,5574,Love Birds (Sherman),,9,
+Q20899494,Love Birds,2015,infobox_premiere,5574,Love Birds (Sherman),,9,never_on_broadway
 Q20981404,Buddies,1919,infobox_premiere,2279,Buddies (musical),0,1,
 Q212495,The Threepenny Opera,1928,infobox_premiere,418492|8696|10596,The Threepenny Opera,0,25,
 Q21480307,An American in Paris,2015,infobox_productions,497694,An American in Paris (musical),0,7,
@@ -570,7 +570,7 @@ Q2214688,Sally,1920,infobox_productions,7718,Sally (musical),0,8,
 Q2216434,Fiorello!,1959,infobox_productions,3539,Fiorello!,0,15,
 Q221806,Cavalleria rusticana,1890,infobox_premiere,10428,Cavalleria rusticana,,5,before_1900
 Q2253601,The Addams Family,2010,infobox_productions,484631,The Addams Family (musical),0,34,
-Q2255873,Copacabana,1990,infobox_premiere,508636,Copacabana (musical),,21,
+Q2255873,Copacabana,1990,infobox_premiere,508636,Copacabana (musical),,21,never_on_broadway
 Q2259133,Assassins,2004,infobox_productions,10563,Assassins (musical),0,14,
 Q22678066,Hamilton,2015,infobox_premiere,,Hamilton (album),1,6,subcategory_page
 Q2275909,Hellzapoppin,1938,infobox_productions,10069,Hellzapoppin (musical),0,7,
@@ -588,7 +588,7 @@ Q23092113,The Little Blue Devil,1919,infobox_premiere,5435,The Little Blue Devil
 Q23092117,The SpongeBob Musical,2017,infobox_productions,515034,SpongeBob SquarePants (musical),0,16,
 Q23092121,Three Cheers,1928,infobox_premiere,8665,Three Cheers,0,8,
 Q23092132,Tuck Everlasting,2016,infobox_productions,501948,Tuck Everlasting (musical),0,8,
-Q2336119,High School Musical on Stage!,2007,infobox_premiere,505684,High School Musical on Stage!,,17,
+Q2336119,High School Musical on Stage!,2007,infobox_premiere,505684,High School Musical on Stage!,,17,never_on_broadway
 Q233773,42nd Street,1980,infobox_productions,1027,42nd Street (musical),0,17,
 Q2355342,Street Scene,1947,infobox_premiere,10986,Street Scene (opera),0,7,
 Q2363609,All Shook Up,2005,infobox_productions,383113,All Shook Up (musical),0,5,
@@ -597,7 +597,7 @@ Q2375318,Cyrano: The Musical,1993,infobox_productions,2871,Cyrano: The Musical,0
 Q23838574,Come from Away,2017,infobox_productions,510259,Come from Away,0,20,
 Q2397929,Bert Williams,1903,infobox_premiere,,Bert Williams,1,0,subcategory_page
 Q24055230,His Honor the Mayor,,,10073,,,1,no_year
-Q240685,The Rape of Lucretia,1946,infobox_premiere,7371,The Rape of Lucretia,,5,
+Q240685,The Rape of Lucretia,1946,infobox_premiere,7371,The Rape of Lucretia,,5,opera
 Q2409374,The Act,1977,infobox_productions,1377,The Act (musical),0,7,
 Q24130631,Three's a Crowd,1930,infobox_premiere,10158,Three's a Crowd (musical),0,6,
 Q2414478,The Student Prince,1924,infobox_premiere,8381,The Student Prince,,2,
@@ -658,7 +658,7 @@ Q287281,Starlight Express,1987,infobox_productions,8285,Starlight Express,0,11,
 Q2877834,Babes in Toyland,1934,infobox_premiere,,Babes in Toyland (1961 film),1,15,subcategory_page
 Q2892971,Beatlemania,1977,infobox_productions,1881,Beatlemania (musical),0,9,
 Q2893804,Beggar's Holiday,1946,infobox_productions,1915,Beggar's Holiday,0,9,
-Q29017615,Doctor Dolittle,1998,infobox_premiere,507413,Doctor Dolittle (musical),,17,
+Q29017615,Doctor Dolittle,1998,infobox_premiere,507413,Doctor Dolittle (musical),,17,never_on_broadway
 Q2914297,Drood,1985,infobox_productions,6413|10536,The Mystery of Edwin Drood (musical),0,10,
 Q2915810,Company,1970,infobox_productions,2719,Company (musical),0,27,
 Q2919770,Taboo,2003,infobox_productions,11175,Taboo (musical),0,11,
@@ -676,7 +676,7 @@ Q29539219,Ziegfeld Follies of 1918,1918,title,9589,,,0,
 Q29641638,The Passing Show of 1912,1912,wikidata,6959,,,0,
 Q29641777,The Passing Show of 1922,1922,title,6968,,,0,
 Q29641986,The Passing Show of 1924,1924,title,6969,,,0,
-Q2966173,Christophe Colomb,1930,infobox_premiere,2580,Christophe Colomb,,2,
+Q2966173,Christophe Colomb,1930,infobox_premiere,2580,Christophe Colomb,,2,opera
 Q2981318,Coco,1969,infobox_productions,2652,Coco (musical),0,9,
 Q29832089,The Lightning Thief: The Percy Jackson Musical,2019,infobox_productions,,The Lightning Thief (musical),,3,
 Q29832209,Spamilton,2016,infobox_premiere,,Spamilton,1,5,subcategory_page
@@ -750,7 +750,7 @@ Q3760672,George White,2023,infobox_premiere,,George White (producer),1,0,subcate
 Q3772447,Glorifying the American Girl,1938,infobox_premiere,,Glorifying the American Girl,1,15,subcategory_page
 Q377346,Adrienne,1926,wikidata,1391,,,0,
 Q3777188,Growltiger's Last Stand,,,,Growltiger's Last Stand,1,0,subcategory_page
-Q377876,Trouble in Tahiti,1952,infobox_premiere,9812,Trouble in Tahiti,,1,
+Q377876,Trouble in Tahiti,1952,infobox_premiere,9812,Trouble in Tahiti,,1,opera
 Q378237,La serva padrona,1733,infobox_premiere,10946,La serva padrona,,2,before_1900
 Q3785076,Her Little Highness,,,4342,,,1,no_year
 Q378784,Can-Can,1953,infobox_productions,2374,Can-Can (musical),0,20,
@@ -778,7 +778,7 @@ Q3987236,The Girl Friend,1926,infobox_productions,3874,The Girl Friend,0,6,
 Q3987314,The Gondoliers,1889,infobox_premiere,3985,The Gondoliers,,10,before_1900
 Q3988489,The New Yorkers,1930,infobox_productions,10555|10114,The New Yorkers,0,10,
 Q3988894,The Quaker Girl,1910,infobox_premiere,7313,The Quaker Girl,,0,
-Q3989123,The Saint of Bleecker Street,1954,infobox_premiere,7714,The Saint of Bleecker Street,,2,
+Q3989123,The Saint of Bleecker Street,1954,infobox_premiere,7714,The Saint of Bleecker Street,,2,opera
 Q3989381,The Sorcerer,1877,infobox_premiere,8192,The Sorcerer,,5,before_1900
 Q3990060,The Wizard of Oz,1903,infobox_productions,9434,The Wizard of Oz (1902 musical),,13,
 Q3990159,The Girl in Pink Tights,1954,infobox_premiere,3900,The Girl in Pink Tights,0,6,
@@ -835,7 +835,7 @@ Q4660775,A Wonderful Life,1986,infobox_premiere,415073,A Wonderful Life (musical
 Q4660865,A Year with Frog and Toad,2003,infobox_productions,11164,A Year with Frog and Toad,0,5,
 Q4670747,Abyssinia,1987,infobox_premiere,1366,Abyssinia (1987 musical),,12,
 Q467516,The King and I,1989,infobox_premiere,,The King and I (1999 film),1,12,subcategory_page
-Q467698,The Little Sweep,1949,infobox_premiere,5353,The Little Sweep,,2,
+Q467698,The Little Sweep,1949,infobox_premiere,5353,The Little Sweep,,2,opera
 Q4681864,Adele,1913,infobox_productions,1386,Adele (musical),0,6,
 Q4684529,Adonis,1884,infobox_productions,421126,Adonis (musical),0,17,before_1900
 Q4689047,Afgar,1920,infobox_productions,1404,Afgar,0,4,
@@ -844,7 +844,7 @@ Q4697240,Ain't Misbehavin',1978,infobox_productions,1425,Ain't Misbehavin' (musi
 Q4697295,Ain't Supposed to Die a Natural Death,1971,infobox_productions,1426,Ain't Supposed to Die a Natural Death,0,9,
 Q47016299,Courtin' Time,1951,infobox_premiere,,Courtin' Time,0,2,
 Q470218,The Great Ziegfeld,1933,infobox_premiere,,The Great Ziegfeld,1,13,subcategory_page
-Q471725,The Fair at Sorochyntsi,1917,infobox_premiere,9755,The Fair at Sorochyntsi,,8,
+Q471725,The Fair at Sorochyntsi,1917,infobox_premiere,9755,The Fair at Sorochyntsi,,8,opera
 Q4727453,Alive and Kicking,1950,infobox_premiere,1446,Alive and Kicking (musical),0,3,
 Q4728560,All American,1962,infobox_productions,1448,All American (musical),0,5,
 Q4731371,Allegiance,2015,infobox_productions,499859,Allegiance (musical),0,12,
@@ -856,7 +856,7 @@ Q4743580,American Dance Machine,1978,infobox_premiere,,American Dance Machine,0,
 Q4746284,"Amilie, or the Love Test",1837,infobox_premiere,412129,"Amilie, or the Love Test",,2,before_1900
 Q4747995,Amour,2002,infobox_productions,11057,Amour (musical),0,10,
 Q4749964,An Evening with Jerry Herman,1998,infobox_productions,1560,An Evening with Jerry Herman,0,4,
-Q4753455,And the World Goes 'Round,1991,infobox_premiere,512052,And the World Goes 'Round,,7,
+Q4753455,And the World Goes 'Round,1991,infobox_premiere,512052,And the World Goes 'Round,,7,never_on_broadway
 Q4762061,Angel,1978,infobox_productions,1584,Angel (musical),0,9,
 Q4766086,Ankles Aweigh,1955,infobox_productions,1602,Ankles Aweigh,0,7,
 Q4767141,Anna Karenina,1992,infobox_productions,9975,Anna Karenina (musical),0,7,
@@ -892,7 +892,7 @@ Q48964872,Pretty Woman: The Musical,2018,infobox_productions,,Pretty Woman (musi
 Q48977927,Angel in the Wings,1947,infobox_productions,1590,Angel in the Wings,0,8,
 Q4899157,Between the Devil,1937,infobox_productions,1982,Between the Devil,0,8,
 Q4900133,Beyond the Fringe,1960,infobox_premiere,1993|1991,Beyond the Fringe,,9,
-Q4902482,Bianca,1918,infobox_premiere,1995,Bianca (opera),,1,
+Q4902482,Bianca,1918,infobox_premiere,1995,Bianca (opera),,1,opera
 Q4904852,Big (musical),1996,infobox_productions,2001,Big (musical),0,6,
 Q4905564,Big Deal,1986,infobox_productions,2005,Big Deal (musical),0,3,
 Q4906210,Big River,1985,infobox_productions,2018,Big River (musical),0,9,
@@ -925,7 +925,7 @@ Q5003799,By Jupiter,1942,infobox_productions,2327,By Jupiter,0,11,
 Q5003847,By the Beautiful Sea,1954,infobox_productions,2331,By the Beautiful Sea (musical),0,11,
 Q5025421,Cambridge Footlights Revue,,,2366,Cambridge Footlights Revue,,1,no_year
 Q5033701,Canterbury Tales,1968,infobox_premiere,2388,Canterbury Tales (musical),0,5,
-Q5036691,Captain Jinks of the Horse Marines,1975,infobox_premiere,2400,Captain Jinks of the Horse Marines,,5,
+Q5036691,Captain Jinks of the Horse Marines,1975,infobox_premiere,2400,Captain Jinks of the Horse Marines,,5,opera
 Q5043344,Carmelina,1979,infobox_productions,2412,Carmelina,0,8,
 Q5044107,Carnival in Flanders,1953,infobox_productions,2416,Carnival in Flanders (musical),0,4,
 Q5044949,"Caroline, or Change",2004,infobox_productions,11284,"Caroline, or Change",0,11,
@@ -997,7 +997,7 @@ Q5428397,Face the Music,1932,infobox_productions,3424,Face the Music (musical),0
 Q5429172,Fade Out – Fade In,1964,infobox_productions,3427,Fade Out – Fade In,0,9,
 Q5432757,Falsettos,1992,infobox_productions,3448,Falsettos,0,15,
 Q5455960,Five Guys Named Moe,1992,infobox_productions,3583,Five Guys Named Moe,0,16,
-Q5457609,Flashdance the Musical,2008,infobox_premiere,505116,Flashdance (musical),,15,
+Q5457609,Flashdance the Musical,2008,infobox_premiere,505116,Flashdance (musical),,15,never_on_broadway
 Q5460450,Flora the Red Menace,1965,infobox_productions,3608,Flora the Red Menace,0,17,
 Q5462401,Floyd Collins,2025,infobox_productions,539859,Floyd Collins (musical),,14,
 Q5463380,Flying Colors,1932,infobox_productions,3628,Flying Colors (musical),0,11,
@@ -1007,7 +1007,7 @@ Q5464752,Follow the Girls,1944,infobox_productions,3642,Follow the Girls,0,13,
 Q5472933,Forty-Five Minutes from Broadway,1906,infobox_productions,381260|3686,Forty-five Minutes from Broadway,0,4,
 Q5473436,Fosse,1999,infobox_productions,3688,Fosse (musical),0,3,
 Q5475468,Four Saints in Three Acts,1934,infobox_premiere,3693,Four Saints in Three Acts,0,4,
-Q5494819,Regina,1949,infobox_premiere,7434,Regina (Blitzstein),,6,
+Q5494819,Regina,1949,infobox_premiere,7434,Regina (Blitzstein),,6,opera
 Q54954274,Simply Heavenly,1957,infobox_premiere,,Simply Heavenly,0,0,
 Q54954307,Rap Master Ronnie,1984,infobox_premiere,,Rap Master Ronnie,0,0,
 Q54990323,A China Doll,1904,wikidata,1056,,,0,
@@ -1030,7 +1030,7 @@ Q55613528,Head over Heels,2018,infobox_productions,,Head over Heels (musical),0,
 Q55615533,KPOP,2022,infobox_productions,534370,KPOP (musical),0,8,
 Q55635111,The Cher Show,2018,infobox_productions,518453,The Cher Show (musical),0,19,
 Q55635481,The Prom,2018,infobox_productions,518106,The Prom (musical),0,12,
-Q55635588,The Transposed Heads,1954,infobox_premiere,482870,The Transposed Heads (opera),,2,
+Q55635588,The Transposed Heads,1954,infobox_premiere,482870,The Transposed Heads (opera),,2,opera
 Q55636030,Tootsie,2019,infobox_productions,519385,Tootsie (musical),,12,
 Q55639292,Beetlejuice,2019,infobox_productions,519780,Beetlejuice (musical),0,19,
 Q55640093,Jagged Little Pill,2019,infobox_productions,522464,Jagged Little Pill (musical),0,17,
@@ -1079,7 +1079,7 @@ Q5917655,How Do You Solve a Problem Like Maria?,2006,infobox_premiere,,How Do Yo
 Q5918043,"How Now, Dow Jones",1967,infobox_productions,4550,"How Now, Dow Jones",0,7,
 Q59187467,The Sound of Music,2015,infobox_premiere,,The Sound of Music (Laibach album),1,0,subcategory_page
 Q591943,My Fair Lady,1956,infobox_productions,6369,My Fair Lady,0,27,
-Q593511,The Consul,1950,infobox_premiere,2748,The Consul,,2,
+Q593511,The Consul,1950,infobox_premiere,2748,The Consul,,2,opera
 Q5965546,I'd Rather Be Right,1937,infobox_productions,4619,I'd Rather Be Right,0,5,
 Q5965966,I'll Say She Is,1924,infobox_productions,4621,I'll Say She Is,0,6,
 Q5977435,I Had a Ball,1964,infobox_productions,4596,I Had a Ball,0,6,
@@ -1119,7 +1119,7 @@ Q6201276,Jimmy Shine,1968,infobox_premiere,4895,Jimmy Shine,0,2,
 Q6249967,John Murray Anderson's Almanac,1953,infobox_premiere,4917,John Murray Anderson's Almanac,0,25,
 Q625282,"Promises, Promises",1968,infobox_productions,7283,"Promises, Promises (musical)",0,9,
 Q6266982,Johnny Johnson,1936,infobox_productions,4921,Johnny Johnson (musical),0,9,
-Q628536,Monna Vanna,1909,infobox_premiere,6204,Monna Vanna (Février),,2,
+Q628536,Monna Vanna,1909,infobox_premiere,6204,Monna Vanna (Février),,2,opera
 Q6299585,Juan Darién: A Carnival Mass,1988,infobox_premiere,4954,Juan Darién: A Carnival Mass,,4,
 Q6314034,Juno,1959,infobox_productions,4987,Juno (musical),0,7,
 Q63643994,West Side Story,2014,infobox_premiere,,West Side Story (2021 film),1,13,subcategory_page
@@ -1151,7 +1151,7 @@ Q65050541,My Darlin' Aida,1952,infobox_productions,,My Darlin' Aida,0,6,
 Q65052575,The Hotel Mouse,1918,infobox_premiere,,The Hotel Mouse (musical),0,7,
 Q65064417,The Belle of Brittany,1908,infobox_premiere,1933,The Belle of Brittany,0,1,
 Q6506507,Le 66,1856,infobox_premiere,433822,Le 66,,3,before_1900
-Q65065531,A Letter for Queen Victoria,1974,infobox_premiere,1152,A Letter for Queen Victoria,,4,
+Q65065531,A Letter for Queen Victoria,1974,infobox_premiere,1152,A Letter for Queen Victoria,,4,opera
 Q65066832,list of awards and nominations for the musical Cats,1981,infobox_premiere,,List of awards and nominations received by Cats (musical),1,3,subcategory_page
 Q65073099,Diana,2021,infobox_productions,523674,Diana (musical),,16,
 Q65074092,The Yankee Consul,1903,infobox_premiere,9499,The Yankee Consul,,3,
@@ -1175,7 +1175,7 @@ Q6532934,Let My People Come,1976,infobox_productions,5348,Let My People Come,0,1
 Q653753,Miss Saigon,1991,infobox_productions,6149,Miss Saigon,0,13,
 Q6538597,Li'l Abner,1956,infobox_productions,5363,Li'l Abner (musical),0,8,
 Q6544726,Life Begins at 8:40,1934,infobox_productions,5377,Life Begins at 8:40,0,5,
-Q654633,Ariadne auf Naxos,1912,infobox_premiere,473531,Ariadne auf Naxos,,11,
+Q654633,Ariadne auf Naxos,1912,infobox_premiere,473531,Ariadne auf Naxos,,11,opera
 Q6547509,Lilac Domino,1912,infobox_premiere,5405,The Lilac Domino,,2,
 Q656057,Sister Act,2011,infobox_productions,488902,Sister Act (musical),0,17,
 Q656082,Anything Goes,1934,infobox_productions,1640,Anything Goes,0,32,
@@ -1186,7 +1186,7 @@ Q65807503,Greenwich Village Follies,1919,infobox_premiere,,The Greenwich Village
 Q6606485,list of awards and nominations for the musical ''Fiddler on the Roof'',1965,infobox_premiere,,List of awards and nominations received by Fiddler on the Roof,1,0,subcategory_page
 Q6606988,list of awards and nominations received by the musical Wicked,2003,infobox_premiere,,List of awards and nominations received by Wicked (musical),1,5,subcategory_page
 Q66238374,The Ham Tree,1905,infobox_premiere,4170,The Ham Tree,0,5,
-Q6650366,Little House on the Prairie,2009,infobox_premiere,505815,Little House on the Prairie (musical),,8,
+Q6650366,Little House on the Prairie,2009,infobox_premiere,505815,Little House on the Prairie (musical),,8,never_on_broadway
 Q6650560,Little Johnny Jones,1904,infobox_productions,5456,Little Johnny Jones,0,5,
 Q6651124,Little Nellie Kelly,1922,infobox_productions,5472,Little Nellie Kelly (musical),0,6,
 Q6675184,Look to the Lilies,1970,infobox_productions,5538,Look to the Lilies,0,3,
@@ -1203,7 +1203,7 @@ Q6730231,Maggie Flynn,1968,infobox_productions,5718,Maggie Flynn,0,10,
 Q673893,Saturday Night Fever,1999,infobox_productions,7755,Saturday Night Fever (musical),0,13,
 Q6745222,Mam'zelle Champagne,1906,infobox_premiere,5773,Mam'zelle Champagne,0,3,
 Q6745576,"Original Soundtrack from the Motion Picture ""Mame""",1974,infobox_premiere,,Mame (film soundtrack),1,1,subcategory_page
-Q6761228,Maria Golovin,1958,infobox_premiere,5858,Maria Golovin,,3,
+Q6761228,Maria Golovin,1958,infobox_premiere,5858,Maria Golovin,,3,opera
 Q6763484,Marilyn: An American Fable,1983,infobox_productions,5870,Marilyn: An American Fable,0,11,
 Q6772000,Marlowe,1981,infobox_productions,5880,Marlowe (musical),0,6,
 Q6772858,Marriage a la Carte,1911,infobox_premiere,5888,Marriage a la Carte,0,3,
@@ -1248,7 +1248,7 @@ Q7080366,"Oh, Coward!",1972,infobox_premiere,6674,"Oh, Coward!",,3,
 Q7080372,"Oh, Lady! Lady!!",1918,infobox_productions,6688,"Oh, Lady! Lady!!",0,8,
 Q7080377,"Oh, My Dear!",1918,infobox_premiere,6692,"Oh, My Dear!",0,2,
 Q7082082,Oklahoma!,1955,infobox_premiere,,Oklahoma! (soundtrack),1,3,subcategory_page
-Q7091479,On the Record,2004,infobox_premiere,507951,On the Record (musical),,28,
+Q7091479,On the Record,2004,infobox_premiere,507951,On the Record (musical),,28,never_on_broadway
 Q7091825,Once Upon a Mattress,1959,infobox_productions,6761,Once Upon a Mattress,0,10,
 Q7093048,One Night Stand,1980,infobox_productions,6793,One Night Stand (musical),0,5,
 Q7095124,Onward Victoria,1980,infobox_productions,6804,Onward Victoria,0,7,
@@ -1279,7 +1279,7 @@ Q7259797,Pump Boys and Dinettes,1982,infobox_productions,7293,Pump Boys and Dine
 Q7261320,Purlie,1970,infobox_productions,7303,Purlie,0,5,
 Q7262483,Putting It Together,1999,infobox_productions,7308,Putting It Together,0,17,
 Q7272033,Quilters,1984,infobox_productions,7331,Quilters (musical),0,8,
-Q727868,Gianni Schicchi,1918,infobox_premiere,10765,Gianni Schicchi,,4,
+Q727868,Gianni Schicchi,1918,infobox_premiere,10765,Gianni Schicchi,,4,opera
 Q7279081,Rachael Lily Rosenbloom,1973,infobox_productions,7337,Rachael Lily Rosenbloom (And Don't You Ever Forget It),0,4,
 Q7283223,Rags,1986,infobox_productions,7351,Rags (musical),0,11,
 Q7283247,Ragtime,1998,infobox_productions,7352,Ragtime (musical),0,26,
@@ -1362,14 +1362,14 @@ Q7681076,Tambourines to Glory,1956,infobox_premiere,8516,Tambourines to Glory,0,
 Q7693963,Teddy & Alice,1987,infobox_productions,8546,Teddy & Alice,0,6,
 Q7699625,Tenderloin,1960,infobox_productions,8565,Tenderloin (musical),0,8,
 Q7711614,The-Merry-Go-Round,1908,infobox_premiere,8596,The-Merry-Go-Round,0,2,
-Q7711731,The 101 Dalmatians Musical,2009,infobox_premiere,505190,The 101 Dalmatians Musical,,6,
+Q7711731,The 101 Dalmatians Musical,2009,infobox_premiere,505190,The 101 Dalmatians Musical,,6,never_on_broadway
 Q7711778,The 1940's Radio Hour,1979,infobox_productions,1016,The 1940's Radio Hour,0,4,
 Q7712669,The Adventures of Tom Sawyer,2001,infobox_productions,10512,The Adventures of Tom Sawyer (musical),0,5,
 Q7712913,The Agreeable Surprise,1781,infobox_premiere,11106,The Agreeable Surprise,,3,before_1900
 Q7714016,The Apple Tree,1966,infobox_productions,1654,The Apple Tree,0,5,
 Q7715083,The Awefull Battle of the Pekes and the Pollicles,1939,infobox_premiere,,The Awefull Battle of the Pekes and the Pollicles,1,1,subcategory_page
 Q7715383,The Balkan Princess,1911,infobox_productions,1808,The Balkan Princess,,5,
-Q7715398,The Ballad of Baby Doe,1956,infobox_premiere,1810,The Ballad of Baby Doe,,3,
+Q7715398,The Ballad of Baby Doe,1956,infobox_premiere,1810,The Ballad of Baby Doe,,3,opera
 Q7716422,The Belle of Mayfair,1906,infobox_premiere,1936,The Belle of Mayfair,,5,
 Q7716424,The Belle of New York,1897,infobox_productions,9300,The Belle of New York (musical),0,5,before_1900
 Q7716734,The Best Little Whorehouse Goes Public,1994,infobox_productions,1957,The Best Little Whorehouse Goes Public,0,8,
@@ -1378,7 +1378,7 @@ Q7718009,The Billy Barnes Revue,1959,infobox_productions,2029,The Billy Barnes R
 Q7718801,The Blue Moon,1905,infobox_premiere,2112,The Blue Moon (musical),,1,
 Q7718820,The Blue Paradise,1915,infobox_productions,2114,The Blue Paradise,0,8,
 Q7718981,The Body Beautiful,1958,infobox_productions,2132,The Body Beautiful,0,6,
-Q7719011,The Bodyguard,2012,infobox_premiere,505154,The Bodyguard (musical),,10,
+Q7719011,The Bodyguard,2012,infobox_premiere,505154,The Bodyguard (musical),,10,never_on_broadway
 Q772060,Too Many Girls,1939,infobox_productions,10876,Too Many Girls (musical),0,8,
 Q7721672,The Cat and the Fiddle,1931,infobox_productions,2441,The Cat and the Fiddle (musical),0,7,
 Q7721700,The Catch of the Season,1905,infobox_productions,2446,The Catch of the Season,,8,
@@ -1448,7 +1448,7 @@ Q7756249,The Passing Show of 1916,1894,infobox_premiere,6963,The Passing Show of
 Q7756250,The Passing Show of 1918,1894,infobox_premiere,6965,The Passing Show of 1918,0,5,before_1900
 Q7756649,The People in the Picture,2011,infobox_productions,489214,The People in the Picture,0,11,
 Q7756859,The Phantom of the Opera at the Royal Albert Hall,2011,infobox_premiere,,The Phantom of the Opera at the Royal Albert Hall,1,10,subcategory_page
-Q775812,Treemonisha,1972,infobox_premiere,8860,Treemonisha,,13,
+Q775812,Treemonisha,1972,infobox_premiere,8860,Treemonisha,,13,opera
 Q7758309,The Princess Pat,1915,infobox_productions,7259,The Princess Pat,0,3,
 Q7759898,The Red Mill,1906,infobox_productions,7410,The Red Mill,0,6,
 Q7759937,The Red Shoes,1993,infobox_productions,7420,The Red Shoes (musical),0,7,
@@ -1547,7 +1547,7 @@ Q8000992,Wildcat,1960,infobox_productions,9377,Wildcat (musical),0,3,
 Q8012080,Les bavards,1862,infobox_premiere,434537,Les bavards,,3,before_1900
 Q8012193,La jolie parfumeuse,1873,infobox_premiere,469545,La jolie parfumeuse,,4,before_1900
 Q8012589,Miss Dolly Dollars,1905,infobox_premiere,6127,Miss Dolly Dollars,0,8,
-Q8012710,Madeleine,1914,infobox_premiere,5688,Madeleine (opera),,1,
+Q8012710,Madeleine,1914,infobox_premiere,5688,Madeleine (opera),,1,opera
 Q8027559,Wish You Were Here,1952,infobox_productions,9418,Wish You Were Here (musical),0,7,
 Q8030743,Woman of the Year,1981,infobox_productions,9448,Woman of the Year (musical),0,12,
 Q8031624,Women on the Verge of a Nervous Breakdown,2010,infobox_productions,487912,Women on the Verge of a Nervous Breakdown (musical),0,11,
@@ -1604,7 +1604,7 @@ Q93289802,A Strange Loop,2022,infobox_productions,533374,A Strange Loop,,9,
 Q934036,Fiddler on the Roof,1969,infobox_premiere,,Fiddler on the Roof (film),1,11,subcategory_page
 Q939143,Spamalot,2005,infobox_productions,392756|384261,Spamalot,0,12,
 Q944884,Friederike,1928,infobox_premiere,3716,Friederike (operetta),,3,
-Q950119,Whistle Down the Wind,1996,infobox_premiere,507764,Whistle Down the Wind (1996 musical),,11,
+Q950119,Whistle Down the Wind,1996,infobox_premiere,507764,Whistle Down the Wind (1996 musical),,11,never_on_broadway
 Q95024,"Florenz Ziegfeld, Jr.",1896,infobox_premiere,,Florenz Ziegfeld Jr.,1,0,subcategory_page
 Q957716,The Phantom of Manhattan,1999,infobox_premiere,,The Phantom of Manhattan,1,1,subcategory_page
 Q959242,Les cloches de Corneville,2018,infobox_premiere,415826,Les cloches de Corneville,,3,

@@ -50,6 +50,8 @@ python scripts/04b_parse_casts.py          # optional: performers, separate tabl
 python scripts/05_merge_resolve.py
 python scripts/06_coverage_audit.py
 python scripts/07_spotcheck_sample.py
+python scripts/08_build_network.py         # person-show table, edges and reunion labels per time window
+python scripts/09_show_venues.py           # opening Broadway theatre + coordinates per show (NYC show map)
 ```
 
 Every script accepts:
@@ -103,8 +105,10 @@ longer but still finishes. Re-running after a failure resumes from the cache.
 | **05_merge_resolve** | all interim credit/people tables, MediaWiki + Wikidata for link → QID and new people | `data/processed/credits.parquet`, `people.parquet`, `shows.parquet`, `data/interim/credit_mentions.parquet`, `outputs/tables/unresolved_names.csv` |
 | **06_coverage_audit** | processed tables | `outputs/tables/show_set.csv`, `coverage_by_role_decade.csv`, `people_coverage.csv`, `cast_coverage.csv` (each with a `show_set` column: `core` / `all_candidates`), `outputs/figures/coverage_heatmap.png` (core set), `coverage_heatmap_all_candidates.png` |
 
-**Core show set** (step 06, `src/filters.py`): all candidates minus pages found only in a per-show Wikipedia subcategory (songs, albums, films, people) minus shows with a year before `CORE_MIN_YEAR` (1900, in `config.py`), and minus shows with no year from any source (mostly minor early shows with no Wikipedia article; they cannot be placed in a time window). Revues named by year ("Ziegfeld Follies of 1916") get their year from the title in step 05. This only selects rows for the audit; nothing is removed from `data/`. `outputs/tables/show_set.csv` lists every show with its `exclusion_reason`.
+**Core show set** (step 06, `src/filters.py`): all candidates minus pages found only in a per-show Wikipedia subcategory (songs, albums, films, people) minus shows with a year before `CORE_MIN_YEAR` (1900, in `config.py`), and minus shows with no year from any source (mostly minor early shows with no Wikipedia article; they cannot be placed in a time window). Hand-checked lists in `src/filters.py` also remove shows that never ran on Broadway (`NEVER_ON_BROADWAY`), operas, including those that played Broadway (`OPERAS`), and two non-show pages (`MANUAL_EXCLUDE`). Revues named by year ("Ziegfeld Follies of 1916") get their year from the title in step 05. This only selects rows for the audit; nothing is removed from `data/`. `outputs/tables/show_set.csv` lists every show with its `exclusion_reason`.
 | **07_spotcheck_sample** | processed tables | `outputs/tables/spotcheck.csv`; `--score` prints error rates |
+| **08_build_network** | `credits.parquet`, `shows.parquet`, Wikidata (death dates) | `data/processed/network/person_show.parquet`, `edges_by_window.parquet`, `reunion_labels.parquet`, `outputs/tables/network_windows.csv` |
+| **09_show_venues** | `shows.parquet`, wikitext, MediaWiki (link → QID) + Wikidata (coordinates, opening/demolition dates) | `data/processed/venues/show_venues.parquet`, `theatres.parquet`, `outputs/tables/show_venues_review.csv`, `venue_coverage.csv` |
 
 ### How shows are found (step 01)
 
@@ -158,6 +162,7 @@ longer but still finishes. Re-running after a failure resumes from the cache.
 |---|---|
 | `outputs/tables/unresolved_names.csv` | Names that couldn't be resolved (`unresolved`), matched several people (`ambiguous`), or don't look like names (`implausible_name`, e.g. "1956 version"; these are excluded from `credits.parquet`). `suggested_enwiki` / `suggested_qid` come from a Wikipedia title lookup and are **not applied automatically** (a same-name article may be someone else). Fill `resolved_qid_manual` to record decisions. |
 | `outputs/tables/infobox_parse_issues.csv` | Articles with no infobox, templates the parser dropped, infobox fields it didn't recognise. |
+| `outputs/tables/show_venues_review.csv` | Every core show with its chosen opening theatre, the sentence it came from and its score. Fix a wrong or missing venue by adding `show_id: theatre QID` (or `None`) to `VENUE_OVERRIDES` in `scripts/09_show_venues.py`; add Off-Broadway venues that slip through to `NON_BROADWAY_QIDS`. |
 | `outputs/tables/spotcheck.csv` | 50 random credits (seed 42) with source links and evidence. Fill `correct` with y/n, then run `python scripts/07_spotcheck_sample.py --score` for the error rate (with 95 % CI) by source, extraction and role. |
 
 ## Wikidata IDs used
@@ -197,7 +202,10 @@ re-checks the live English label of every ID it uses and aborts if one doesn't m
 | P767 + P3831 | contributor + "object of statement has role" qualifier | role from the qualifier |
 | P161 + P453 | cast member + character role | 04b cast |
 | P19 | place of birth | birthplace |
-| P625 | coordinate location | birthplace lat/lon |
+| P625 | coordinate location | birthplace lat/lon; theatre lat/lon (step 09) |
+| P570 | date of death | posthumous credits (step 08) |
+| P1619 / P576 | date of official opening / dissolved, abolished or demolished | theatre dates (step 09) |
+| Q24354 | theatre building | venue typing (step 09) |
 | P27 | country of citizenship | citizenship |
 | P569 | date of birth | birth year |
 | Q2743 | musical | typing |
@@ -299,6 +307,35 @@ Every individual mention, with its sentence and context flags, is in
 (Wikidata), `original_broadway_year` (infobox productions), `premiere_year`
 (infobox), `has_infobox, n_credits, n_people`, plus the step-01 discovery flags
 described above.
+
+### `data/processed/venues/theatres.parquet`: one row per theatre (step 09)
+
+| column | meaning |
+|---|---|
+| `venue_qid` | Wikidata item of the theatre building |
+| `venue_name` | Display name from the Wikipedia article title, without the disambiguator ("Imperial Theatre (Broadway)" → "Imperial Theatre"). This is the **current** name: renamed theatres are one building with one point (the Alvin appears as "Neil Simon Theatre") |
+| `venue_label` | Wikidata English label (sometimes odd, e.g. "Chicago The Musical Ambassador Theater"; use `venue_name` for display) |
+| `lat`, `lon` | Wikidata coordinate location (P625), WGS84 decimal degrees, except where `VENUE_COORD_OVERRIDES` in step 09 corrects a wrong value. Present for every theatre; the step keeps only items inside a Manhattan bounding box. Precision is about 30 m for most theatres (see the work log, 2026-11-10) |
+| `types` | Wikidata `instance of` labels, joined with ` \| ` |
+| `opened_year`, `demolished_year` | Wikidata date of official opening (P1619) and dissolved, abolished or demolished (P576), where recorded. Use them to show a theatre only while it stood |
+| `is_broadway_theatre` | Wikidata types the item as a Broadway theatre (Q235065) |
+| `n_shows` | Core shows that opened there |
+
+No street address is stored (Wikidata has one, P6375, for many theatres; not fetched yet).
+
+### `data/processed/venues/show_venues.parquet`: one row per core show (step 09)
+
+| column | meaning |
+|---|---|
+| `show_id`, `title`, `year` | as in `shows.parquet` |
+| `venue_qid`, `venue_name`, `venue_label`, `lat`, `lon`, `opened_year`, `demolished_year`, `is_broadway_theatre` | the opening theatre, as in `theatres.parquet`; empty if none was found |
+| `venue_basis` | `sentence` (opening sentence in the article), `infobox`, `manual` (`VENUE_OVERRIDES`), `not_found`, or `no_article` |
+| `resolved_title` | Wikipedia article of the theatre, after redirects |
+| `section`, `snippet`, `score` | where the evidence came from, the sentence itself, and its score (higher = more certain) |
+| `n_venue_candidates` | distinct NYC theatres linked in the article's opening sentences |
+| `venue_date_conflict` | the theatre had not opened, or was already demolished, in the show's year (should be 0 rows; the step drops such candidates) |
+
+Only the **opening** theatre is recorded, not later transfers during a run.
 
 ## Project layout
 
