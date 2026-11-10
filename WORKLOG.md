@@ -335,6 +335,46 @@ The show map will show where teams worked within NYC as time passes, so each sho
 - **Union Square:** almost absent from the data, because the core set starts in 1900 and the district had moved uptown by then. Only *The Errand Boy* (1904, Fourteenth Street Theatre) links a 14th Street house, and step 09 didn't select it.
   - Wallack's (Broadway and 30th) is named in 3 articles but not chosen. *The Sultan of Sulu* (1902) opened there but is placed at the Grand Opera House. **To check in step 09.**
 
+## 2026-11-10: Zoomable Manhattan map, visual style, show map; community plan
+
+- **Team decision (Ruby): BigCLAM communities get their own layer**, without changing the encodings of the trajectory or show map. There is only one colour meaning at a time:
+  - **Cohort view: "Colour by: Show | Community" toggle.** Same dots, positions and animation; only the colour changes.
+    - Community colours come from BigCLAM trained on [T−10, T).
+    - People in two or more communities get a second colour as a ring.
+    - Reunion links are solid if the pair shared a community before reuniting, dashed if not. This is H3 made visible.
+    - Show colours stay the default, so the study tasks don't change.
+  - **Community timeline panel** beside the cohort map: one band per tracked community (step 12) across the 5-year steps, showing continue, split and merge, with reunions marked on the bands.
+    - Linked to the map: hovering a band highlights its members, and picking a year moves the map.
+    - Includes a small within- vs across-community reunion bar against the null model. This takes over the deferred embedding view's question.
+  - **Trajectory:** an optional thin grey strip under the career line shows the person's community memberships per window. No extra colours.
+  - **Small multiples:** the same toggle, so the comparison with the animated view stays fair.
+  - **Limits:** at most ~6 community colours per window, with the rest grey ("Other"). The panel needs step 11/12 outputs; until then it runs on stand-in communities in the agreed format.
+- **Visual style (Ruby's choice: a blend of the three directions):**
+  - Playbill / marquee for the page: cream paper, Playfair Display headings, Source Sans 3 text, a gold accent.
+  - Vintage atlas for the map.
+  - Transit-diagram lines for careers.
+  - Tokens in `viz/css/style.css`, with a dark "marquee at night" mode.
+- **Zoomable map (Ruby's choice: a D3 vector basemap, not historical tiles or the schematic grid):**
+  - **New `scripts/14_build_basemap.py`** writes `viz/data/basemap.json` (530 KB), covering the Battery to about 100th St:
+    - Manhattan shoreline and neighbouring boroughs, from NYC Open Data Borough Boundaries (gthc-hcne)
+    - 249 named parks and about 6,700 street lines, from OpenStreetMap via Overpass
+    - hand-placed labels for the squares and rivers
+
+    Sources are cached in `data/raw/basemap/`. Lines are simplified with Ramer-Douglas-Peucker; park outlines stored in pieces are joined into closed shapes, and 40 that came back without geometry are fetched again by id. Attribution: OpenStreetMap (ODbL) and NYC DCP.
+  - **New `viz/js/manhattanMap.js`**, shared by the show map, trajectory and cohort views:
+    - rotated 29° to grid north, so avenues are vertical
+    - zoom from 1× to 16× with drag, scroll or buttons
+    - basemap strokes keep their width; views re-place their points on zoom, so dots keep their size and spread apart when zoomed in
+    - default view from Union Square to Lincoln Center
+  - **Show map (`#showmap`, now the start page):**
+    - a year slider and a Play button
+    - theatres with an opening that year are filled red, standing theatres are rings, and others are faint
+    - the year's openings are listed with their theatre, or "theatre unknown"
+    - theatre names appear when zoomed in
+
+    Checked by screenshot: 1927 shows *Show Boat* and *Rio Rita* at the Ziegfeld, and Broadway's diagonal through the squares.
+- **Next:** the trajectory view on the shared map (Rodgers as the test case), then the birthplace map, then the cohort view and small multiples on stand-in data.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").

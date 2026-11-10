@@ -1,7 +1,7 @@
 // Loads the JSON written by scripts/13_export_viz_data.py and builds lookup indexes.
 // Every view gets the same `db` object, so views never parse files themselves.
 
-const FILES = ["meta", "theatres", "shows", "people", "credits", "reunions"];
+const FILES = ["meta", "theatres", "shows", "people", "credits", "reunions", "basemap"];
 
 async function fetchJson(name) {
   const res = await fetch(`data/${name}.json`);
@@ -20,7 +20,7 @@ function groupBy(rows, key) {
 }
 
 export async function loadData() {
-  const [meta, theatres, shows, people, credits, reunionsRaw] = await Promise.all(FILES.map(fetchJson));
+  const [meta, theatres, shows, people, credits, reunionsRaw, basemap] = await Promise.all(FILES.map(fetchJson));
 
   const theatreById = new Map(theatres.map(t => [t.id, t]));
   const showById = new Map(shows.map(s => [s.id, s]));
@@ -34,7 +34,7 @@ export async function loadData() {
   }
 
   const db = {
-    meta, theatres, shows, people, credits, reunions,
+    meta, theatres, shows, people, credits, reunions, basemap,
     theatreById, showById, personById,
     creditsByPerson: groupBy(credits, "person"),
     creditsByShow: groupBy(credits, "show"),
