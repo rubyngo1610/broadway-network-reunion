@@ -25,6 +25,7 @@ import pandas as pd
 
 import config
 from src.common import apply_limit, log, parse_args, read_parquet, write_parquet
+from src.filters import BROADWAY_YEAR_OVERRIDES, ORIGINAL_TEAM_OVERRIDES
 from src.http_client import CachedClient
 from src.names import enwiki_url, normalize_name, wiki_title
 from src.roles import normalize_role
@@ -125,6 +126,10 @@ def main():
         m = sh[col].notna()
         sh.loc[m, "year"] = sh.loc[m, col]
         sh.loc[m, "year_source"] = src
+    # hand-checked Broadway years for shows whose article year is an earlier non-Broadway run
+    for sid, yr in BROADWAY_YEAR_OVERRIDES.items():
+        m = sh["show_id"].eq(sid)
+        sh.loc[m, ["year", "original_broadway_year", "year_source"]] = [yr, yr, "manual"]
     sh["year"] = sh["year"].astype("Int64")
     orig_year = dict(zip(sh["show_id"], sh["original_broadway_year"].fillna(sh["year"])))
 
@@ -401,6 +406,15 @@ def main():
             if pd.notna(d_yr) and pd.notna(o_yr) and d_yr < o_yr:
                 mentions.at[idx, "is_original_production"] = False
                 mentions.at[idx, "original_basis"] = "rule_4_posthumous"
+
+    # ---- Hand-set original Broadway teams (src/filters.py) ----
+    for sid, roles in ORIGINAL_TEAM_OVERRIDES.items():
+        for role, team in roles.items():
+            m = mentions["show_id"].eq(sid) & mentions["role"].eq(role)
+            mentions.loc[m, "is_original_production"] = mentions.loc[m, "person_id"].isin(team)
+            mentions.loc[m, "original_basis"] = "manual_team"
+            log.info("Original team set by hand: %s %s -> %d of %d credits original",
+                     sid, role, int(mentions.loc[m, "person_id"].isin(team).sum()), int(m.sum()))
 
     write_parquet(mentions, config.DATA_INTERIM / "credit_mentions.parquet")
 

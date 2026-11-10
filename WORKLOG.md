@@ -273,12 +273,18 @@ The show map will show where teams worked within NYC as time passes, so each sho
     - The Wikidata item itself isn't corrected; that would be a public edit.
   - **The Westside Theatre (Q7989720, Off-Broadway)** was added to `NON_BROADWAY_QIDS`. It had been chosen for 2 shows:
     - *Pump Boys and Dinettes* (1982) is now at the Princess Theatre, the Latin Quarter building, by override.
-    - *Lady Day at Emerson's Bar and Grill* is set to no venue. Its 1986 year is the Off-Broadway run, and it reached Broadway only in 2014. **Decide whether it belongs in the core set.**
+    - *Lady Day at Emerson's Bar and Grill*: its article year (1986) is the Off-Broadway run, and it reached Broadway only in 2014. **Team decision: keep it in the core set as a 2014 Broadway show.**
+      - New `BROADWAY_YEAR_OVERRIDES` in `src/filters.py`, applied in step 05: year 2014, `year_source = manual`.
+      - New `ORIGINAL_TEAM_OVERRIDES`, applied in step 05 with `original_basis = manual_team`: Lonny Price is the only original director. The 1986 directors (André Ernotte, Woodie King Jr., Reenie Upchurch, Lonette McKee) are now not original, so they drop out of the strict network. The designers (ESosa, Wierzel, Noone) were already the 2014 team, and the playwright (Lanie Robertson) stays original.
+      - Venue override: Circle in the Square Theatre (Q2973328).
   - **The Latin Quarter (Q11983435) is no longer excluded.** At 200 W. 48th Street it was a Broadway house from 1979 to 1989, under the names 22 Steps, Princess Theatre and Latin Quarter.
     - *Mayor* (1985) and *My Old Friends* (1979) now get it automatically.
     - *The Madwoman of Central Park West* (1979) gets it by override, because its article says "transferred to … 22 Steps".
   - **No fix needed:** the 1903 Lyric (Q6710003) and the Apollo share one point, and the Times Square Theater is 4 m away. They stood side by side on W. 42nd Street, so the error is only 10–20 m.
-- **Rerun result:** 990 of 1,234 core shows (80%) have a venue; 944 of 1,125 (84%) in the strict network. There are 9 hand overrides in total.
+- **Reran 05 → 06 → 08 → 09:**
+  - 1,234 core shows (unchanged), 6,351 person–show rows, 164 posthumous credits dropped (Ernotte, who died in 1999, is now dated 2014)
+  - strict baseline 4.2% (411 of 9,730 pairs)
+  - 991 of 1,234 core shows (80%) have a venue, with 10 hand venue overrides in total
 - **For the map:**
   - **Crowding:** 41 of 86 theatres have a neighbour within 40 m, because they're adjacent houses on the same block, e.g. Golden and Jacobs (21 m), Shubert and 44th Street (22 m). The 42nd Street trio is 14 shows on one point. Use small offsets, clustering, or one marker per block with a list.
   - **Historical names:** `venue_name` is today's name (the Alvin appears as Neil Simon). A historical map needs a small name-by-year table (for example Alvin 1927–1983, then Neil Simon).

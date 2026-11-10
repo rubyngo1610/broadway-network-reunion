@@ -85,6 +85,22 @@ OPERAS = {
 }
 
 
+# Shows whose article year is an earlier non-Broadway run: show_id -> year of the original Broadway
+# production. Applied in step 05 (year_source = "manual"). Checked by hand 2026-11-10.
+BROADWAY_YEAR_OVERRIDES = {
+    "Q16981029": 2014,  # Lady Day at Emerson's Bar and Grill: Off-Broadway 1986, Broadway (Circle in the Square) 2014
+}
+
+# Original Broadway team set by hand, for shows where the article's credits mix productions:
+# show_id -> {role: person_ids of the original Broadway production}. For each listed role, credits
+# of these people become original (True) and every other credit in that role becomes False.
+# Applied in step 05 (original_basis = "manual_team").
+ORIGINAL_TEAM_OVERRIDES = {
+    # Lady Day: the 1986 Off-Broadway directors (Ernotte, King, Upchurch, McKee) are not the 2014 team
+    "Q16981029": {"director": {"Q2015832"}},  # Lonny Price
+}
+
+
 def _instance_sets(shows: pd.DataFrame) -> pd.Series:
     """wd_instance_of holds several types joined with '|'."""
     return shows["wd_instance_of"].fillna("").str.lower().str.split("|").map(lambda v: {t.strip() for t in v} - {""})

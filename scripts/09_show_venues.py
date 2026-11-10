@@ -100,7 +100,8 @@ VENUE_OVERRIDES: dict[str, str | None] = {
     # 2026-11-10: the article's first theatre is Off-Broadway (Westside Theatre)
     "Q7259797": "Q11983435",  # Pump Boys and Dinettes (1982): Princess Theatre, the Latin Quarter building
     "Q7749362": "Q11983435",  # The Madwoman of Central Park West (1979): transferred to Broadway at 22 Steps (Latin Quarter)
-    "Q16981029": None,        # Lady Day at Emerson's Bar and Grill: the 1986 run was Off-Broadway; Broadway only in 2014
+    "Q16981029": "Q2973328",  # Lady Day at Emerson's Bar and Grill: Broadway 2014 at Circle in the Square
+                              # (year set to 2014 in src/filters.py; the 1986 run was Off-Broadway)
 }
 
 OPEN_VERB = re.compile(r"\b(opened|premiered|premièred|debuted|began|transferred|moved|played|ran)\b", re.I)
