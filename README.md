@@ -52,7 +52,10 @@ python scripts/06_coverage_audit.py
 python scripts/07_spotcheck_sample.py
 python scripts/08_build_network.py         # person-show table, edges and reunion labels per time window
 python scripts/09_show_venues.py           # opening Broadway theatre + coordinates per show (NYC show map)
+python scripts/13_export_viz_data.py       # JSON for the web views in viz/ (steps 10-12 reserved for the methods)
 ```
+
+The web views live in `viz/`; see [viz/README.md](viz/README.md) for how to run and publish them.
 
 Every script accepts:
 

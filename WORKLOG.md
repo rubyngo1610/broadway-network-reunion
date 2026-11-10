@@ -289,6 +289,32 @@ The show map will show where teams worked within NYC as time passes, so each sho
   - **Crowding:** 41 of 86 theatres have a neighbour within 40 m, because they're adjacent houses on the same block, e.g. Golden and Jacobs (21 m), Shubert and 44th Street (22 m). The 42nd Street trio is 14 shows on one point. Use small offsets, clustering, or one marker per block with a list.
   - **Historical names:** `venue_name` is today's name (the Alvin appears as Neil Simon). A historical map needs a small name-by-year table (for example Alvin 1927–1983, then Neil Simon).
 
+## 2026-11-10: Web views set up (Ruby, views track)
+
+- **Plan correction (from the proposal's "Linked views"):**
+  - The NYC map is the **base layer** of the cohort view and the trajectory view, not a separate view. One map component serves three views.
+  - The cohort view colours dots **by the show a person worked on at the start date**, not by community, so it doesn't depend on BigCLAM. It depends on the **null model** (step 10): only reunions above the randomized baseline glow. BigCLAM adds an optional "colour by community" mode and the deferred embedding view.
+  - **Data gap:** shows have an opening year but **no closing date**, so "musicals running at a date" can't be computed yet. Stand-in: a show is active in its opening year. Closing dates could be read from the articles ("closed on … after N performances"), much like step 09.
+- **Stack:** D3 v7 (pinned at `d3@7.9.0`, from jsDelivr) on a static page, with no build step. It's served locally with `python3 -m http.server` and published on GitHub Pages.
+- **New `scripts/13_export_viz_data.py`** writes `viz/data/*.json` (2.6 MB in total) from steps 05, 08 and 09:
+  - `meta.json` and `theatres.json` (86)
+  - `shows.json` (1,234)
+  - `people.json` (3,208; 1,531 with birthplace coordinates)
+  - `credits.json` (6,351)
+  - `reunions.json` (strict 9,730 and loose 17,059 pair rows)
+
+  The views never read parquet. Rerun it after any rerun of 05, 08 or 09. Step numbers 10–12 stay reserved for the methods track.
+- **New `viz/` folder** (structure and data contract in `viz/README.md`):
+  - page shell and view navigation by URL hash
+  - design tokens as CSS custom properties, with light and dark modes
+  - `data.js`: one loader with lookup maps and helpers (`career`, `theatreOf`, `standing`)
+  - `grid.js`: converts lat/lon to Manhattan grid units, so north is up and avenues are straight. This is the base of the stylized Theater District map. Checked on known theatres: within half a block in streets and about a quarter avenue in avenues.
+  - a shared tooltip
+  - placeholder pages for the five planned views
+- **Data check view (`#data`):** counts and coverage notes, plus every theatre on the grid with a year slider (filled = standing). Checked by screenshot at desktop, phone and dark-mode widths. The Bijou fix shows: the 1917 Bijou now sits on 45th Street.
+  - **Limit:** a theatre with no Wikidata opening date counts as standing from the year of its first show in our data. That's an upper bound; for example, the Adelphi opened in 1928, but our first show there is from 1939.
+- **GitHub Pages:** `.github/workflows/pages.yml` publishes `viz/` on pushes to `main`. One-time step on GitHub: Settings → Pages → Source: **GitHub Actions**. Free Pages needs a public repository.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").
