@@ -1,0 +1,231 @@
+/* Design tokens. Style: Playbill / marquee for the page (cream paper, black serif type, gold accent),
+   a vintage Sanborn-style map for the base layer, and transit-diagram lines for careers.
+   Dark mode is "the marquee at night": the same roles stepped for a dark surface. */
+:root {
+  color-scheme: light;
+  --page:           #f3ecdc;   /* cream paper */
+  --surface-1:      #fbf7ec;   /* panel / chart surface */
+  --text-primary:   #1d1a16;   /* playbill black */
+  --text-secondary: #554c40;
+  --text-muted:     #8a7f6e;
+  --grid:           #e4dac4;
+  --axis:           #c9b994;
+  --border:         rgba(29, 26, 22, 0.14);
+  --rule:           #1d1a16;   /* the heavy playbill rule under the masthead */
+  /* map (vintage) */
+  --map-block:      #ebe1c8;   /* city blocks; streets are the paper showing through */
+  --map-block-edge: #dccfae;
+  --map-broadway:   #f8f1df;
+  --map-theatre:    #a99a7c;   /* theatres not in focus */
+  --map-water:      #dfe1d6;   /* faded atlas water */
+  --map-land:       #ebe1c8;   /* Manhattan */
+  --map-land-other: #f0e9d8;   /* other boroughs, recessive */
+  --map-park:       #d6d9b9;   /* muted atlas green */
+  --map-street:     #fbf7ec;   /* streets are paper showing through the blocks */
+  /* data */
+  --series-1:       #9b2335;   /* marquee red: the focused person / theatre */
+  --accent:         #b8860b;   /* gold: reunions and highlights (marks only, never body text) */
+  --accent-ink:     #7a5a06;   /* gold dark enough for text */
+  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-ui: "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --radius: 4px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page:           #12100c;
+    --surface-1:      #1c1913;
+    --text-primary:   #f3ead6;
+    --text-secondary: #cbbfa5;
+    --text-muted:     #93876f;
+    --grid:           #2e291f;
+    --axis:           #4a4231;
+    --border:         rgba(243, 234, 214, 0.12);
+    --rule:           #f3ead6;
+    --map-block:      #262117;
+    --map-block-edge: #332c1f;
+    --map-broadway:   #12100c;
+    --map-theatre:    #6e6450;
+    --map-water:      #0d1214;
+    --map-land:       #231f17;
+    --map-land-other: #1a1812;
+    --map-park:       #262a1c;
+    --map-street:     #3a3326;
+    --series-1:       #e0707c;
+    --accent:         #e0b341;
+    --accent-ink:     #e0b341;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page:           #12100c;
+  --surface-1:      #1c1913;
+  --text-primary:   #f3ead6;
+  --text-secondary: #cbbfa5;
+  --text-muted:     #93876f;
+  --grid:           #2e291f;
+  --axis:           #4a4231;
+  --border:         rgba(243, 234, 214, 0.12);
+  --rule:           #f3ead6;
+  --map-block:      #262117;
+  --map-block-edge: #332c1f;
+  --map-broadway:   #12100c;
+  --map-theatre:    #6e6450;
+  --map-water:      #0d1214;
+  --map-land:       #231f17;
+  --map-land-other: #1a1812;
+  --map-park:       #262a1c;
+  --map-street:     #3a3326;
+  --series-1:       #e0707c;
+  --accent:         #e0b341;
+  --accent-ink:     #e0b341;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--page);
+  color: var(--text-primary);
+  font: 15px/1.45 var(--font-ui);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.site-header {
+  display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between;
+  gap: 12px 24px; padding: 22px 24px 12px;
+  border-bottom: 3px double var(--rule);
+}
+.brand h1 {
+  margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 30px;
+  letter-spacing: 0.01em; line-height: 1.05;
+}
+.brand h1::after {           /* gold marquee bar under the title */
+  content: ""; display: block; width: 56px; height: 3px; margin-top: 6px; background: var(--accent);
+}
+.tagline {
+  margin: 6px 0 0; color: var(--text-secondary); font-size: 13px;
+  text-transform: uppercase; letter-spacing: 0.12em;
+}
+h2, h3 { font-family: var(--font-display); font-weight: 700; }
+.views { display: flex; flex-wrap: wrap; gap: 4px; }
+.views a {
+  color: var(--text-secondary); text-decoration: none; padding: 6px 10px; border-radius: 6px; font-size: 14px;
+}
+.views a:hover { color: var(--text-primary); background: var(--surface-1); }
+.views a[aria-current="page"] { color: var(--text-primary); background: var(--surface-1); box-shadow: inset 0 -2px 0 var(--accent); }
+
+.view { flex: 1; padding: 20px 24px; max-width: 1200px; width: 100%; margin: 0 auto; }
+.loading, .error { color: var(--text-secondary); }
+.error { color: #d03b3b; }
+
+.panel {
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px; margin-bottom: 16px;
+}
+.panel h2 { margin: 0 0 4px; font-size: 17px; }
+.panel .sub { margin: 0 0 12px; color: var(--text-secondary); font-size: 14px; }
+.grid-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 16px; }
+@media (max-width: 860px) { .grid-2 { grid-template-columns: minmax(0, 1fr); } }
+
+table.stats { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 14px; }
+table.stats th, table.stats td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--grid); }
+table.stats td.num { text-align: right; }
+table.stats th { color: var(--text-muted); font-weight: 500; }
+ul.notes { margin: 12px 0 0; padding-left: 18px; color: var(--text-secondary); font-size: 13px; }
+
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 8px; font-size: 14px; }
+.controls label { color: var(--text-secondary); }
+.controls output { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 3ch; }
+.controls input[type="range"] { width: min(360px, 100%); accent-color: var(--accent); }
+.btn {
+  font: 600 13px/1 var(--font-ui); padding: 7px 12px; border-radius: var(--radius); cursor: pointer;
+  border: 1px solid var(--rule); background: var(--surface-1); color: var(--text-primary);
+}
+.btn:hover { box-shadow: inset 0 -2px 0 var(--accent); }
+
+svg.chart { display: block; width: 100%; height: auto; font-family: var(--font-ui); }
+svg.chart .street { stroke: var(--grid); stroke-width: 1; }
+svg.chart .street-label { fill: var(--text-muted); font-size: 11px; letter-spacing: 0.04em; }
+svg.chart .avenue-label { fill: var(--text-muted); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
+svg.chart .block { fill: var(--map-block); stroke: var(--map-block-edge); stroke-width: 0.6; }
+svg.chart .broadway { fill: none; stroke: var(--map-broadway); stroke-linecap: round; }
+svg.chart .broadway-label { fill: var(--text-muted); font-size: 10px; font-style: italic; letter-spacing: 0.15em; text-transform: uppercase; }
+svg.chart .theatre { fill: var(--series-1); stroke: var(--surface-1); stroke-width: 2; }
+svg.chart .theatre.gone { fill: var(--surface-1); stroke: var(--map-theatre); stroke-width: 1.5; }
+svg.chart .theatre.faint { fill: var(--map-theatre); stroke: var(--surface-1); stroke-width: 1; opacity: 0.75; }
+svg.chart .hit { fill: transparent; cursor: pointer; }
+
+/* zoomable Manhattan map */
+.map-wrap { position: relative; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+svg.map { touch-action: none; cursor: grab; }
+svg.map:active { cursor: grabbing; }
+svg.map .water { fill: var(--map-water); }
+svg.map .land.manhattan { fill: var(--map-land); }
+svg.map .land.other { fill: var(--map-land-other); }
+svg.map .parks { fill: var(--map-park); }
+svg.map .street { fill: none; stroke: var(--map-street); vector-effect: non-scaling-stroke; stroke-linecap: round; }
+svg.map .street.minor { stroke-width: 0.8; }
+svg.map .street.major { stroke-width: 1.8; }
+svg.map .map-label { fill: var(--text-muted); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; pointer-events: none;
+  paint-order: stroke; stroke: var(--map-land); stroke-width: 3px; stroke-linejoin: round; }
+svg.map .map-label.water { font-style: italic; stroke: var(--map-water); letter-spacing: 0.3em; }
+svg.map .map-label.park { stroke: var(--map-park); }
+svg.map .theatre-label { fill: var(--text-primary); font-size: 11px; pointer-events: none;
+  paint-order: stroke; stroke: var(--map-land); stroke-width: 3px; stroke-linejoin: round; }
+.map-controls { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 4px; }
+.map-controls button {
+  width: 32px; height: 32px; border-radius: var(--radius); border: 1px solid var(--border);
+  background: var(--surface-1); color: var(--text-primary); font: 600 17px/1 var(--font-ui); cursor: pointer;
+}
+.map-controls button:hover { box-shadow: inset 0 -2px 0 var(--accent); }
+.map-attribution { position: absolute; left: 8px; bottom: 6px; font-size: 10px; color: var(--text-muted);
+  background: color-mix(in srgb, var(--surface-1) 75%, transparent); padding: 1px 4px; border-radius: 3px; }
+.hint { color: var(--text-muted); font-size: 12px; margin: 6px 0 0; }
+
+.showmap-layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 900px) { .showmap-layout { grid-template-columns: minmax(0, 1fr); } }
+.show-list { list-style: none; margin: 0; padding: 0; font-size: 14px; max-height: 560px; overflow: auto; }
+.show-list li { padding: 6px 0; border-bottom: 1px solid var(--grid); }
+.show-list li .where { color: var(--text-secondary); font-size: 13px; }
+.show-list li.no-venue .where { font-style: italic; color: var(--text-muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--text-secondary); margin: 8px 0 0; }
+.legend .key { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.legend .key.on { background: var(--series-1); }
+.legend .key.standing { background: var(--surface-1); border: 1.5px solid var(--series-1); }
+.legend .key.gone { background: var(--map-theatre); opacity: 0.6; }
+
+/* trajectory (transit line) */
+svg.chart .career-line { fill: none; stroke: var(--series-1); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0.9; }
+svg.chart .station { fill: var(--surface-1); stroke: var(--series-1); stroke-width: 2.5; }
+svg.chart .station.reunion { stroke: var(--accent); stroke-width: 3.5; }
+svg.chart .station.active { fill: var(--series-1); }
+svg.chart .mate { fill: var(--text-muted); opacity: 0.55; }
+svg.chart .station-label { fill: var(--text-primary); font-size: 11px; font-weight: 600; paint-order: stroke; stroke: var(--surface-1); stroke-width: 3px; stroke-linejoin: round; }
+svg.chart .station-label .yr { fill: var(--text-secondary); font-weight: 400; }
+svg.chart .axis-line { stroke: var(--axis); stroke-width: 1; }
+svg.chart .axis-label { fill: var(--text-muted); font-size: 11px; }
+svg.chart .tl-dot { fill: var(--series-1); stroke: var(--surface-1); stroke-width: 2; }
+svg.chart .tl-dot.no-venue { fill: var(--surface-1); stroke: var(--series-1); stroke-width: 1.5; }
+svg.chart .tl-dot.reunion { stroke: var(--accent); stroke-width: 3; }
+svg.chart .tl-dot.active { r: 8; }
+
+.tooltip {
+  position: fixed; z-index: 10; pointer-events: none; max-width: 280px;
+  background: var(--surface-1); color: var(--text-primary); border: 1px solid var(--border);
+  border-radius: 6px; padding: 8px 10px; font-size: 13px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+.tooltip .t-title { font-weight: 600; }
+.tooltip .t-sub { color: var(--text-secondary); }
+
+.placeholder { color: var(--text-secondary); }
+.placeholder h2 { color: var(--text-primary); }
+
+.site-footer {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px;
+  padding: 12px 24px; color: var(--text-muted); font-size: 12px; border-top: 1px solid var(--border);
+}
+@media (max-width: 600px) {
+  .site-header, .view, .site-footer { padding-left: 16px; padding-right: 16px; }
+}

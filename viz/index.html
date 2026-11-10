@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Broadway Reunions</title>
+  <meta name="description" content="How Broadway creative teams form, disperse and reunite, 1900-2025.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <h1>Broadway Reunions</h1>
+      <p class="tagline">How creative teams form, disperse and reunite</p>
+    </div>
+    <nav class="views" aria-label="Views">
+      <a href="#showmap" data-view="showmap">Show map</a>
+      <a href="#trajectory" data-view="trajectory">Trajectory</a>
+      <a href="#birthplaces" data-view="birthplaces">Birthplaces</a>
+      <a href="#cohort" data-view="cohort">Cohort</a>
+      <a href="#multiples" data-view="multiples">Small multiples</a>
+      <a href="#data" data-view="data">Data check</a>
+    </nav>
+  </header>
+
+  <main id="view" class="view" aria-live="polite">
+    <p class="loading">Loading data…</p>
+  </main>
+
+  <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+
+  <footer class="site-footer">
+    <span id="meta-line"></span>
+    <span>Data: Wikidata and Wikipedia. Team 15, DS-GA 3001.</span>
+  </footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

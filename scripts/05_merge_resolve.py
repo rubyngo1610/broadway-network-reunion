@@ -224,6 +224,21 @@ def main():
             for _, r in n_df.iterrows():
                 manual_name_map[(r["show_id"], r["person_name"])] = r["resolved_name_manual"].strip()
 
+    # Permanent hand resolutions: this file is read but never written by the pipeline, so a fix survives
+    # even after the name drops out of unresolved_names.csv (which is rewritten on every run and keeps
+    # only names that are still unresolved). Columns: show_id, person_name, resolved_qid_manual,
+    # resolved_name_manual, note. Its entries win over unresolved_names.csv.
+    permanent_file = config.OUTPUT_TABLES / "manual_name_resolutions.csv"
+    if permanent_file.exists():
+        perm = pd.read_csv(permanent_file, dtype=str).fillna("")
+        for _, r in perm.iterrows():
+            key = (r["show_id"], r["person_name"])
+            if r.get("resolved_qid_manual", "").strip():
+                manual_qid_map[key] = r["resolved_qid_manual"].strip()
+            elif r.get("resolved_name_manual", "").strip():
+                manual_name_map[key] = r["resolved_name_manual"].strip()
+        log.info("Permanent manual name resolutions: %d (outputs/tables/manual_name_resolutions.csv)", len(perm))
+
     unresolved = []
     todo = wp["person_id"].isna()
     for i in wp.index[todo]:

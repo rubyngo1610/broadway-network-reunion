@@ -289,6 +289,92 @@ The show map will show where teams worked within NYC as time passes, so each sho
   - **Crowding:** 41 of 86 theatres have a neighbour within 40 m, because they're adjacent houses on the same block, e.g. Golden and Jacobs (21 m), Shubert and 44th Street (22 m). The 42nd Street trio is 14 shows on one point. Use small offsets, clustering, or one marker per block with a list.
   - **Historical names:** `venue_name` is today's name (the Alvin appears as Neil Simon). A historical map needs a small name-by-year table (for example Alvin 1927–1983, then Neil Simon).
 
+## 2026-11-10: Web views set up (Ruby, views track)
+
+- **Plan correction (from the proposal's "Linked views"):**
+  - The NYC map is the **base layer** of the cohort view and the trajectory view, not a separate view. One map component serves three views.
+  - The cohort view colours dots **by the show a person worked on at the start date**, not by community, so it doesn't depend on BigCLAM. It depends on the **null model** (step 10): only reunions above the randomized baseline glow. BigCLAM adds an optional "colour by community" mode and the deferred embedding view.
+  - **Data gap:** shows have an opening year but **no closing date**, so "musicals running at a date" can't be computed yet. Stand-in: a show is active in its opening year. Closing dates could be read from the articles ("closed on … after N performances"), much like step 09.
+- **Stack:** D3 v7 (pinned at `d3@7.9.0`, from jsDelivr) on a static page, with no build step. It's served locally with `python3 -m http.server` and published on GitHub Pages.
+- **New `scripts/13_export_viz_data.py`** writes `viz/data/*.json` (2.6 MB in total) from steps 05, 08 and 09:
+  - `meta.json` and `theatres.json` (86)
+  - `shows.json` (1,234)
+  - `people.json` (3,208; 1,531 with birthplace coordinates)
+  - `credits.json` (6,351)
+  - `reunions.json` (strict 9,730 and loose 17,059 pair rows)
+
+  The views never read parquet. Rerun it after any rerun of 05, 08 or 09. Step numbers 10–12 stay reserved for the methods track.
+- **New `viz/` folder** (structure and data contract in `viz/README.md`):
+  - page shell and view navigation by URL hash
+  - design tokens as CSS custom properties, with light and dark modes
+  - `data.js`: one loader with lookup maps and helpers (`career`, `theatreOf`, `standing`)
+  - `grid.js`: converts lat/lon to Manhattan grid units, so north is up and avenues are straight. This is the base of the stylized Theater District map. Checked on known theatres: within half a block in streets and about a quarter avenue in avenues.
+  - a shared tooltip
+  - placeholder pages for the five planned views
+- **Data check view (`#data`):** counts and coverage notes, plus every theatre on the grid with a year slider (filled = standing). Checked by screenshot at desktop, phone and dark-mode widths. The Bijou fix shows: the 1917 Bijou now sits on 45th Street.
+  - **Limit:** a theatre with no Wikidata opening date counts as standing from the year of its first show in our data. That's an upper bound; for example, the Adelphi opened in 1928, but our first show there is from 1939.
+- **GitHub Pages:** `.github/workflows/pages.yml` publishes `viz/` on pushes to `main`. One-time step on GitHub: Settings → Pages → Source: **GitHub Actions**. Free Pages needs a public repository.
+
+## 2026-11-10: Trang's name fixes restored; permanent fix file
+
+- **Problem:** Trang's hand fixes from Oct 30 weren't in any file. The `unresolved_names.csv` committed on Nov 2 already had zero manual entries.
+  - Step 05 rewrites that file on every run and keeps only names that are still unresolved. A name fixed by hand drops out of the file, so on the run after that the fix itself is lost.
+- **Found:** her decisions survive in the Oct 31 run, which wrote to the project's own `data/interim/credit_mentions.parquet` in Drive. There are 51 decisions:
+  - 10 linked to the right Wikidata entry (Pasek, Paul, Stroman ×2, Bennett, Spielberg, Anthony, Abbott, …)
+  - 12 surname-only names completed (Alford → Larry Alford, Aborn → Milton Aborn, …)
+  - 29 junk "names" removed ("Choreography", "Broadway's", "Disney", "Tony", "Boston", …)
+- **Fix:** a new permanent file, `outputs/tables/manual_name_resolutions.csv` (show_id, person_name, resolved_qid_manual, resolved_name_manual, note). Step 05 reads it but never writes it, and its entries win over `unresolved_names.csv`.
+  - All 51 of Trang's decisions are restored there. One correction: for "Anderson" a QID was typed into the name column, so it's recorded as QID Q7167225.
+  - **Hammerstein fix:** *Wildflower* (1923) credited a name-only "Oscar Hammerstein II", which split him into two people and would have broken the Rodgers & Hammerstein case study. It now points to Q319693, so he has 26 credits.
+- **Trang, please confirm:** a few of the removed names are real surnames ("Ashford", "Barry", "Sweeney", "Botelho", "Ariel"). Were those mentions fragments, not people?
+- **Reran 05 → 06 → 08 → 09 → 13:**
+  - 64 hand-resolved mentions applied
+  - 6,335 person–show rows; 3,189 people in the network
+  - strict baseline 4.3% (416 of 9,681 pairs)
+  - venues unchanged at 991 of 1,234
+- **Union Square:** almost absent from the data, because the core set starts in 1900 and the district had moved uptown by then. Only *The Errand Boy* (1904, Fourteenth Street Theatre) links a 14th Street house, and step 09 didn't select it.
+  - Wallack's (Broadway and 30th) is named in 3 articles but not chosen. *The Sultan of Sulu* (1902) opened there but is placed at the Grand Opera House. **To check in step 09.**
+
+## 2026-11-10: Zoomable Manhattan map, visual style, show map; community plan
+
+- **Team decision (Ruby): BigCLAM communities get their own layer**, without changing the encodings of the trajectory or show map. There is only one colour meaning at a time:
+  - **Cohort view: "Colour by: Show | Community" toggle.** Same dots, positions and animation; only the colour changes.
+    - Community colours come from BigCLAM trained on [T−10, T).
+    - People in two or more communities get a second colour as a ring.
+    - Reunion links are solid if the pair shared a community before reuniting, dashed if not. This is H3 made visible.
+    - Show colours stay the default, so the study tasks don't change.
+  - **Community timeline panel** beside the cohort map: one band per tracked community (step 12) across the 5-year steps, showing continue, split and merge, with reunions marked on the bands.
+    - Linked to the map: hovering a band highlights its members, and picking a year moves the map.
+    - Includes a small within- vs across-community reunion bar against the null model. This takes over the deferred embedding view's question.
+  - **Trajectory:** an optional thin grey strip under the career line shows the person's community memberships per window. No extra colours.
+  - **Small multiples:** the same toggle, so the comparison with the animated view stays fair.
+  - **Limits:** at most ~6 community colours per window, with the rest grey ("Other"). The panel needs step 11/12 outputs; until then it runs on stand-in communities in the agreed format.
+- **Visual style (Ruby's choice: a blend of the three directions):**
+  - Playbill / marquee for the page: cream paper, Playfair Display headings, Source Sans 3 text, a gold accent.
+  - Vintage atlas for the map.
+  - Transit-diagram lines for careers.
+  - Tokens in `viz/css/style.css`, with a dark "marquee at night" mode.
+- **Zoomable map (Ruby's choice: a D3 vector basemap, not historical tiles or the schematic grid):**
+  - **New `scripts/14_build_basemap.py`** writes `viz/data/basemap.json` (530 KB), covering the Battery to about 100th St:
+    - Manhattan shoreline and neighbouring boroughs, from NYC Open Data Borough Boundaries (gthc-hcne)
+    - 249 named parks and about 6,700 street lines, from OpenStreetMap via Overpass
+    - hand-placed labels for the squares and rivers
+
+    Sources are cached in `data/raw/basemap/`. Lines are simplified with Ramer-Douglas-Peucker; park outlines stored in pieces are joined into closed shapes, and 40 that came back without geometry are fetched again by id. Attribution: OpenStreetMap (ODbL) and NYC DCP.
+  - **New `viz/js/manhattanMap.js`**, shared by the show map, trajectory and cohort views:
+    - rotated 29° to grid north, so avenues are vertical
+    - zoom from 1× to 16× with drag, scroll or buttons
+    - basemap strokes keep their width; views re-place their points on zoom, so dots keep their size and spread apart when zoomed in
+    - default view from Union Square to Lincoln Center
+  - **Show map (`#showmap`, now the start page):**
+    - a year slider and a Play button
+    - theatres with an opening that year are filled red, standing theatres are rings, and others are faint
+    - the year's openings are listed with their theatre, or "theatre unknown"
+    - theatre names appear when zoomed in
+
+    Checked by screenshot: 1927 shows *Show Boat* and *Rio Rita* at the Ziegfeld, and Broadway's diagonal through the squares.
+- **Next:** the trajectory view on the shared map (Rodgers as the test case), then the birthplace map, then the cohort view and small multiples on stand-in data.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").
