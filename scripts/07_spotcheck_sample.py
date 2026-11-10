@@ -3,6 +3,11 @@
   python scripts/07_spotcheck_sample.py            # write outputs/tables/spotcheck.csv
   python scripts/07_spotcheck_sample.py --score    # after filling it in: error rates
 
+--scope chooses what is sampled:
+  network (default)  core shows (src/filters.py) and config.NETWORK_ROLES: what the network uses
+  core               core shows, all roles
+  all                every credit, including shows outside the core set
+
 Fill the 'correct' column with y / n (or 1 / 0) and add notes. Re-running
 without --score never overwrites a spotcheck.csv that already has answers
 unless --force is given.
@@ -17,6 +22,7 @@ import pandas as pd
 
 import config
 from src.common import apply_limit, log, parse_args, read_parquet
+from src.filters import show_exclusion_reason
 from src.names import enwiki_url
 
 OUT = config.OUTPUT_TABLES / "spotcheck.csv"
@@ -27,6 +33,8 @@ def extra(p):
     p.add_argument("--score", action="store_true", help="Compute error rates from a filled-in spotcheck.csv")
     p.add_argument("--force", action="store_true", help="Overwrite a spotcheck.csv that has answers")
     p.add_argument("--n", type=int, default=config.SPOTCHECK_N, help="Sample size")
+    p.add_argument("--scope", choices=["network", "core", "all"], default="network",
+                   help="What to sample (see module docstring)")
 
 
 def wilson(k, n, z=1.96):
@@ -79,8 +87,14 @@ def main():
             sys.exit(f"{OUT} already has answers; use --score, or --force to draw a new sample.")
 
     credits = read_parquet(config.DATA_PROCESSED / "credits.parquet")
-    shows = apply_limit(read_parquet(config.DATA_PROCESSED / "shows.parquet"), args.limit)
+    shows = read_parquet(config.DATA_PROCESSED / "shows.parquet")
+    if args.scope != "all":
+        shows = shows[show_exclusion_reason(shows).isna()]
+    shows = apply_limit(shows, args.limit)
     credits = credits[credits["show_id"].isin(shows["show_id"])]
+    if args.scope == "network":
+        credits = credits[credits["role"].isin(config.NETWORK_ROLES)]
+    log.info("Scope '%s': sampling from %d credits on %d shows", args.scope, len(credits), len(shows))
     mentions = read_parquet(config.DATA_INTERIM / "credit_mentions.parquet")
     people = read_parquet(config.DATA_PROCESSED / "people.parquet")
 

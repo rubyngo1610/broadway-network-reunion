@@ -66,18 +66,7 @@ def main():
     write_parquet(credits, config.DATA_INTERIM / "credits_wikidata.parquet")
 
     people = fetch_people(client, credits["person_qid"].dropna().unique())
-
-    # TIGHTEN ORIGINAL RULES: extract death_year
-    # Parse 4-digit death year if a death_date or date_of_death column exists
-    death_col = next((c for c in ["death_date", "date_of_death", "death_year"] if c in people.columns), None)
-    if death_col and death_col != "death_year":
-        people["death_year"] = (
-            people[death_col]
-            .astype(str)
-            .str.extract(r"(\b\d{4}\b)")[0]
-            .astype("Int64")
-        )
-
+    # Death years are fetched in step 08 (Wikidata P570), where posthumous credits are dropped.
     write_parquet(people, config.DATA_INTERIM / "people_wikidata.parquet")
 
     log.info("Credits by role:\n%s", credits["role"].value_counts().to_string())
