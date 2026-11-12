@@ -531,6 +531,38 @@ The show map will show where teams worked within NYC as time passes, so each sho
   - The data covers original Broadway productions only.
   - Other community methods (Leiden, weighted BigCLAM) could do better. Any variant tried now is exploratory, because the primary test was fixed before results and has been run.
 
+## 2026-11-12: H1 null model, step 10 (Trang)
+
+- **New `scripts/10_null_model.py`**, following the null model in the Nov 3 update (feedback 5).
+  - For each mode and cutoff, people are reassigned at random across the role slots of shows, separately in the training window [T−10, T) and the reunion window [T, T+10).
+  - A slot is one person-show credit, and people only swap with others who held the same role set on their show (e.g. "composer|lyricist").
+  - This keeps each person's credits per window and their roles, every show's team size and date. A person placed twice on one show is swapped away.
+  - Checked on 21,600 shuffles across all windows: none changed a person's role credits or put anyone twice on a show.
+  - The observed counts match `network_windows.csv` in all 36 windows.
+  - It runs in about 16 s (1,000 shuffles per window) on `credits.json`.
+  - `src/network.py` now also loads each credit's roles.
+- **Fixed before results:**
+  - primary test: strict mode, reunion rate pooled over the 18 cutoffs, against 1,000 shuffles, one-sided
+  - secondary tests: by pair type (from the roles on the shared show), loose mode, each cutoff on its own
+- **Result: H1 is supported.**
+
+  | strict | pairs | observed | null mean (95%) | ratio |
+  |---|---|---|---|---|
+  | all pairs | 9,681 | **4.3%** | 1.2% (1.0–1.4%) | 3.6× |
+  | composer–lyricist | 1,483 | **9.2%** | 2.4% (1.7–3.1%) | 3.9× |
+  | other writer–writer | 3,802 | 4.6% | 1.1% | 4.2× |
+  | writer–staging | 3,811 | 2.4% | 0.9% | 2.7× |
+  | staging–staging | 585 | 2.6% | 0.6% | 4.6× |
+
+  - p = 0.001 for every row, the smallest value 1,000 shuffles can give. The one exception is loose-mode staging–staging pairs: 0.8% vs 0.6%, p = 0.035.
+  - The observed rate is above the null's 95% interval in all 18 cutoffs, in both modes.
+  - Loose mode overall: 3.2% vs 1.0% (3.1×).
+- **"Strongest for composer–lyricist pairs":** true for the reunion rate (9.2%, twice any other type) and for the excess over chance (+6.9 points, against +3.5 for other writer pairs). It's not true for the ratio: other writer pairs (4.2×) and staging pairs (4.6×, only 585 pairs) are similar or higher. Say which measure the claim uses.
+- **For the views:** `processed/h1/show_reunions.parquet` gives, per training-window show, its reunited pairs against the null. In strict mode, 412 of 1,582 (show, cutoff) entries have any reunion, and 210 are above chance (p < 0.05). The cohort view can use this for "only reunions above the randomized baseline glow". Many small p-values are expected by chance across 1,582 tests, so treat this as a highlight, not a test.
+- **Where the project stands:**
+  - H1 (reunions beat chance): supported.
+  - H3 (communities predict who reunites): not supported. Reunions are predicted by repeat work, both people staying active, and small teams.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").

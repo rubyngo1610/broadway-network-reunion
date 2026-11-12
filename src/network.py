@@ -19,20 +19,23 @@ COMMUNITIES_DIR = config.DATA_PROCESSED / "communities"
 
 
 def load_person_show(source="auto"):
-    """One row per person-show pair: person_id, show_id, year, in_strict, in_loose.
+    """One row per person-show pair: person_id, show_id, year, roles, in_strict, in_loose.
 
+    roles is the person's network roles on that show, sorted and joined with "|".
     source: 'parquet' (step 08), 'json' (viz/data/credits.json from step 13, same rows and flags),
     or 'auto' (parquet if it exists, else json). Returns (table, description of the source).
     """
-    cols = ["person_id", "show_id", "year", "in_strict", "in_loose"]
+    cols = ["person_id", "show_id", "year", "roles", "in_strict", "in_loose"]
     if source == "parquet" or (source == "auto" and PERSON_SHOW.exists()):
         ps = read_parquet(PERSON_SHOW).rename(columns={"show_year": "year"})
+        ps["roles"] = ps["roles"].map(lambda r: "|".join(sorted(r.split("|"))))
         return ps[cols], display_path(PERSON_SHOW)
     path = VIZ_DATA / "credits.json"
     if not path.exists():
         sys.exit(f"Missing {path}. Run step 13, or step 08 and use --source parquet.")
     ps = pd.DataFrame(json.loads(path.read_text())).rename(columns={
         "person": "person_id", "show": "show_id", "strict": "in_strict", "loose": "in_loose"})
+    ps["roles"] = ps["roles"].map(lambda r: "|".join(sorted(r)))
     return ps[cols], display_path(path)
 
 

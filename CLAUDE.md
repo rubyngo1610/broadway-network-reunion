@@ -25,7 +25,7 @@ python scripts/13_export_viz_data.py               # rewrite viz/data/*.json aft
 cd viz && python3 -m http.server 8000              # the views use fetch(), so they must be served over HTTP
 ```
 
-Steps run in numeric order: 01 → 02 → 03 → 04 → (04b, optional) → 05 → 06 → 07 → 08 → 09 → 13 (→ 14, basemap, rarely needed). Steps 10–12 are the methods: 10 is the H1 null model and 12 is community tracking (neither exists yet). 11 is `scripts/11_bigclam.py`, BigCLAM per window, in progress: see the latest `WORKLOG.md` entry. Step 11 can run without pipeline data, because `--source json` reads `viz/data/credits.json`, which matches step 08's `person_show.parquet`; try it with `--modes strict --cutoffs 1950 1980`. Step 15 (`scripts/15_h3_prediction.py`, the H3 prediction test) reads step 11's output. Both steps take their loaders and window graphs from `src/network.py`. A typical rerun after changing resolution or filters is **05 → 06 → 08 → 09 → 13**.
+Steps run in numeric order: 01 → 02 → 03 → 04 → (04b, optional) → 05 → 06 → 07 → 08 → 09 → 13 (→ 14, basemap, rarely needed). Steps 10–12 are the methods: 10 is `scripts/10_null_model.py` (the H1 null model), 11 is `scripts/11_bigclam.py` (BigCLAM per window), and 12 is community tracking (not built yet). See the latest `WORKLOG.md` entries. Step 11 can run without pipeline data, because `--source json` reads `viz/data/credits.json`, which matches step 08's `person_show.parquet`; try it with `--modes strict --cutoffs 1950 1980`. Step 15 (`scripts/15_h3_prediction.py`, the H3 prediction test) reads step 11's output. Both steps take their loaders and window graphs from `src/network.py`. A typical rerun after changing resolution or filters is **05 → 06 → 08 → 09 → 13**.
 
 ## Architecture
 
