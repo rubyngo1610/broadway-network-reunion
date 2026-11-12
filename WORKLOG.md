@@ -375,6 +375,206 @@ The show map will show where teams worked within NYC as time passes, so each sho
     Checked by screenshot: 1927 shows *Show Boat* and *Rio Rita* at the Ziegfeld, and Broadway's diagonal through the squares.
 - **Next:** the trajectory view on the shared map (Rodgers as the test case), then the birthplace map, then the cohort view and small multiples on stand-in data.
 
+## 2026-11-12: Step 11 (BigCLAM) started on credits.json; two-window check (Trang)
+
+- **Setup on Trang's machine:**
+  - The repo is a clone outside Google Drive.
+  - The venv is at `~/venvs/broadway` and uses Homebrew Python 3.11 (the system Python is 3.9, too old for `src/`).
+  - `BROADWAY_DATA_DIR=~/broadway-data`.
+  - **No pipeline data yet:** `data/` is gitignored, so the parquet files exist only on Ruby's machine. Asked Ruby for her `~/broadway-data` folder.
+- **Using `viz/data/credits.json` instead.** It holds the same 6,335 rows and `strict`/`loose` flags as step 08's `person_show.parquet` (Nov 10 run). Rebuilding the window graphs from it reproduces `outputs/tables/network_windows.csv` exactly: the edge and reunited-pair counts match for all 36 (mode, cutoff) windows.
+- **New `scripts/11_bigclam.py`:**
+  - BigCLAM in NumPy (dense matrices, since each window has ≤ ~400 people).
+  - Fitted by projected gradient ascent with backtracking. The gradient was checked numerically.
+  - Seeds are locally minimal ego networks.
+  - K is chosen per window by held-out likelihood (20% of edges plus as many non-edges hidden, 3 folds; K from 2 to 130, capped at n/2).
+  - Members have `F ≥ δ`, where δ = √(−log(1−density)).
+  - Communities with identical members are merged by summing their F columns.
+  - `--source auto|parquet|json` reads `person_show.parquet` when it exists, otherwise `credits.json`.
+  - Edges are binary: the number of shared shows is not used.
+  - **Outputs:**
+    - `processed/communities/communities.parquet`, in the agreed format: mode, cutoff, community_id, person_id, strength
+    - `affiliations.parquet` (full F, for H3)
+    - `outputs/tables/bigclam_windows.csv`, `bigclam_k_selection.csv`, `bigclam_case_studies.csv`
+- **Two-window check (strict, 1950 and 1980): BigCLAM mostly recovers single show teams.**
+
+  | | 1950 | 1980 |
+  |---|---|---|
+  | people / edges / shows in window | 177 / 463 / 73 | 297 / 908 / 100 |
+  | K chosen | 80 (the largest tried) | 130 (the largest tried) |
+  | distinct communities after merging duplicates | 64 | 96 |
+  | communities that fit inside one show's team | 92% | 98% |
+  | people in 2+ communities | 26% | 21% |
+
+  - Held-out likelihood rises almost steadily with K up to about one community per show. The optimiser converges (checked to 3,000 iterations), so this comes from the data: the co-credit graph is a union of cliques, one per show, and few people link them (only 21–28% of people have 2+ shows in a window).
+  - **Case studies:** Rodgers falls in 5 communities in 1950. Each is one show's team (the *Oklahoma!* team, the *Pal Joey* team, …), not a "Rodgers & Hart" or "Rodgers & Hammerstein" group. Lerner & Loewe are the same. The one community that spans many shows (1980, 20 people, 9 shows) is a revue roster with many writers (Comden & Green, Sondheim, Kander & Ebb, …).
+  - So, as written, the communities add little beyond "shared a show", which is the risk noted in the Nov 9 plan.
+- **Junk names seen in communities**, to add to `manual_name_resolutions.csv`: "revue", "Gentlemen Prefer Blondes", "Sherrin", "Kidd".
+- **Not yet run:** the full 36 windows (the outputs currently hold only strict 1950 and 1980). Decide on the open question below first.
+- **Open question for the team:** how to get communities that reach beyond one show. Options:
+  1. Fit on a graph of repeat collaborations (pairs with 2+ shared shows)
+  2. Fit on the person–show bipartite graph, so communities group shows that share people
+  3. Fix K below the number of shows (for example by AIC/BIC) instead of choosing it by held-out likelihood
+  4. Accept show-level communities and use the overlap structure
+
+## 2026-11-12: Step 11, K chosen by BIC (Trang)
+
+- **Decision: option 3**, compared against the proposal and the Nov 3 update.
+  - Every pair H3 scores already shared a show, so communities have to separate pairs within that group.
+  - Show-level communities (option 4) can't add anything beyond the shared-shows baseline.
+  - Option 1 builds the graph from the baseline feature itself and drops most people.
+  - Option 2 changes the method the proposal and update describe.
+- **Change to `scripts/11_bigclam.py`:** `--k-method bic` is now the default. For each K, the best of 5 seeded fits (`--restarts`) is kept, and K minimises BIC = −2 LL + p·log(number of pairs).
+  - p counts the non-zero entries of F, because entries held at the F ≥ 0 boundary aren't free parameters.
+  - Counting all n×K entries instead picks K = 2 in both windows, splitting the whole window into two halves of 40–90 people that span 25–30 shows each.
+  - `--k-method heldout` is kept for comparison.
+  - **This rule is fixed before any H3 result.**
+- **Two-window check (strict):**
+
+  | | 1950 held-out | 1950 BIC | 1980 held-out | 1980 BIC |
+  |---|---|---|---|---|
+  | K chosen | 80 | 50 | 130 | 65 |
+  | distinct communities | 64 | 49 | 96 | 64 |
+  | communities that fit inside one show's team | 92% | 80% | 98% | 72% |
+
+  - **Better, not solved:** most communities are still one show's team.
+  - **The BIC curve is noisy between neighbouring K values** (1980: 14,359 at K = 13, 6,804 at K = 16), because fits land in different local optima. Its minimum lies in a broad band (1950: K ≈ 30–65; 1980: K ≈ 30–80). An earlier exploratory run with different seeds picked K = 40 and 30.
+  - **Case studies (1950):**
+    - Rodgers's communities now separate the Hart circle (Hart, Alton, Logan, Abbott, O'Hara) from the Hammerstein circle (Hammerstein, de Mille, Mamoulian, Logan).
+    - Lerner & Loewe share two communities that span 3 shows each.
+    - Comden & Green share one community with Bernstein, Abbott and Robbins (4 shows).
+  - **Case studies (1980):** Lerner's communities are single shows. The Comden & Green communities are revues and large multi-writer shows.
+- **Reading:** the data has little multi-show structure. About 72% of people have one original credit, and only 21–28% have two or more shows in a window. Communities can only reach beyond a show through those repeat people, so mostly show-level communities partly reflect the data, not just the model.
+- **Next:**
+  1. Run all 36 windows.
+  2. Raise `--restarts` if BIC stays this noisy.
+  3. Let H3 decide whether F_u·F_v adds to the shared-shows count.
+  4. Report the single-show share per window as a limitation.
+
+## 2026-11-12: Step 11 full run, all 36 windows (Trang)
+
+- Ran `python scripts/11_bigclam.py` with the defaults (BIC, 5 restarts) on `viz/data/credits.json`. It took about 2 minutes. No window chose the largest K on the grid.
+- **Outputs:**
+  - `~/broadway-data/processed/communities/communities.parquet` and `affiliations.parquet`
+  - `outputs/tables/bigclam_windows.csv`, `bigclam_k_selection.csv`, `bigclam_case_studies.csv`
+- **Results:**
+
+  | | strict | loose |
+  |---|---|---|
+  | K chosen | 30–65 | 40–100 |
+  | communities that fit inside one show's team | 53–84% | 58–94% |
+  | people in 2+ communities | 6–23% | 9–29% |
+
+- **The trend over time:**
+  - Communities are most multi-show before WWII. In strict mode, 1925–1940 has 53–68% single-show communities, and the median community spans 2 shows.
+  - They become more show-level after 1990: 77–84% single-show, and only 6–9% of people in 2+ communities.
+  - This fits fewer repeat collaborators in later decades. Check it against step 08's per-window counts before stating it as a finding.
+- **Checked against step 08 (same data, `credits.json`): repeat collaboration really does fall over time.**
+
+  | strict, training window ending | 1925–1935 | 1950–1970 | 1990–2010 |
+  |---|---|---|---|
+  | people with 2+ shows in the window | 33–36% | 26–31% | 13–17% |
+  | co-worker pairs who shared 2+ shows | 7–12% | 4–5% | 1–2% |
+  | single-show BigCLAM communities | 52–68% | 72–80% | 77–84% |
+
+  - Loose mode shows the same pattern.
+  - Across the 18 windows, the share of single-show communities tracks the share of repeat pairs (correlation −0.70 strict, −0.84 loose). So the communities reflect a real feature of the data, not a fitting artefact.
+  - **Not explained by role mix.** Early shows mostly list writers (staging roles are 21% of credits in the 1925 window, about 30% later), and writing teams repeat more. But the decline also appears within writers alone (2+ shows: 37% → 13%) and within directors and choreographers alone (30–38% → 9–13%).
+  - **Not explained by the number of shows:** each window holds 64–111 shows throughout. Average team size is also stable, about 3–4 people in strict mode.
+  - **Caveats before calling it a finding:**
+    - The scope is original Broadway productions only. Since the 1980s, repeat work may happen in revivals, Off-Broadway, London or regional development, none of which is in the data.
+    - Credits are thinner before 1930 (about 2–3 people per show, and 18–30% of shows with no confirmed original credit).
+    - The reunion rate (step 08) doesn't fall steadily: it dips in the 1980s–1990s windows (1.7–2.6%) and recovers to 4–6% in 2000–2010.
+- **Next (written before H3 was run):** step 12 (community tracking) and the H3 prediction test can read `communities.parquet` / `affiliations.parquet` now. When Ruby's data arrives, rerun with `--source parquet` to confirm the results are identical.
+
+## 2026-11-12: H3 prediction test, step 15 (Trang)
+
+- **New `scripts/15_h3_prediction.py`** (number 15 because 13 and 14 are taken).
+  - Uses the same time splits as step 08. Candidates are the pairs who shared a show in [T−10, T); the label is whether they share a show again in [T, T+10).
+  - Every score uses only the training window. The pair and reunion counts match `network_windows.csv` in all 36 windows.
+  - **Scores:**
+    - shows together (the heuristic H3 has to beat)
+    - BigCLAM F_a·F_b (step 11)
+    - shared communities
+    - common neighbours and Adamic–Adar
+    - activity: min(shows of a, shows of b) in the window
+  - **Fixed before looking at results:**
+    - primary test: strict mode, AUC pooled over the 18 cutoffs, BigCLAM vs shows together
+    - secondary test: the same among pairs who shared exactly one show
+    - 95% intervals by bootstrap over pairs within each cutoff. These are somewhat too narrow, because pairs share people and windows overlap.
+  - Also new: `src/network.py`, the person-show loader and window graphs shared by steps 11 and 15. Step 11 now imports it; its outputs are unchanged.
+- **Result: H3 is not supported.**
+
+  | strict mode, AUC (0.5 = chance) | all 9,681 pairs (416 reunite) | 9,214 one-show pairs (302 reunite) |
+  |---|---|---|
+  | shows together | **0.620** | 0.500 (can't rank) |
+  | BigCLAM F_a·F_b | 0.492 (CI 0.458–0.524) | **0.402** (CI 0.371–0.437) |
+  | shared communities | 0.537 | 0.481 |
+  | common neighbours | 0.450 | 0.348 |
+  | activity (both still working) | **0.679** | **0.602** |
+
+  - BigCLAM minus shows together: −0.128 (CI −0.155 to −0.096).
+  - BigCLAM beats shows together in 0 of 18 strict windows and 5 of 18 loose windows. Loose mode is similar overall: BigCLAM 0.525 vs shows together 0.610.
+- **Why BigCLAM is below chance on one-show pairs: team size.**
+  - Pairs from small teams reunite far more often: 5.9% for teams of 2–3, 4.5% for 4–5, 1.5% for 6–8, 0.7% for 9+.
+  - Larger teams also give a higher BigCLAM score (rank correlation 0.48) and more common neighbours (0.99).
+  - Within each team-size band, BigCLAM is near chance (AUC 0.46–0.55). Activity stays informative in every band (0.56–0.68).
+- **Reading:** in this data, who reunites is predicted by:
+  1. having worked together more than once
+  2. both people still working on Broadway
+  3. having been on a small team
+
+  Membership in a wider learned community adds nothing. This fits the step 11 finding that most communities are single show teams. It also fits H1's expectation that composer–lyricist pairs, the smallest teams, reunite most.
+- **Why H3 failed:**
+  - **In the data (the finding):**
+    1. **Little group structure.** About 72% of people have one original credit, so few people link show teams, and most communities are a single show's team.
+    2. **Every tested pair already shared a show.** A community that is basically a show team can't separate them.
+    3. **Team size points the wrong way.** Big teams (revues, many writers) form dense communities and score high, but rarely reunite.
+    4. **Reunions are pair-level.** They come from repeat partners who both stay active, in small teams. Communities blur those pairs into bigger groups.
+  - **In the method and data (limitations):**
+    5. **Edges are unweighted.** BigCLAM ignores how many shows a pair shared (the strongest predictor) and their roles.
+    6. **K selection is unstable.** BIC is noisy between neighbouring K.
+    7. **BigCLAM suits large social networks,** not a network that is mostly small, separate show teams.
+    8. **Original Broadway only.** Recurring circles may sit in Off-Broadway, revivals, London or regional work.
+    9. **Data gaps.** Missing credits (especially before 1930) and junk or split names remove links.
+- **Caveats:**
+  - BigCLAM uses unweighted edges.
+  - K is chosen by BIC, and the curve is noisy.
+  - The data covers original Broadway productions only.
+  - Other community methods (Leiden, weighted BigCLAM) could do better. Any variant tried now is exploratory, because the primary test was fixed before results and has been run.
+
+## 2026-11-12: H1 null model, step 10 (Trang)
+
+- **New `scripts/10_null_model.py`**, following the null model in the Nov 3 update (feedback 5).
+  - For each mode and cutoff, people are reassigned at random across the role slots of shows, separately in the training window [T−10, T) and the reunion window [T, T+10).
+  - A slot is one person-show credit, and people only swap with others who held the same role set on their show (e.g. "composer|lyricist").
+  - This keeps each person's credits per window and their roles, every show's team size and date. A person placed twice on one show is swapped away.
+  - Checked on 21,600 shuffles across all windows: none changed a person's role credits or put anyone twice on a show.
+  - The observed counts match `network_windows.csv` in all 36 windows.
+  - It runs in about 16 s (1,000 shuffles per window) on `credits.json`.
+  - `src/network.py` now also loads each credit's roles.
+- **Fixed before results:**
+  - primary test: strict mode, reunion rate pooled over the 18 cutoffs, against 1,000 shuffles, one-sided
+  - secondary tests: by pair type (from the roles on the shared show), loose mode, each cutoff on its own
+- **Result: H1 is supported.**
+
+  | strict | pairs | observed | null mean (95%) | ratio |
+  |---|---|---|---|---|
+  | all pairs | 9,681 | **4.3%** | 1.2% (1.0–1.4%) | 3.6× |
+  | composer–lyricist | 1,483 | **9.2%** | 2.4% (1.7–3.1%) | 3.9× |
+  | other writer–writer | 3,802 | 4.6% | 1.1% | 4.2× |
+  | writer–staging | 3,811 | 2.4% | 0.9% | 2.7× |
+  | staging–staging | 585 | 2.6% | 0.6% | 4.6× |
+
+  - p = 0.001 for every row, the smallest value 1,000 shuffles can give. The one exception is loose-mode staging–staging pairs: 0.8% vs 0.6%, p = 0.035.
+  - The observed rate is above the null's 95% interval in all 18 cutoffs, in both modes.
+  - Loose mode overall: 3.2% vs 1.0% (3.1×).
+- **"Strongest for composer–lyricist pairs":** true for the reunion rate (9.2%, twice any other type) and for the excess over chance (+6.9 points, against +3.5 for other writer pairs). It's not true for the ratio: other writer pairs (4.2×) and staging pairs (4.6×, only 585 pairs) are similar or higher. Say which measure the claim uses.
+- **For the views:** `processed/h1/show_reunions.parquet` gives, per training-window show, its reunited pairs against the null. In strict mode, 412 of 1,582 (show, cutoff) entries have any reunion, and 210 are above chance (p < 0.05). The cohort view can use this for "only reunions above the randomized baseline glow". Many small p-values are expected by chance across 1,582 tests, so treat this as a highlight, not a test.
+- **Where the project stands:**
+  - H1 (reunions beat chance): supported.
+  - H3 (communities predict who reunites): not supported. Reunions are predicted by repeat work, both people staying active, and small teams.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").

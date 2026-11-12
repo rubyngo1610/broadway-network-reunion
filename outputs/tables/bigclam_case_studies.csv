@@ -1,0 +1,355 @@
+mode,cutoff,person,community_id,strength,size,shows_spanned,within_one_show,best_show_jaccard,members
+strict,1925,Richard Rodgers,6,1.988,8,1,True,1.0,Sigmund Romberg | Ned Wayburn | Alex Gerber | Lew Fields | George Campbell | Richard Rodgers | Lorenz Hart | David Bennett
+strict,1925,Lorenz Hart,6,1.988,8,1,True,1.0,Sigmund Romberg | Ned Wayburn | Alex Gerber | Lew Fields | George Campbell | Richard Rodgers | Lorenz Hart | David Bennett
+strict,1925,Oscar Hammerstein II,1,0.362,12,5,False,0.5,Vincent Youmans | Herbert Stothart | Sammy Lee | Alonzo Price | William Cary Duncan | David Bennett | Zelda Sears | Ira Hands | Walter De Leon | Oscar Eagle | Oscar Hammerstein II | Otto Harbach
+strict,1925,Oscar Hammerstein II,3,1.037,10,6,False,0.5,Rudolf Friml | Otto Harbach | Herbert Stothart | Oscar Hammerstein II | Oscar Eagle | Paul Dickey | William Cary Duncan | William Carey Duncan | Frank Smithson | Rida Johnson Young
+strict,1930,Richard Rodgers,4,5.357,9,8,False,0.556,Lorenz Hart | Richard Rodgers | Herbert Fields | Jack Haskell | John Harwood | Seymour Felix | Busby Berkeley | John Murray Anderson | Philip Loeb
+strict,1930,Richard Rodgers,8,2.15,8,8,True,1.0,Sigmund Romberg | George Campbell | Alex Gerber | Lew Fields | David Bennett | Ned Wayburn | Lorenz Hart | Richard Rodgers
+strict,1930,Lorenz Hart,4,5.357,9,8,False,0.556,Lorenz Hart | Richard Rodgers | Herbert Fields | Jack Haskell | John Harwood | Seymour Felix | Busby Berkeley | John Murray Anderson | Philip Loeb
+strict,1930,Lorenz Hart,8,2.15,8,8,True,1.0,Sigmund Romberg | George Campbell | Alex Gerber | Lew Fields | David Bennett | Ned Wayburn | Lorenz Hart | Richard Rodgers
+strict,1930,Oscar Hammerstein II,7,4.562,8,8,False,0.75,Oscar Hammerstein II | Otto Harbach | Herbert Stothart | David Bennett | Oscar Eagle | Vincent Youmans | Paul Dickey | Rudolf Friml
+strict,1930,Oscar Hammerstein II,10,0.675,7,3,False,0.571,Vincent Youmans | Zelda Sears | Ira Hands | Walter De Leon | Laurence Stallings | Busby Berkeley | Oscar Hammerstein II
+strict,1930,Oscar Hammerstein II,12,0.233,7,7,False,0.714,Frank Mandel | Otto Harbach | Vincent Youmans | Burt Shevelove | Irving Caesar | Oscar Hammerstein II | Sigmund Romberg
+strict,1935,Richard Rodgers,4,4.854,10,11,False,0.5,Herbert Fields | Lorenz Hart | Richard Rodgers | Jack Haskell | John Harwood | Monty Woolley | Seymour Felix | Busby Berkeley | Philip Loeb | John Murray Anderson
+strict,1935,Richard Rodgers,23,3.013,5,9,False,0.8,Richard Rodgers | Lorenz Hart | Guy Bolton | Ed Wynn | Charles Pettit
+strict,1935,Lorenz Hart,4,4.854,10,11,False,0.5,Herbert Fields | Lorenz Hart | Richard Rodgers | Jack Haskell | John Harwood | Monty Woolley | Seymour Felix | Busby Berkeley | Philip Loeb | John Murray Anderson
+strict,1935,Lorenz Hart,23,3.013,5,9,False,0.8,Richard Rodgers | Lorenz Hart | Guy Bolton | Ed Wynn | Charles Pettit
+strict,1935,Oscar Hammerstein II,8,2.407,9,2,True,1.0,Moss Hart | Oscar Hammerstein II | Robert Wright | Desmond Carter | George Forrest | Caswell Garth | Ernst Marischka | Hassard Short | Albertina Rasch
+strict,1935,Oscar Hammerstein II,11,1.626,9,5,False,0.556,Vincent Youmans | Frank Mandel | Otto Harbach | Oscar Hammerstein II | Irving Caesar | Burt Shevelove | Sigmund Romberg | Laurence Stallings | Busby Berkeley
+strict,1940,Richard Rodgers,6,4.243,9,10,False,0.556,"Richard Rodgers | Lorenz Hart | George Abbott | George Balanchine | Robert Alton | C. Worthington Miner | George Marion, Jr. | Ben Hecht | Charles MacArthur"
+strict,1940,Richard Rodgers,9,4.215,8,11,False,0.5,Richard Rodgers | Lorenz Hart | Moss Hart | George S. Kaufman | Guy Bolton | Ed Wynn | Monty Woolley | Herbert Fields
+strict,1940,Lorenz Hart,6,4.243,9,10,False,0.556,"Richard Rodgers | Lorenz Hart | George Abbott | George Balanchine | Robert Alton | C. Worthington Miner | George Marion, Jr. | Ben Hecht | Charles MacArthur"
+strict,1940,Lorenz Hart,9,4.214,8,11,False,0.5,Richard Rodgers | Lorenz Hart | Moss Hart | George S. Kaufman | Guy Bolton | Ed Wynn | Monty Woolley | Herbert Fields
+strict,1940,Oscar Hammerstein II,5,1.935,9,3,True,1.0,Hassard Short | Moss Hart | Albertina Rasch | Oscar Hammerstein II | Ernst Marischka | Robert Wright | George Forrest | Desmond Carter | Caswell Garth
+strict,1940,Oscar Hammerstein II,26,0.624,3,4,False,0.667,Jerome Kern | Oscar Hammerstein II | Otto Harbach
+strict,1940,Oscar Hammerstein II,27,2.106,3,1,True,1.0,Oscar Hammerstein II | Frank Mandel | Sigmund Romberg
+strict,1945,Richard Rodgers,3,5.223,8,10,False,0.5,Richard Rodgers | Lorenz Hart | Ben Hecht | Charles MacArthur | Gladys Hurlbut | Joshua Logan | George S. Kaufman | Moss Hart
+strict,1945,Richard Rodgers,4,4.294,8,12,False,0.625,"George Abbott | Richard Rodgers | Lorenz Hart | Robert Alton | George Balanchine | C. Worthington Miner | John O'Hara | George Marion, Jr."
+strict,1945,Richard Rodgers,6,1.449,7,2,False,0.714,Oscar Hammerstein II | Matt Mattox | Rouben Mamoulian | Richard Rodgers | Agnes de Mille | Frank Mandel | Sigmund Romberg
+strict,1945,Lorenz Hart,3,5.22,8,10,False,0.5,Richard Rodgers | Lorenz Hart | Ben Hecht | Charles MacArthur | Gladys Hurlbut | Joshua Logan | George S. Kaufman | Moss Hart
+strict,1945,Lorenz Hart,4,4.289,8,12,False,0.625,"George Abbott | Richard Rodgers | Lorenz Hart | Robert Alton | George Balanchine | C. Worthington Miner | John O'Hara | George Marion, Jr."
+strict,1945,Oscar Hammerstein II,6,5.507,7,2,False,0.714,Oscar Hammerstein II | Matt Mattox | Rouben Mamoulian | Richard Rodgers | Agnes de Mille | Frank Mandel | Sigmund Romberg
+strict,1945,Alan Jay Lerner,31,1.544,4,1,True,1.0,George Balanchine | Frederick Loewe | Arthur Pierson | Alan Jay Lerner
+strict,1945,Frederick Loewe,31,1.544,4,1,True,1.0,George Balanchine | Frederick Loewe | Arthur Pierson | Alan Jay Lerner
+strict,1945,Betty Comden,17,2.349,5,2,True,1.0,George Abbott | Betty Comden | Jerome Robbins | Adolph Green | Leonard Bernstein
+strict,1945,Adolph Green,17,2.349,5,2,True,1.0,George Abbott | Betty Comden | Jerome Robbins | Adolph Green | Leonard Bernstein
+strict,1950,Richard Rodgers,15,2.862,5,4,True,1.0,Agnes de Mille | Rouben Mamoulian | Matt Mattox | Oscar Hammerstein II | Richard Rodgers
+strict,1950,Richard Rodgers,16,1.819,5,4,True,1.0,Robert Alton | Gladys Hurlbut | Joshua Logan | Lorenz Hart | Richard Rodgers
+strict,1950,Richard Rodgers,22,3.168,5,3,True,1.0,Lorenz Hart | Richard Rodgers | Robert Alton | George Abbott | John O'Hara
+strict,1950,Richard Rodgers,36,3.119,4,5,False,0.75,Oscar Hammerstein II | Richard Rodgers | Susan H. Schulman | Joshua Logan
+strict,1950,Lorenz Hart,16,2.059,5,4,True,1.0,Robert Alton | Gladys Hurlbut | Joshua Logan | Lorenz Hart | Richard Rodgers
+strict,1950,Lorenz Hart,22,3.293,5,3,True,1.0,Lorenz Hart | Richard Rodgers | Robert Alton | George Abbott | John O'Hara
+strict,1950,Oscar Hammerstein II,15,2.931,5,4,True,1.0,Agnes de Mille | Rouben Mamoulian | Matt Mattox | Oscar Hammerstein II | Richard Rodgers
+strict,1950,Oscar Hammerstein II,36,4.162,4,5,False,0.75,Oscar Hammerstein II | Richard Rodgers | Susan H. Schulman | Joshua Logan
+strict,1950,Alan Jay Lerner,5,0.332,7,3,False,0.714,Kurt Weill | Elia Kazan | Agnes de Mille | Ogden Nash | S. J. Perelman | Alan Jay Lerner | Michael Kidd
+strict,1950,Alan Jay Lerner,18,5.486,5,3,False,0.8,Alan Jay Lerner | Frederick Loewe | George Balanchine | Arthur Pierson | Antony Tudor
+strict,1950,Alan Jay Lerner,39,2.156,4,3,True,1.0,Robert Lewis | Agnes de Mille | Frederick Loewe | Alan Jay Lerner
+strict,1950,Frederick Loewe,18,3.758,5,3,False,0.8,Alan Jay Lerner | Frederick Loewe | George Balanchine | Arthur Pierson | Antony Tudor
+strict,1950,Frederick Loewe,39,2.309,4,3,True,1.0,Robert Lewis | Agnes de Mille | Frederick Loewe | Alan Jay Lerner
+strict,1950,Betty Comden,9,4.69,6,4,False,0.833,Betty Comden | Adolph Green | Leonard Bernstein | George Abbott | Jerome Robbins | Morton Gould
+strict,1950,Adolph Green,9,4.69,6,4,False,0.833,Betty Comden | Adolph Green | Leonard Bernstein | George Abbott | Jerome Robbins | Morton Gould
+strict,1950,Jule Styne,4,2.611,7,1,True,1.0,John C. Wilson | Jule Styne | Anita Loos | Joseph Fields | Leo Robin | Agnes de Mille | Hugh Martin
+strict,1950,Jule Styne,20,2.053,5,2,True,1.0,George Abbott | Sammy Cahn | Stephen Longstreet | Jule Styne | Jerome Robbins
+strict,1955,Richard Rodgers,31,3.504,4,5,False,0.75,Oscar Hammerstein II | Richard Rodgers | Joshua Logan | Christopher Gattelli
+strict,1955,Richard Rodgers,44,1.871,3,5,True,1.0,Susan H. Schulman | Richard Rodgers | Oscar Hammerstein II
+strict,1955,Oscar Hammerstein II,31,3.504,4,5,False,0.75,Oscar Hammerstein II | Richard Rodgers | Joshua Logan | Christopher Gattelli
+strict,1955,Oscar Hammerstein II,44,1.871,3,5,True,1.0,Susan H. Schulman | Richard Rodgers | Oscar Hammerstein II
+strict,1955,Alan Jay Lerner,12,4.596,6,4,False,0.667,Alan Jay Lerner | Agnes de Mille | Robert Lewis | Frederick Loewe | Michael Kidd | Elia Kazan
+strict,1955,Alan Jay Lerner,33,2.166,4,3,True,1.0,Gilbert Cates | Kay Cole | Alan Jay Lerner | Frederick Loewe
+strict,1955,Alan Jay Lerner,39,2.161,3,3,True,1.0,Frederick Loewe | Alan Jay Lerner | Antony Tudor
+strict,1955,Frederick Loewe,12,1.245,6,4,False,0.667,Alan Jay Lerner | Agnes de Mille | Robert Lewis | Frederick Loewe | Michael Kidd | Elia Kazan
+strict,1955,Frederick Loewe,33,2.106,4,3,True,1.0,Gilbert Cates | Kay Cole | Alan Jay Lerner | Frederick Loewe
+strict,1955,Frederick Loewe,39,2.165,3,3,True,1.0,Frederick Loewe | Alan Jay Lerner | Antony Tudor
+strict,1955,Betty Comden,2,5.933,10,5,False,0.8,Betty Comden | Adolph Green | Jule Styne | Moose Charlap | Additional Lyrics Betty Comden | Additional Music Jule Styne | Carolyn Leigh | Jerome Robbins | Ron Fletcher | Abe Burrows
+strict,1955,Betty Comden,5,2.052,7,5,True,1.0,Jerome Chodorov | Joseph Fields | George Abbott | Donald Saddler | Leonard Bernstein | Adolph Green | Betty Comden
+strict,1955,Adolph Green,2,5.933,10,5,False,0.8,Betty Comden | Adolph Green | Jule Styne | Moose Charlap | Additional Lyrics Betty Comden | Additional Music Jule Styne | Carolyn Leigh | Jerome Robbins | Ron Fletcher | Abe Burrows
+strict,1955,Adolph Green,5,2.052,7,5,True,1.0,Jerome Chodorov | Joseph Fields | George Abbott | Donald Saddler | Leonard Bernstein | Adolph Green | Betty Comden
+strict,1955,Jule Styne,2,4.147,10,5,False,0.8,Betty Comden | Adolph Green | Jule Styne | Moose Charlap | Additional Lyrics Betty Comden | Additional Music Jule Styne | Carolyn Leigh | Jerome Robbins | Ron Fletcher | Abe Burrows
+strict,1955,Jule Styne,6,2.475,7,3,True,1.0,Leo Robin | Agnes de Mille | Anita Loos | Joseph Fields | Jule Styne | Hugh Martin | John C. Wilson
+strict,1955,Jule Styne,14,2.467,6,1,True,1.0,Jule Styne | James H. Street | Bob Hilliard | Ben Hecht | David Alexander | Robert Alton
+strict,1955,Jule Styne,23,1.581,5,5,True,1.0,George Abbott | Stephen Longstreet | Sammy Cahn | Jule Styne | Jerome Robbins
+strict,1960,Richard Rodgers,18,4.205,6,5,False,0.667,Oscar Hammerstein II | Richard Rodgers | David Henry Hwang | Joseph Fields | Christopher Gattelli | Boris Runanin
+strict,1960,Richard Rodgers,30,2.202,5,7,True,1.0,Jerome Whyte | Russel Crouse | Howard Lindsay | Oscar Hammerstein II | Richard Rodgers
+strict,1960,Oscar Hammerstein II,18,4.205,6,5,False,0.667,Oscar Hammerstein II | Richard Rodgers | David Henry Hwang | Joseph Fields | Christopher Gattelli | Boris Runanin
+strict,1960,Oscar Hammerstein II,30,2.202,5,7,True,1.0,Jerome Whyte | Russel Crouse | Howard Lindsay | Oscar Hammerstein II | Richard Rodgers
+strict,1960,Alan Jay Lerner,37,2.168,4,2,True,1.0,Kay Cole | Gilbert Cates | Frederick Loewe | Alan Jay Lerner
+strict,1960,Alan Jay Lerner,40,2.03,4,2,True,1.0,Julie Andrews | Hanya Holm | Alan Jay Lerner | Frederick Loewe
+strict,1960,Frederick Loewe,37,2.168,4,2,True,1.0,Kay Cole | Gilbert Cates | Frederick Loewe | Alan Jay Lerner
+strict,1960,Frederick Loewe,40,2.03,4,2,True,1.0,Julie Andrews | Hanya Holm | Alan Jay Lerner | Frederick Loewe
+strict,1960,Betty Comden,0,7.185,19,9,False,0.421,Jule Styne | Adolph Green | Betty Comden | Jerome Robbins | Leonard Bernstein | Additional Music Jule Styne | Additional Lyrics Betty Comden | Moose Charlap | Carolyn Leigh | Cy Coleman | Roger Edens | André Previn | Saul Chaplin | Bob Fosse | Richard Pike Bissell | Matt Mattox | Marian Bissell | Abe Burrows | Ron Fletcher
+strict,1960,Betty Comden,16,1.627,7,7,True,1.0,Joseph Fields | Jerome Chodorov | Donald Saddler | George Abbott | Leonard Bernstein | Betty Comden | Adolph Green
+strict,1960,Adolph Green,0,7.185,19,9,False,0.421,Jule Styne | Adolph Green | Betty Comden | Jerome Robbins | Leonard Bernstein | Additional Music Jule Styne | Additional Lyrics Betty Comden | Moose Charlap | Carolyn Leigh | Cy Coleman | Roger Edens | André Previn | Saul Chaplin | Bob Fosse | Richard Pike Bissell | Matt Mattox | Marian Bissell | Abe Burrows | Ron Fletcher
+strict,1960,Adolph Green,16,1.627,7,7,True,1.0,Joseph Fields | Jerome Chodorov | Donald Saddler | George Abbott | Leonard Bernstein | Betty Comden | Adolph Green
+strict,1960,Jule Styne,0,7.282,19,9,False,0.421,Jule Styne | Adolph Green | Betty Comden | Jerome Robbins | Leonard Bernstein | Additional Music Jule Styne | Additional Lyrics Betty Comden | Moose Charlap | Carolyn Leigh | Cy Coleman | Roger Edens | André Previn | Saul Chaplin | Bob Fosse | Richard Pike Bissell | Matt Mattox | Marian Bissell | Abe Burrows | Ron Fletcher
+strict,1960,Jule Styne,21,2.407,6,2,True,1.0,Jule Styne | James H. Street | Bob Hilliard | Ben Hecht | Robert Alton | David Alexander
+strict,1960,Jule Styne,27,1.646,5,6,False,0.8,Stephen Sondheim | Leonard Bernstein | Arthur Laurents | Jerome Robbins | Jule Styne
+strict,1965,Richard Rodgers,5,5.146,8,5,False,0.625,Oscar Hammerstein II | Richard Rodgers | Jerome Whyte | Howard Lindsay | Russel Crouse | Joseph Fields | David Henry Hwang | Boris Runanin
+strict,1965,Richard Rodgers,55,2.449,3,1,True,1.0,Richard Rodgers | Samuel A. Taylor | Ann Reinking
+strict,1965,Oscar Hammerstein II,5,5.201,8,5,False,0.625,Oscar Hammerstein II | Richard Rodgers | Jerome Whyte | Howard Lindsay | Russel Crouse | Joseph Fields | David Henry Hwang | Boris Runanin
+strict,1965,Alan Jay Lerner,46,2.239,4,2,True,1.0,Aaron Sorkin | Moss Hart | Alan Jay Lerner | Frederick Loewe
+strict,1965,Alan Jay Lerner,52,2.097,4,2,True,1.0,Hanya Holm | Julie Andrews | Alan Jay Lerner | Frederick Loewe
+strict,1965,Frederick Loewe,46,2.239,4,2,True,1.0,Aaron Sorkin | Moss Hart | Alan Jay Lerner | Frederick Loewe
+strict,1965,Frederick Loewe,52,2.097,4,2,True,1.0,Hanya Holm | Julie Andrews | Alan Jay Lerner | Frederick Loewe
+strict,1965,Betty Comden,1,6.047,11,6,False,0.636,Betty Comden | Adolph Green | Jule Styne | Abe Burrows | Richard Pike Bissell | Marian Bissell | Matt Mattox | Garson Kanin | Michael Kidd | Ernest Flatt | Bob Fosse
+strict,1965,Betty Comden,6,0.253,8,10,False,0.625,Jule Styne | Jerome Robbins | Leonard Bernstein | Arthur Laurents | Stephen Sondheim | Adolph Green | Betty Comden | Bob Fosse
+strict,1965,Betty Comden,7,1.682,8,6,True,1.0,Cy Coleman | Saul Chaplin | Roger Edens | André Previn | Leonard Bernstein | Betty Comden | Adolph Green | Jule Styne
+strict,1965,Adolph Green,1,6.047,11,6,False,0.636,Betty Comden | Adolph Green | Jule Styne | Abe Burrows | Richard Pike Bissell | Marian Bissell | Matt Mattox | Garson Kanin | Michael Kidd | Ernest Flatt | Bob Fosse
+strict,1965,Adolph Green,6,0.253,8,10,False,0.625,Jule Styne | Jerome Robbins | Leonard Bernstein | Arthur Laurents | Stephen Sondheim | Adolph Green | Betty Comden | Bob Fosse
+strict,1965,Adolph Green,7,1.682,8,6,True,1.0,Cy Coleman | Saul Chaplin | Roger Edens | André Previn | Leonard Bernstein | Betty Comden | Adolph Green | Jule Styne
+strict,1965,Jule Styne,1,5.903,11,6,False,0.636,Betty Comden | Adolph Green | Jule Styne | Abe Burrows | Richard Pike Bissell | Marian Bissell | Matt Mattox | Garson Kanin | Michael Kidd | Ernest Flatt | Bob Fosse
+strict,1965,Jule Styne,6,5.512,8,10,False,0.625,Jule Styne | Jerome Robbins | Leonard Bernstein | Arthur Laurents | Stephen Sondheim | Adolph Green | Betty Comden | Bob Fosse
+strict,1965,Jule Styne,7,1.555,8,6,True,1.0,Cy Coleman | Saul Chaplin | Roger Edens | André Previn | Leonard Bernstein | Betty Comden | Adolph Green | Jule Styne
+strict,1970,Richard Rodgers,44,2.343,4,2,True,1.0,Richard Rodgers | Herbert Ross | Stephen Sondheim | Arthur Laurents
+strict,1970,Richard Rodgers,50,2.157,3,1,True,1.0,Ann Reinking | Samuel A. Taylor | Richard Rodgers
+strict,1970,Alan Jay Lerner,14,4.433,6,2,False,0.667,Alan Jay Lerner | Aaron Sorkin | Frederick Loewe | Moss Hart | André Previn | Michael Benthall
+strict,1970,Alan Jay Lerner,63,1.957,2,1,True,1.0,Alan Jay Lerner | Burton Lane
+strict,1970,Frederick Loewe,14,1.219,6,2,False,0.667,Alan Jay Lerner | Aaron Sorkin | Frederick Loewe | Moss Hart | André Previn | Michael Benthall
+strict,1970,Betty Comden,3,4.986,9,4,False,0.667,Betty Comden | Adolph Green | Jule Styne | Arthur Laurents | Burt Shevelove | Kevin Carlisle | Garson Kanin | Michael Kidd | Ernest Flatt
+strict,1970,Adolph Green,3,4.986,9,4,False,0.667,Betty Comden | Adolph Green | Jule Styne | Arthur Laurents | Burt Shevelove | Kevin Carlisle | Garson Kanin | Michael Kidd | Ernest Flatt
+strict,1970,Jule Styne,3,4.964,9,4,False,0.667,Betty Comden | Adolph Green | Jule Styne | Arthur Laurents | Burt Shevelove | Kevin Carlisle | Garson Kanin | Michael Kidd | Ernest Flatt
+strict,1970,Jule Styne,7,4.224,7,3,False,0.571,Jule Styne | Nunnally Johnson | Bob Merrill | Yip Harburg | Lee Theodore | Isobel Lennart | George Roy Hill
+strict,1975,Richard Rodgers,21,1.227,6,2,False,0.667,Herbert Ross | Richard Rodgers | Arthur Laurents | Stephen Sondheim | Eddie Lawrence | Moose Charlap
+strict,1975,Richard Rodgers,22,1.553,6,3,False,0.667,Peter Stone | Martin Charnin | Richard Rodgers | Joe Layton | Jimmy Van Heusen | Sherman Edwards
+strict,1975,Alan Jay Lerner,12,6.434,7,2,False,0.714,Alan Jay Lerner | Heidi Thomas | Joseph Hardy | Frederick Loewe | Onna White | André Previn | Michael Benthall
+strict,1975,Frederick Loewe,12,1.465,7,2,False,0.714,Alan Jay Lerner | Heidi Thomas | Joseph Hardy | Frederick Loewe | Onna White | André Previn | Michael Benthall
+strict,1975,Betty Comden,3,6.414,9,4,False,0.667,Betty Comden | Adolph Green | Burt Shevelove | Kevin Carlisle | Arthur Laurents | Jule Styne | Ron Field | Charles Strouse | Lee Adams
+strict,1975,Betty Comden,5,2.468,9,3,True,1.0,Jule Styne | Robert Moore | Gentlemen Prefer Blondes | Leo Robin | Kenny Solms | Gail Parent | Ernest Flatt | Adolph Green | Betty Comden
+strict,1975,Adolph Green,3,6.414,9,4,False,0.667,Betty Comden | Adolph Green | Burt Shevelove | Kevin Carlisle | Arthur Laurents | Jule Styne | Ron Field | Charles Strouse | Lee Adams
+strict,1975,Adolph Green,5,2.468,9,3,True,1.0,Jule Styne | Robert Moore | Gentlemen Prefer Blondes | Leo Robin | Kenny Solms | Gail Parent | Ernest Flatt | Adolph Green | Betty Comden
+strict,1975,Jule Styne,2,4.589,10,5,False,0.4,Jule Styne | Nunnally Johnson | Bob Merrill | Peter Stone | Yip Harburg | Lee Theodore | Gower Champion | Sammy Cahn | George Roy Hill | Leonard Spigelgass
+strict,1975,Jule Styne,3,1.484,9,4,False,0.667,Betty Comden | Adolph Green | Burt Shevelove | Kevin Carlisle | Arthur Laurents | Jule Styne | Ron Field | Charles Strouse | Lee Adams
+strict,1975,Jule Styne,5,2.756,9,3,True,1.0,Jule Styne | Robert Moore | Gentlemen Prefer Blondes | Leo Robin | Kenny Solms | Gail Parent | Ernest Flatt | Adolph Green | Betty Comden
+strict,1980,Richard Rodgers,2,0.79,12,8,False,0.417,Martin Charnin | Charles Strouse | Thomas Meehan | Richard Rodgers | Lee Adams | Adolph Green | Betty Comden | Joe Cascone | Ray Jessel | Ron Field | William F. Brown | Joe Layton
+strict,1980,Richard Rodgers,7,2.555,10,3,False,0.8,Jule Styne | Richard Rodgers | Adam Cooper | Sherrin | revue | Mary Rodgers | Leonard Bernstein | Stephen Sondheim | Leonard Spigelgass | Sammy Cahn
+strict,1980,Alan Jay Lerner,30,1.9,5,1,True,1.0,Onna White | Joseph Hardy | Heidi Thomas | Frederick Loewe | Alan Jay Lerner
+strict,1980,Alan Jay Lerner,33,1.906,5,1,True,1.0,José Ferrer | Burton Lane | Peter Gennaro | Alan Jay Lerner | Joseph Stein
+strict,1980,Alan Jay Lerner,39,2.045,4,1,True,1.0,Alan Jay Lerner | Gilbert Moses | George Faison | Leonard Bernstein
+strict,1980,Frederick Loewe,30,1.926,5,1,True,1.0,Onna White | Joseph Hardy | Heidi Thomas | Frederick Loewe | Alan Jay Lerner
+strict,1980,Betty Comden,0,2.235,20,9,True,1.0,Jerry Bock | Sheldon Harnick | Stephen Sondheim | Leonard Bernstein | Mary Rodgers | Arthur Laurents | Jack Feldman | John Clifton | Phyllis Newman | Barry Manilow | Bruce Sussman | Peter Allen | Joe Raposo | Edward Kleban | Carole Bayer Sager | Martin Charnin | Fred Ebb | John Kander | Betty Comden | Adolph Green
+strict,1980,Betty Comden,2,0.629,12,8,False,0.417,Martin Charnin | Charles Strouse | Thomas Meehan | Richard Rodgers | Lee Adams | Adolph Green | Betty Comden | Joe Cascone | Ray Jessel | Ron Field | William F. Brown | Joe Layton
+strict,1980,Betty Comden,10,2.097,9,4,True,1.0,Ernest Flatt | Robert Moore | Gentlemen Prefer Blondes | Leo Robin | Kenny Solms | Gail Parent | Jule Styne | Adolph Green | Betty Comden
+strict,1980,Betty Comden,11,0.172,9,6,False,0.444,Cy Coleman | Michael Stewart | Onna White | Gene Saks | Robert W. Schneider | Dorothy Fields | Michael Bennett | Betty Comden | Adolph Green
+strict,1980,Adolph Green,0,2.235,20,9,True,1.0,Jerry Bock | Sheldon Harnick | Stephen Sondheim | Leonard Bernstein | Mary Rodgers | Arthur Laurents | Jack Feldman | John Clifton | Phyllis Newman | Barry Manilow | Bruce Sussman | Peter Allen | Joe Raposo | Edward Kleban | Carole Bayer Sager | Martin Charnin | Fred Ebb | John Kander | Betty Comden | Adolph Green
+strict,1980,Adolph Green,2,0.629,12,8,False,0.417,Martin Charnin | Charles Strouse | Thomas Meehan | Richard Rodgers | Lee Adams | Adolph Green | Betty Comden | Joe Cascone | Ray Jessel | Ron Field | William F. Brown | Joe Layton
+strict,1980,Adolph Green,10,2.097,9,4,True,1.0,Ernest Flatt | Robert Moore | Gentlemen Prefer Blondes | Leo Robin | Kenny Solms | Gail Parent | Jule Styne | Adolph Green | Betty Comden
+strict,1980,Adolph Green,11,0.172,9,6,False,0.444,Cy Coleman | Michael Stewart | Onna White | Gene Saks | Robert W. Schneider | Dorothy Fields | Michael Bennett | Betty Comden | Adolph Green
+strict,1980,Jule Styne,7,2.76,10,3,False,0.8,Jule Styne | Richard Rodgers | Adam Cooper | Sherrin | revue | Mary Rodgers | Leonard Bernstein | Stephen Sondheim | Leonard Spigelgass | Sammy Cahn
+strict,1980,Jule Styne,10,2.135,9,4,True,1.0,Ernest Flatt | Robert Moore | Gentlemen Prefer Blondes | Leo Robin | Kenny Solms | Gail Parent | Jule Styne | Adolph Green | Betty Comden
+strict,1980,Jule Styne,31,1.504,5,2,False,0.8,Gower Champion | Bob Merrill | Jule Styne | Peter Stone | P. William Pinto
+strict,1985,Richard Rodgers,1,0.559,15,6,False,0.333,Charles Strouse | Thomas Meehan | Martin Charnin | Joe Cascone | Ray Jessel | Richard Rodgers | David Rogers | Louis W. Scheeder | Virginia Freeman | Lee Adams | Frank O'Dowd | William F. Brown | Michael Stewart | Alan Jay Lerner | Billy Wilson
+strict,1985,Richard Rodgers,12,3.241,8,2,True,1.0,Richard Rodgers | revue | Mary Rodgers | Adam Cooper | Sherrin | Jule Styne | Stephen Sondheim | Leonard Bernstein
+strict,1985,Alan Jay Lerner,1,0.138,15,6,False,0.333,Charles Strouse | Thomas Meehan | Martin Charnin | Joe Cascone | Ray Jessel | Richard Rodgers | David Rogers | Louis W. Scheeder | Virginia Freeman | Lee Adams | Frank O'Dowd | William F. Brown | Michael Stewart | Alan Jay Lerner | Billy Wilson
+strict,1985,Alan Jay Lerner,3,2.478,11,4,False,0.455,Alan Jay Lerner | Peter Gennaro | José Ferrer | Burton Lane | Joseph Stein | Leonard Bernstein | Jule Styne | Gilbert Moses | George Faison | Herb Gardner | John Dexter
+strict,1985,Betty Comden,0,4.146,20,8,True,1.0,Sheldon Harnick | Martin Charnin | Arthur Laurents | Carole Bayer Sager | Edward Kleban | Jack Feldman | John Clifton | Peter Allen | Jerry Bock | Bruce Sussman | Barry Manilow | Joe Raposo | Phyllis Newman | Adolph Green | Betty Comden | John Kander | Fred Ebb | Leonard Bernstein | Mary Rodgers | Stephen Sondheim
+strict,1985,Betty Comden,11,0.15,8,7,False,0.5,Cy Coleman | Michael Stewart | Gene Saks | Onna White | Joe Layton | Mark Bramble | Betty Comden | Adolph Green
+strict,1985,Betty Comden,15,1.247,7,5,False,0.714,Larry Grossman | Harold Prince | Larry Fuller | Adolph Green | Betty Comden | Hal Hackady | Sidney Michaels
+strict,1985,Adolph Green,0,4.146,20,8,True,1.0,Sheldon Harnick | Martin Charnin | Arthur Laurents | Carole Bayer Sager | Edward Kleban | Jack Feldman | John Clifton | Peter Allen | Jerry Bock | Bruce Sussman | Barry Manilow | Joe Raposo | Phyllis Newman | Adolph Green | Betty Comden | John Kander | Fred Ebb | Leonard Bernstein | Mary Rodgers | Stephen Sondheim
+strict,1985,Adolph Green,11,0.15,8,7,False,0.5,Cy Coleman | Michael Stewart | Gene Saks | Onna White | Joe Layton | Mark Bramble | Betty Comden | Adolph Green
+strict,1985,Adolph Green,15,1.247,7,5,False,0.714,Larry Grossman | Harold Prince | Larry Fuller | Adolph Green | Betty Comden | Hal Hackady | Sidney Michaels
+strict,1985,Jule Styne,3,0.422,11,4,False,0.455,Alan Jay Lerner | Peter Gennaro | José Ferrer | Burton Lane | Joseph Stein | Leonard Bernstein | Jule Styne | Gilbert Moses | George Faison | Herb Gardner | John Dexter
+strict,1985,Jule Styne,12,1.942,8,2,True,1.0,Richard Rodgers | revue | Mary Rodgers | Adam Cooper | Sherrin | Jule Styne | Stephen Sondheim | Leonard Bernstein
+strict,1990,Alan Jay Lerner,19,0.668,5,2,False,0.6,Charles Strouse | Warren Leight | Alan Jay Lerner | Billy Wilson | Jeffrey B. Moss
+strict,1990,Betty Comden,2,1.835,8,3,False,0.625,Larry Grossman | Harold Prince | Adolph Green | Betty Comden | Larry Fuller | Ellen Fitzhugh | Fay Kanin | Twyla Tharp
+strict,1990,Adolph Green,2,1.835,8,3,False,0.625,Larry Grossman | Harold Prince | Adolph Green | Betty Comden | Larry Fuller | Ellen Fitzhugh | Fay Kanin | Twyla Tharp
+strict,1990,Jule Styne,27,2.535,4,1,True,1.0,Peter Gennaro | Herb Gardner | Jule Styne | John Dexter
+strict,1995,Betty Comden,6,4.391,6,2,False,0.833,Betty Comden | Adolph Green | Cy Coleman | Peter Stone | Tommy Tune | Twyla Tharp
+strict,1995,Adolph Green,6,4.391,6,2,False,0.833,Betty Comden | Adolph Green | Cy Coleman | Peter Stone | Tommy Tune | Twyla Tharp
+strict,1995,Jule Styne,18,2.03,5,1,True,1.0,Marsha Norman | Jule Styne | Lar Lubovitch | Stanley Donen | Bob Merrill
+strict,2000,Betty Comden,1,0.759,9,2,False,0.556,Tommy Tune | Peter Masterson | Carol Hall | Jeff Calhoun | Larry L. King | Cy Coleman | Peter Stone | Betty Comden | Adolph Green
+strict,2000,Adolph Green,1,0.759,9,2,False,0.556,Tommy Tune | Peter Masterson | Carol Hall | Jeff Calhoun | Larry L. King | Cy Coleman | Peter Stone | Betty Comden | Adolph Green
+strict,2000,Jule Styne,16,2.312,5,1,True,1.0,Bob Merrill | Stanley Donen | Jule Styne | Lar Lubovitch | Marsha Norman
+loose,1925,Richard Rodgers,4,2.648,8,1,True,1.0,Richard Rodgers | Alex Gerber | Lorenz Hart | George Campbell | Lew Fields | Sigmund Romberg | David Bennett | Ned Wayburn
+loose,1925,Lorenz Hart,4,2.648,8,1,True,1.0,Richard Rodgers | Alex Gerber | Lorenz Hart | George Campbell | Lew Fields | Sigmund Romberg | David Bennett | Ned Wayburn
+loose,1925,Oscar Hammerstein II,0,5.855,10,6,False,0.7,Oscar Hammerstein II | Otto Harbach | Herbert Stothart | Rudolf Friml | Busby Berkeley | Paul Dickey | Dave Bennett | Oscar Eagle | David Bennett | Vincent Youmans
+loose,1930,Richard Rodgers,10,2.229,8,8,True,1.0,Alexander Leftwich | John C. Wilson | Al White Jr | Busby Berkeley | William Holbrook | Herbert Fields | Richard Rodgers | Lorenz Hart
+loose,1930,Richard Rodgers,11,1.959,8,8,True,1.0,Ned Wayburn | Alex Gerber | George Campbell | Sigmund Romberg | David Bennett | Lew Fields | Lorenz Hart | Richard Rodgers
+loose,1930,Richard Rodgers,15,4.056,8,9,False,0.625,Richard Rodgers | Lorenz Hart | Herbert Fields | John Harwood | Jack Haskell | John Murray Anderson | Philip Loeb | Charles Pettit
+loose,1930,Richard Rodgers,18,2.426,7,8,True,1.0,Herbert Fields | Lorenz Hart | Richard Rodgers | Robert Milton | Dorothy Dickson | Seymour Felix | Lew Fields
+loose,1930,Lorenz Hart,10,2.229,8,8,True,1.0,Alexander Leftwich | John C. Wilson | Al White Jr | Busby Berkeley | William Holbrook | Herbert Fields | Richard Rodgers | Lorenz Hart
+loose,1930,Lorenz Hart,11,1.959,8,8,True,1.0,Ned Wayburn | Alex Gerber | George Campbell | Sigmund Romberg | David Bennett | Lew Fields | Lorenz Hart | Richard Rodgers
+loose,1930,Lorenz Hart,15,4.056,8,9,False,0.625,Richard Rodgers | Lorenz Hart | Herbert Fields | John Harwood | Jack Haskell | John Murray Anderson | Philip Loeb | Charles Pettit
+loose,1930,Lorenz Hart,18,2.426,7,8,True,1.0,Herbert Fields | Lorenz Hart | Richard Rodgers | Robert Milton | Dorothy Dickson | Seymour Felix | Lew Fields
+loose,1930,Oscar Hammerstein II,12,6.293,8,9,False,0.875,Oscar Hammerstein II | Otto Harbach | Busby Berkeley | Herbert Stothart | Paul Dickey | Rudolf Friml | Dave Bennett | Vincent Youmans
+loose,1930,Oscar Hammerstein II,25,3.235,6,3,False,0.833,Jerome Kern | Oscar Hammerstein II | Danny Dare | Eric D. Schaeffer | Reginald Hammerstein | Tracey Neale
+loose,1930,Oscar Hammerstein II,27,2.064,6,7,True,1.0,Hassard Short | Charles Mast | Fred Astaire | Jerome Kern | Otto Harbach | Oscar Hammerstein II
+loose,1935,Richard Rodgers,4,7.089,11,10,False,0.636,Lorenz Hart | Richard Rodgers | Herbert Fields | Lew Fields | Dorothy Dickson | Robert Milton | Seymour Felix | Jack Haskell | John Harwood | John Murray Anderson | Philip Loeb
+loose,1935,Richard Rodgers,19,2.326,8,10,True,1.0,William Holbrook | Al White Jr | John C. Wilson | Busby Berkeley | Richard Rodgers | Lorenz Hart | Alexander Leftwich | Herbert Fields
+loose,1935,Lorenz Hart,4,7.089,11,10,False,0.636,Lorenz Hart | Richard Rodgers | Herbert Fields | Lew Fields | Dorothy Dickson | Robert Milton | Seymour Felix | Jack Haskell | John Harwood | John Murray Anderson | Philip Loeb
+loose,1935,Lorenz Hart,19,2.326,8,10,True,1.0,William Holbrook | Al White Jr | John C. Wilson | Busby Berkeley | Richard Rodgers | Lorenz Hart | Alexander Leftwich | Herbert Fields
+loose,1935,Oscar Hammerstein II,10,2.387,9,5,True,1.0,George Forrest | Caswell Garth | Robert Wright | Desmond Carter | Ernst Marischka | Oscar Hammerstein II | Albertina Rasch | Moss Hart | Hassard Short
+loose,1935,Oscar Hammerstein II,17,1.683,8,10,False,0.75,Otto Harbach | Jerome Kern | Hassard Short | Oscar Hammerstein II | Fred Astaire | Charles Mast | Albertina Rasch | José Ruben
+loose,1935,Oscar Hammerstein II,23,0.799,7,4,False,0.571,Busby Berkeley | Danny Dare | Oscar Hammerstein II | Laurence Stallings | David Freedman | Vincent Youmans | Alexander Leftwich
+loose,1935,Oscar Hammerstein II,24,0.676,7,5,False,0.714,Frank Mandel | Otto Harbach | Vincent Youmans | Irving Caesar | Burt Shevelove | Sigmund Romberg | Oscar Hammerstein II
+loose,1935,Oscar Hammerstein II,33,3.264,6,4,False,0.833,Jerome Kern | Oscar Hammerstein II | Danny Dare | Eric D. Schaeffer | Reginald Hammerstein | Tracey Neale
+loose,1940,Richard Rodgers,0,7.903,14,12,False,0.643,Lorenz Hart | Richard Rodgers | George Abbott | George Balanchine | Rob Ashford | Tony Knight | Tiffany Wrightson | Scott Ellis | Christopher Hewett | C. Worthington Miner | Ben Hecht | Charles MacArthur | John Murray Anderson | Robert Alton
+loose,1940,Richard Rodgers,18,0.285,7,14,False,0.714,Monty Woolley | Herbert Fields | Fred Waring | George Hale | Cole Porter | Richard Rodgers | Lorenz Hart
+loose,1940,Lorenz Hart,0,7.903,14,12,False,0.643,Lorenz Hart | Richard Rodgers | George Abbott | George Balanchine | Rob Ashford | Tony Knight | Tiffany Wrightson | Scott Ellis | Christopher Hewett | C. Worthington Miner | Ben Hecht | Charles MacArthur | John Murray Anderson | Robert Alton
+loose,1940,Lorenz Hart,18,0.285,7,14,False,0.714,Monty Woolley | Herbert Fields | Fred Waring | George Hale | Cole Porter | Richard Rodgers | Lorenz Hart
+loose,1940,Oscar Hammerstein II,5,3.994,10,8,False,0.9,Albertina Rasch | Oscar Hammerstein II | Robert Wright | Ernst Marischka | Desmond Carter | Caswell Garth | George Forrest | Hassard Short | Moss Hart | Jerome Kern
+loose,1945,Richard Rodgers,1,4.9,12,13,False,0.583,Lorenz Hart | Richard Rodgers | Robert Alton | Joshua Logan | Christopher Hewett | Ellen Ray | Bob Dishy | John Murray Anderson | George Abbott | Ben Hecht | Charles MacArthur | Gladys Hurlbut
+loose,1945,Richard Rodgers,3,3.135,10,10,False,0.9,George Balanchine | Richard Rodgers | Lorenz Hart | George Abbott | Tiffany Wrightson | Rob Ashford | Scott Ellis | Tony Knight | Christopher Hewett | C. Worthington Miner
+loose,1945,Richard Rodgers,11,2.351,8,11,False,0.875,"Robert Alton | George Abbott | Richard Rodgers | Lorenz Hart | Savion Glover | John O'Hara | Tony Goldwyn | George Marion, Jr."
+loose,1945,Richard Rodgers,14,1.288,7,2,False,0.714,Oscar Hammerstein II | Rouben Mamoulian | Matt Mattox | Richard Rodgers | Agnes de Mille | Sigmund Romberg | Frank Mandel
+loose,1945,Lorenz Hart,1,4.902,12,13,False,0.583,Lorenz Hart | Richard Rodgers | Robert Alton | Joshua Logan | Christopher Hewett | Ellen Ray | Bob Dishy | John Murray Anderson | George Abbott | Ben Hecht | Charles MacArthur | Gladys Hurlbut
+loose,1945,Lorenz Hart,3,3.13,10,10,False,0.9,George Balanchine | Richard Rodgers | Lorenz Hart | George Abbott | Tiffany Wrightson | Rob Ashford | Scott Ellis | Tony Knight | Christopher Hewett | C. Worthington Miner
+loose,1945,Lorenz Hart,11,2.343,8,11,False,0.875,"Robert Alton | George Abbott | Richard Rodgers | Lorenz Hart | Savion Glover | John O'Hara | Tony Goldwyn | George Marion, Jr."
+loose,1945,Oscar Hammerstein II,14,5.019,7,2,False,0.714,Oscar Hammerstein II | Rouben Mamoulian | Matt Mattox | Richard Rodgers | Agnes de Mille | Sigmund Romberg | Frank Mandel
+loose,1945,Alan Jay Lerner,24,2.13,5,1,True,1.0,George Balanchine | Frederick Loewe | Arthur Pierson | Robert H. Gordon | Alan Jay Lerner
+loose,1945,Frederick Loewe,24,2.13,5,1,True,1.0,George Balanchine | Frederick Loewe | Arthur Pierson | Robert H. Gordon | Alan Jay Lerner
+loose,1945,Betty Comden,26,2.132,5,2,True,1.0,George Abbott | Betty Comden | Leonard Bernstein | Jerome Robbins | Adolph Green
+loose,1945,Adolph Green,26,2.132,5,2,True,1.0,George Abbott | Betty Comden | Leonard Bernstein | Jerome Robbins | Adolph Green
+loose,1950,Richard Rodgers,5,2.277,9,6,True,1.0,Joe Layton | Charles Atkin | Jean Dalrymple | Matthew Bourne | Chris Hocking | Christopher Gattelli | Joshua Logan | Oscar Hammerstein II | Richard Rodgers
+loose,1950,Richard Rodgers,9,3.064,8,5,False,0.875,Lorenz Hart | Richard Rodgers | Robert Alton | Joshua Logan | Christopher Hewett | Ellen Ray | Bob Dishy | Gladys Hurlbut
+loose,1950,Richard Rodgers,16,2.351,7,3,True,1.0,Lorenz Hart | Richard Rodgers | Robert Alton | George Abbott | Tony Goldwyn | Savion Glover | John O'Hara
+loose,1950,Richard Rodgers,24,3.038,6,4,False,0.833,Oscar Hammerstein II | Richard Rodgers | Agnes de Mille | Rouben Mamoulian | Matt Mattox | Susan H. Schulman
+loose,1950,Richard Rodgers,28,2.109,5,4,True,1.0,Justin Peck | Jack O'Brien | Lonny Price | Oscar Hammerstein II | Richard Rodgers
+loose,1950,Lorenz Hart,9,3.105,8,5,False,0.875,Lorenz Hart | Richard Rodgers | Robert Alton | Joshua Logan | Christopher Hewett | Ellen Ray | Bob Dishy | Gladys Hurlbut
+loose,1950,Lorenz Hart,16,2.357,7,3,True,1.0,Lorenz Hart | Richard Rodgers | Robert Alton | George Abbott | Tony Goldwyn | Savion Glover | John O'Hara
+loose,1950,Oscar Hammerstein II,5,2.349,9,6,True,1.0,Joe Layton | Charles Atkin | Jean Dalrymple | Matthew Bourne | Chris Hocking | Christopher Gattelli | Joshua Logan | Oscar Hammerstein II | Richard Rodgers
+loose,1950,Oscar Hammerstein II,24,4.191,6,4,False,0.833,Oscar Hammerstein II | Richard Rodgers | Agnes de Mille | Rouben Mamoulian | Matt Mattox | Susan H. Schulman
+loose,1950,Oscar Hammerstein II,28,2.151,5,4,True,1.0,Justin Peck | Jack O'Brien | Lonny Price | Oscar Hammerstein II | Richard Rodgers
+loose,1950,Alan Jay Lerner,7,4.169,9,3,False,0.667,Frederick Loewe | Alan Jay Lerner | Robert Lewis | John Brownlee | Christopher Wheeldon | Agnes de Mille | Edward Padula | Antony Tudor | Marc Acito
+loose,1950,Alan Jay Lerner,18,1.026,7,4,False,0.714,George Balanchine | Robert H. Gordon | Arthur Pierson | Alan Jay Lerner | Frederick Loewe | William Chappell | Frank Loesser
+loose,1950,Alan Jay Lerner,40,2.215,4,2,True,1.0,Michael Kidd | Alan Jay Lerner | Kurt Weill | Elia Kazan
+loose,1950,Frederick Loewe,7,4.18,9,3,False,0.667,Frederick Loewe | Alan Jay Lerner | Robert Lewis | John Brownlee | Christopher Wheeldon | Agnes de Mille | Edward Padula | Antony Tudor | Marc Acito
+loose,1950,Frederick Loewe,18,1.026,7,4,False,0.714,George Balanchine | Robert H. Gordon | Arthur Pierson | Alan Jay Lerner | Frederick Loewe | William Chappell | Frank Loesser
+loose,1950,Betty Comden,29,2.187,5,4,True,1.0,Leonard Bernstein | Betty Comden | Adolph Green | George Abbott | Jerome Robbins
+loose,1950,Betty Comden,46,1.741,3,2,True,1.0,Morton Gould | Betty Comden | Adolph Green
+loose,1950,Adolph Green,29,2.187,5,4,True,1.0,Leonard Bernstein | Betty Comden | Adolph Green | George Abbott | Jerome Robbins
+loose,1950,Adolph Green,46,1.741,3,2,True,1.0,Morton Gould | Betty Comden | Adolph Green
+loose,1950,Jule Styne,13,2.321,7,1,True,1.0,Hugh Martin | Jule Styne | Agnes de Mille | Joseph Fields | Leo Robin | John C. Wilson | Anita Loos
+loose,1950,Jule Styne,30,1.551,5,2,True,1.0,Jerome Robbins | Sammy Cahn | Stephen Longstreet | Jule Styne | George Abbott
+loose,1955,Richard Rodgers,5,2.188,9,5,True,1.0,Joshua Logan | Charles Atkin | Matthew Bourne | Joe Layton | Jean Dalrymple | Chris Hocking | Christopher Gattelli | Richard Rodgers | Oscar Hammerstein II
+loose,1955,Richard Rodgers,13,3.231,7,5,False,0.714,Oscar Hammerstein II | Richard Rodgers | Justin Peck | Jack O'Brien | Lonny Price | Susan H. Schulman | Robbins
+loose,1955,Oscar Hammerstein II,5,2.188,9,5,True,1.0,Joshua Logan | Charles Atkin | Matthew Bourne | Joe Layton | Jean Dalrymple | Chris Hocking | Christopher Gattelli | Richard Rodgers | Oscar Hammerstein II
+loose,1955,Oscar Hammerstein II,13,3.231,7,5,False,0.714,Oscar Hammerstein II | Richard Rodgers | Justin Peck | Jack O'Brien | Lonny Price | Susan H. Schulman | Robbins
+loose,1955,Alan Jay Lerner,22,1.968,6,3,True,1.0,Agnes de Mille | Christopher Wheeldon | Robert Lewis | John Brownlee | Alan Jay Lerner | Frederick Loewe
+loose,1955,Alan Jay Lerner,23,1.962,6,3,True,1.0,Marc Bruni | Gilbert Cates | Daniel Mann | Kay Cole | Alan Jay Lerner | Frederick Loewe
+loose,1955,Alan Jay Lerner,29,1.913,5,3,True,1.0,Antony Tudor | Marc Acito | Edward Padula | Alan Jay Lerner | Frederick Loewe
+loose,1955,Alan Jay Lerner,40,1.984,4,1,True,1.0,Kurt Weill | Alan Jay Lerner | Michael Kidd | Elia Kazan
+loose,1955,Alan Jay Lerner,48,1.39,2,3,True,0.4,Frederick Loewe | Alan Jay Lerner
+loose,1955,Frederick Loewe,22,1.968,6,3,True,1.0,Agnes de Mille | Christopher Wheeldon | Robert Lewis | John Brownlee | Alan Jay Lerner | Frederick Loewe
+loose,1955,Frederick Loewe,23,1.962,6,3,True,1.0,Marc Bruni | Gilbert Cates | Daniel Mann | Kay Cole | Alan Jay Lerner | Frederick Loewe
+loose,1955,Frederick Loewe,29,1.913,5,3,True,1.0,Antony Tudor | Marc Acito | Edward Padula | Alan Jay Lerner | Frederick Loewe
+loose,1955,Frederick Loewe,48,1.39,2,3,True,0.4,Frederick Loewe | Alan Jay Lerner
+loose,1955,Betty Comden,0,4.925,17,9,False,0.529,Betty Comden | Adolph Green | Jule Styne | Jerome Robbins | George Abbott | Carolyn Leigh | Moose Charlap | Additional Lyrics Betty Comden | Gary Halvorson | Additional Music Jule Styne | Joseph Fields | Braham Murray | Leonard Bernstein | Donald Saddler | Jerome Chodorov | Ron Fletcher | Abe Burrows
+loose,1955,Adolph Green,0,4.925,17,9,False,0.529,Betty Comden | Adolph Green | Jule Styne | Jerome Robbins | George Abbott | Carolyn Leigh | Moose Charlap | Additional Lyrics Betty Comden | Gary Halvorson | Additional Music Jule Styne | Joseph Fields | Braham Murray | Leonard Bernstein | Donald Saddler | Jerome Chodorov | Ron Fletcher | Abe Burrows
+loose,1955,Jule Styne,0,1.668,17,9,False,0.529,Betty Comden | Adolph Green | Jule Styne | Jerome Robbins | George Abbott | Carolyn Leigh | Moose Charlap | Additional Lyrics Betty Comden | Gary Halvorson | Additional Music Jule Styne | Joseph Fields | Braham Murray | Leonard Bernstein | Donald Saddler | Jerome Chodorov | Ron Fletcher | Abe Burrows
+loose,1955,Jule Styne,4,1.808,10,4,False,0.7,John C. Wilson | Hugh Martin | Leo Robin | Jule Styne | Joseph Fields | Agnes de Mille | Anita Loos | Abe Burrows | Gower Champion | Preston Sturges
+loose,1955,Jule Styne,25,3.753,6,1,True,1.0,Jule Styne | Bob Hilliard | James H. Street | David Alexander | Ben Hecht | Robert Alton
+loose,1960,Richard Rodgers,14,4.236,10,5,False,0.7,Richard Rodgers | Oscar Hammerstein II | Joseph Fields | Agnes de Mille | Hermes Pan | Yul Brynner | David Henry Hwang | Christopher Gattelli | Robbins | Boris Runanin
+loose,1960,Richard Rodgers,16,1.744,9,7,True,1.0,Howard Lindsay | Russel Crouse | Jaime Azpilicueta | Renaud Doucet | Charles Hickman | Jerome Whyte | Ernest Parham | Richard Rodgers | Oscar Hammerstein II
+loose,1960,Oscar Hammerstein II,14,4.236,10,5,False,0.7,Richard Rodgers | Oscar Hammerstein II | Joseph Fields | Agnes de Mille | Hermes Pan | Yul Brynner | David Henry Hwang | Christopher Gattelli | Robbins | Boris Runanin
+loose,1960,Oscar Hammerstein II,16,1.744,9,7,True,1.0,Howard Lindsay | Russel Crouse | Jaime Azpilicueta | Renaud Doucet | Charles Hickman | Jerome Whyte | Ernest Parham | Richard Rodgers | Oscar Hammerstein II
+loose,1960,Alan Jay Lerner,27,2.138,6,2,True,1.0,Kay Cole | Gilbert Cates | Daniel Mann | Marc Bruni | Frederick Loewe | Alan Jay Lerner
+loose,1960,Alan Jay Lerner,33,2.041,5,2,True,1.0,Daniel Evans | Julie Andrews | Hanya Holm | Frederick Loewe | Alan Jay Lerner
+loose,1960,Frederick Loewe,27,2.138,6,2,True,1.0,Kay Cole | Gilbert Cates | Daniel Mann | Marc Bruni | Frederick Loewe | Alan Jay Lerner
+loose,1960,Frederick Loewe,33,2.041,5,2,True,1.0,Daniel Evans | Julie Andrews | Hanya Holm | Frederick Loewe | Alan Jay Lerner
+loose,1960,Betty Comden,0,6.453,21,9,False,0.429,Adolph Green | Betty Comden | Jule Styne | Jerome Robbins | Carolyn Leigh | Gary Halvorson | Additional Music Jule Styne | Additional Lyrics Betty Comden | Moose Charlap | Leonard Bernstein | Saul Chaplin | Cy Coleman | Roger Edens | André Previn | Richard Pike Bissell | Luke Joslin | Marian Bissell | Matt Mattox | Bob Fosse | Abe Burrows | Ron Fletcher
+loose,1960,Betty Comden,10,1.065,12,8,False,0.667,Donald Saddler | Jerome Chodorov | Joseph Fields | Braham Murray | George Abbott | Leonard Bernstein | Betty Comden | Adolph Green | Albert Marre | Jerome Lawrence | Robert Edwin Lee | Harry Warren
+loose,1960,Adolph Green,0,6.455,21,9,False,0.429,Adolph Green | Betty Comden | Jule Styne | Jerome Robbins | Carolyn Leigh | Gary Halvorson | Additional Music Jule Styne | Additional Lyrics Betty Comden | Moose Charlap | Leonard Bernstein | Saul Chaplin | Cy Coleman | Roger Edens | André Previn | Richard Pike Bissell | Luke Joslin | Marian Bissell | Matt Mattox | Bob Fosse | Abe Burrows | Ron Fletcher
+loose,1960,Adolph Green,10,1.065,12,8,False,0.667,Donald Saddler | Jerome Chodorov | Joseph Fields | Braham Murray | George Abbott | Leonard Bernstein | Betty Comden | Adolph Green | Albert Marre | Jerome Lawrence | Robert Edwin Lee | Harry Warren
+loose,1960,Jule Styne,0,5.798,21,9,False,0.429,Adolph Green | Betty Comden | Jule Styne | Jerome Robbins | Carolyn Leigh | Gary Halvorson | Additional Music Jule Styne | Additional Lyrics Betty Comden | Moose Charlap | Leonard Bernstein | Saul Chaplin | Cy Coleman | Roger Edens | André Previn | Richard Pike Bissell | Luke Joslin | Marian Bissell | Matt Mattox | Bob Fosse | Abe Burrows | Ron Fletcher
+loose,1960,Jule Styne,5,1.369,13,6,False,0.692,Arthur Laurents | Jerome Robbins | Stephen Sondheim | Jule Styne | Jason Sparks | Michael Rader | Mare Tommingas | Víctor García Peralta | Rob Ruggiero | Leonard Bernstein | Peter Gennaro | Bill Kenwright | Roger Finch
+loose,1960,Jule Styne,28,2.222,6,2,True,1.0,Jule Styne | Ben Hecht | Bob Hilliard | James H. Street | David Alexander | Robert Alton
+loose,1965,Richard Rodgers,7,2.49,9,5,True,1.0,Oscar Hammerstein II | Richard Rodgers | Renaud Doucet | Jerome Whyte | Jaime Azpilicueta | Ernest Parham | Charles Hickman | Russel Crouse | Howard Lindsay
+loose,1965,Richard Rodgers,24,2.298,7,3,True,1.0,Agnes de Mille | Yul Brynner | Hermes Pan | Joseph Fields | David Henry Hwang | Oscar Hammerstein II | Richard Rodgers
+loose,1965,Richard Rodgers,42,3.653,5,4,False,0.6,Richard Rodgers | Samuel A. Taylor | Ann Reinking | Boris Runanin | Oscar Hammerstein II
+loose,1965,Oscar Hammerstein II,7,2.511,9,5,True,1.0,Oscar Hammerstein II | Richard Rodgers | Renaud Doucet | Jerome Whyte | Jaime Azpilicueta | Ernest Parham | Charles Hickman | Russel Crouse | Howard Lindsay
+loose,1965,Oscar Hammerstein II,24,2.299,7,3,True,1.0,Agnes de Mille | Yul Brynner | Hermes Pan | Joseph Fields | David Henry Hwang | Oscar Hammerstein II | Richard Rodgers
+loose,1965,Oscar Hammerstein II,42,0.543,5,4,False,0.6,Richard Rodgers | Samuel A. Taylor | Ann Reinking | Boris Runanin | Oscar Hammerstein II
+loose,1965,Alan Jay Lerner,9,4.175,8,2,False,0.625,Frederick Loewe | Alan Jay Lerner | Aaron Sorkin | Moss Hart | The Watermill Theatre's Artistic | Daniel Evans | Hanya Holm | Julie Andrews
+loose,1965,Frederick Loewe,9,4.175,8,2,False,0.625,Frederick Loewe | Alan Jay Lerner | Aaron Sorkin | Moss Hart | The Watermill Theatre's Artistic | Daniel Evans | Hanya Holm | Julie Andrews
+loose,1965,Betty Comden,12,2.272,8,6,True,1.0,Saul Chaplin | André Previn | Roger Edens | Cy Coleman | Leonard Bernstein | Betty Comden | Adolph Green | Jule Styne
+loose,1965,Betty Comden,16,2.283,8,7,True,1.0,Dee Dee Wood | David Fiorello | Marc Breaux | Christopher Pazdernik | Garson Kanin | Betty Comden | Adolph Green | Jule Styne
+loose,1965,Betty Comden,21,2.161,7,6,True,1.0,Matt Mattox | Abe Burrows | Richard Pike Bissell | Marian Bissell | Jule Styne | Betty Comden | Adolph Green
+loose,1965,Betty Comden,23,3.429,7,7,False,0.857,Adolph Green | Betty Comden | Jule Styne | Luke Joslin | Bob Fosse | Jerome Robbins | Michael Kidd
+loose,1965,Betty Comden,35,2.024,6,6,True,1.0,George Abbott | Alex Palmero | Ernest Flatt | Jule Styne | Adolph Green | Betty Comden
+loose,1965,Adolph Green,12,2.272,8,6,True,1.0,Saul Chaplin | André Previn | Roger Edens | Cy Coleman | Leonard Bernstein | Betty Comden | Adolph Green | Jule Styne
+loose,1965,Adolph Green,16,2.283,8,7,True,1.0,Dee Dee Wood | David Fiorello | Marc Breaux | Christopher Pazdernik | Garson Kanin | Betty Comden | Adolph Green | Jule Styne
+loose,1965,Adolph Green,21,2.161,7,6,True,1.0,Matt Mattox | Abe Burrows | Richard Pike Bissell | Marian Bissell | Jule Styne | Betty Comden | Adolph Green
+loose,1965,Adolph Green,23,3.429,7,7,False,0.857,Adolph Green | Betty Comden | Jule Styne | Luke Joslin | Bob Fosse | Jerome Robbins | Michael Kidd
+loose,1965,Adolph Green,35,2.024,6,6,True,1.0,George Abbott | Alex Palmero | Ernest Flatt | Jule Styne | Adolph Green | Betty Comden
+loose,1965,Jule Styne,6,2.426,9,4,True,1.0,Rob Ruggiero | Víctor García Peralta | Michael Rader | Mare Tommingas | Jason Sparks | Jule Styne | Stephen Sondheim | Arthur Laurents | Jerome Robbins
+loose,1965,Jule Styne,12,2.27,8,6,True,1.0,Saul Chaplin | André Previn | Roger Edens | Cy Coleman | Leonard Bernstein | Betty Comden | Adolph Green | Jule Styne
+loose,1965,Jule Styne,16,2.153,8,7,True,1.0,Dee Dee Wood | David Fiorello | Marc Breaux | Christopher Pazdernik | Garson Kanin | Betty Comden | Adolph Green | Jule Styne
+loose,1965,Jule Styne,21,2.165,7,6,True,1.0,Matt Mattox | Abe Burrows | Richard Pike Bissell | Marian Bissell | Jule Styne | Betty Comden | Adolph Green
+loose,1965,Jule Styne,23,3.337,7,7,False,0.857,Adolph Green | Betty Comden | Jule Styne | Luke Joslin | Bob Fosse | Jerome Robbins | Michael Kidd
+loose,1965,Jule Styne,35,2.106,6,6,True,1.0,George Abbott | Alex Palmero | Ernest Flatt | Jule Styne | Adolph Green | Betty Comden
+loose,1965,Jule Styne,53,3.316,5,2,True,1.0,Bob Merrill | Jule Styne | Carol Haney | Isobel Lennart | Garson Kanin
+loose,1970,Richard Rodgers,2,0.699,12,4,False,0.417,Arthur Laurents | Herbert Ross | Stephen Sondheim | Evan Cabnet | Richard Rodgers | Aaron Benham | Christopher Pazdernik | Sam Strasfeld | Harold Rome | Jerome Weidman | Eddie Lawrence | Moose Charlap
+loose,1970,Richard Rodgers,55,2.227,3,1,True,1.0,Richard Rodgers | Ann Reinking | Samuel A. Taylor
+loose,1970,Alan Jay Lerner,4,4.227,11,2,False,0.636,Alan Jay Lerner | Jayne Zaban | Robert Lewis | Lili-Anne Brown | Burton Lane | Artistic | Herbert Ross | Michael Bennett | André Previn | Michael Benthall | Mark D. Kaufmann
+loose,1970,Alan Jay Lerner,47,2.196,5,1,True,1.0,Aaron Sorkin | Moss Hart | Frederick Loewe | The Watermill Theatre's Artistic | Alan Jay Lerner
+loose,1970,Frederick Loewe,47,2.205,5,1,True,1.0,Aaron Sorkin | Moss Hart | Frederick Loewe | The Watermill Theatre's Artistic | Alan Jay Lerner
+loose,1970,Betty Comden,14,2.071,8,5,True,1.0,Christopher Pazdernik | Marc Breaux | David Fiorello | Dee Dee Wood | Garson Kanin | Betty Comden | Adolph Green | Jule Styne
+loose,1970,Betty Comden,24,2.67,7,4,False,0.857,Jule Styne | Adolph Green | Betty Comden | Ernest Flatt | Alex Palmero | George Abbott | Michael Kidd
+loose,1970,Betty Comden,38,2.325,6,4,True,1.0,Betty Comden | Adolph Green | Jule Styne | Burt Shevelove | Kevin Carlisle | Arthur Laurents
+loose,1970,Adolph Green,14,2.071,8,5,True,1.0,Christopher Pazdernik | Marc Breaux | David Fiorello | Dee Dee Wood | Garson Kanin | Betty Comden | Adolph Green | Jule Styne
+loose,1970,Adolph Green,24,2.67,7,4,False,0.857,Jule Styne | Adolph Green | Betty Comden | Ernest Flatt | Alex Palmero | George Abbott | Michael Kidd
+loose,1970,Adolph Green,38,2.325,6,4,True,1.0,Betty Comden | Adolph Green | Jule Styne | Burt Shevelove | Kevin Carlisle | Arthur Laurents
+loose,1970,Jule Styne,7,0.992,11,6,False,0.455,Bob Merrill | Jule Styne | Isobel Lennart | Carol Haney | Garson Kanin | Nunnally Johnson | George Roy Hill | Michael Bennett | Michael Kidd | Joseph Anthony | Edward Albee
+loose,1970,Jule Styne,14,2.014,8,5,True,1.0,Christopher Pazdernik | Marc Breaux | David Fiorello | Dee Dee Wood | Garson Kanin | Betty Comden | Adolph Green | Jule Styne
+loose,1970,Jule Styne,24,3.725,7,4,False,0.857,Jule Styne | Adolph Green | Betty Comden | Ernest Flatt | Alex Palmero | George Abbott | Michael Kidd
+loose,1970,Jule Styne,38,2.204,6,4,True,1.0,Betty Comden | Adolph Green | Jule Styne | Burt Shevelove | Kevin Carlisle | Arthur Laurents
+loose,1970,Jule Styne,48,3.195,5,2,False,0.8,Jule Styne | Lee Theodore | Yip Harburg | Nunnally Johnson | Bob Herget
+loose,1975,Richard Rodgers,9,0.654,10,4,False,0.6,Arthur Laurents | Kevin Carlisle | Burt Shevelove | Richard Rodgers | Herbert Ross | Evan Cabnet | Stephen Sondheim | Jule Styne | Adolph Green | Betty Comden
+loose,1975,Richard Rodgers,17,0.14,9,3,False,0.556,Joe Layton | Michael Stewart | Francine Pascal | John Pascal | Mary Cohan | Ira Levin | Milton Schafer | Richard Rodgers | Martin Charnin
+loose,1975,Alan Jay Lerner,13,1.734,9,3,False,0.778,Herbert Ross | Artistic | Lili-Anne Brown | Robert Lewis | Burton Lane | Alan Jay Lerner | Jayne Zaban | Eddie Lawrence | Moose Charlap
+loose,1975,Alan Jay Lerner,18,4.474,9,3,False,0.667,Alan Jay Lerner | Michael Bennett | André Previn | Michael Benthall | Mark D. Kaufmann | Jayne Zaban | Joseph Hardy | Frederick Loewe | Heidi Thomas
+loose,1975,Frederick Loewe,18,0.342,9,3,False,0.667,Alan Jay Lerner | Michael Bennett | André Previn | Michael Benthall | Mark D. Kaufmann | Jayne Zaban | Joseph Hardy | Frederick Loewe | Heidi Thomas
+loose,1975,Betty Comden,2,1.652,13,7,False,0.692,Charles Strouse | Lee Adams | Ron Field | Adolph Green | Betty Comden | Christopher Pazdernik | Nick Sula | Paul Kerryson | Kathleen Marshall | Ernest Flatt | David Newman | Robert Benton | Harold Prince
+loose,1975,Betty Comden,9,0.62,10,4,False,0.6,Arthur Laurents | Kevin Carlisle | Burt Shevelove | Richard Rodgers | Herbert Ross | Evan Cabnet | Stephen Sondheim | Jule Styne | Adolph Green | Betty Comden
+loose,1975,Betty Comden,14,2.222,9,3,True,1.0,Ernest Flatt | Robert Moore | Leo Robin | Kenny Solms | Gail Parent | Gentlemen Prefer Blondes | Jule Styne | Betty Comden | Adolph Green
+loose,1975,Adolph Green,2,1.652,13,7,False,0.692,Charles Strouse | Lee Adams | Ron Field | Adolph Green | Betty Comden | Christopher Pazdernik | Nick Sula | Paul Kerryson | Kathleen Marshall | Ernest Flatt | David Newman | Robert Benton | Harold Prince
+loose,1975,Adolph Green,9,0.62,10,4,False,0.6,Arthur Laurents | Kevin Carlisle | Burt Shevelove | Richard Rodgers | Herbert Ross | Evan Cabnet | Stephen Sondheim | Jule Styne | Adolph Green | Betty Comden
+loose,1975,Adolph Green,14,2.222,9,3,True,1.0,Ernest Flatt | Robert Moore | Leo Robin | Kenny Solms | Gail Parent | Gentlemen Prefer Blondes | Jule Styne | Betty Comden | Adolph Green
+loose,1975,Jule Styne,9,0.621,10,4,False,0.6,Arthur Laurents | Kevin Carlisle | Burt Shevelove | Richard Rodgers | Herbert Ross | Evan Cabnet | Stephen Sondheim | Jule Styne | Adolph Green | Betty Comden
+loose,1975,Jule Styne,10,4.825,10,5,False,0.5,Jule Styne | Bob Merrill | Peter Stone | Gower Champion | Soja Jovanović | Nunnally Johnson | Yip Harburg | Lee Theodore | Sammy Cahn | Leonard Spigelgass
+loose,1975,Jule Styne,14,2.321,9,3,True,1.0,Ernest Flatt | Robert Moore | Leo Robin | Kenny Solms | Gail Parent | Gentlemen Prefer Blondes | Jule Styne | Betty Comden | Adolph Green
+loose,1980,Richard Rodgers,14,2.588,9,2,True,1.0,Richard Rodgers | Hannah Chissick | Adam Cooper | Sherrin | Jule Styne | revue | Mary Rodgers | Stephen Sondheim | Leonard Bernstein
+loose,1980,Richard Rodgers,33,2.276,6,3,True,1.0,Joe Cascone | Cy Feuer | Ray Jessel | Richard Rodgers | Thomas Meehan | Martin Charnin
+loose,1980,Richard Rodgers,44,0.383,5,3,False,0.8,Sherman Yellen | Sheldon Harnick | Kidd | Jerry Bock | Richard Rodgers
+loose,1980,Richard Rodgers,60,1.931,4,2,True,1.0,Peter Stone | Joe Layton | Martin Charnin | Richard Rodgers
+loose,1980,Alan Jay Lerner,45,2.352,5,1,True,1.0,Alan Jay Lerner | Burton Lane | Peter Gennaro | José Ferrer | Joseph Stein
+loose,1980,Alan Jay Lerner,46,2.356,5,1,True,1.0,Alan Jay Lerner | Onna White | Joseph Hardy | Frederick Loewe | Heidi Thomas
+loose,1980,Alan Jay Lerner,56,2.191,4,1,True,1.0,Gilbert Moses | George Faison | Leonard Bernstein | Alan Jay Lerner
+loose,1980,Frederick Loewe,46,2.334,5,1,True,1.0,Alan Jay Lerner | Onna White | Joseph Hardy | Frederick Loewe | Heidi Thomas
+loose,1980,Betty Comden,0,6.088,20,9,True,1.0,Betty Comden | Adolph Green | Fred Ebb | John Kander | Leonard Bernstein | Stephen Sondheim | Mary Rodgers | Martin Charnin | Carole Bayer Sager | Jack Feldman | Joe Raposo | Peter Allen | Bruce Sussman | Arthur Laurents | John Clifton | Barry Manilow | Phyllis Newman | Edward Kleban | Sheldon Harnick | Jerry Bock
+loose,1980,Betty Comden,8,0.709,10,6,False,0.9,Lee Adams | Charles Strouse | Nick Sula | Christopher Pazdernik | Adolph Green | Betty Comden | Ron Field | Kathleen Marshall | Paul Kerryson | William F. Brown
+loose,1980,Betty Comden,12,2.942,9,4,True,1.0,Robert Moore | Betty Comden | Adolph Green | Kenny Solms | Gail Parent | Gentlemen Prefer Blondes | Leo Robin | Jule Styne | Ernest Flatt
+loose,1980,Betty Comden,15,2.878,9,6,True,1.0,Paul Kerryson | Kathleen Marshall | Ron Field | Betty Comden | Adolph Green | Christopher Pazdernik | Nick Sula | Lee Adams | Charles Strouse
+loose,1980,Betty Comden,24,2.37,7,6,True,1.0,Larry Fuller | Ryan McBryde | Cy Coleman | Adolph Green | Betty Comden | Warren Carlyle | Harold Prince
+loose,1980,Adolph Green,0,6.088,20,9,True,1.0,Betty Comden | Adolph Green | Fred Ebb | John Kander | Leonard Bernstein | Stephen Sondheim | Mary Rodgers | Martin Charnin | Carole Bayer Sager | Jack Feldman | Joe Raposo | Peter Allen | Bruce Sussman | Arthur Laurents | John Clifton | Barry Manilow | Phyllis Newman | Edward Kleban | Sheldon Harnick | Jerry Bock
+loose,1980,Adolph Green,8,0.709,10,6,False,0.9,Lee Adams | Charles Strouse | Nick Sula | Christopher Pazdernik | Adolph Green | Betty Comden | Ron Field | Kathleen Marshall | Paul Kerryson | William F. Brown
+loose,1980,Adolph Green,12,2.942,9,4,True,1.0,Robert Moore | Betty Comden | Adolph Green | Kenny Solms | Gail Parent | Gentlemen Prefer Blondes | Leo Robin | Jule Styne | Ernest Flatt
+loose,1980,Adolph Green,15,2.878,9,6,True,1.0,Paul Kerryson | Kathleen Marshall | Ron Field | Betty Comden | Adolph Green | Christopher Pazdernik | Nick Sula | Lee Adams | Charles Strouse
+loose,1980,Adolph Green,24,2.37,7,6,True,1.0,Larry Fuller | Ryan McBryde | Cy Coleman | Adolph Green | Betty Comden | Warren Carlyle | Harold Prince
+loose,1980,Jule Styne,12,2.898,9,4,True,1.0,Robert Moore | Betty Comden | Adolph Green | Kenny Solms | Gail Parent | Gentlemen Prefer Blondes | Leo Robin | Jule Styne | Ernest Flatt
+loose,1980,Jule Styne,14,2.537,9,2,True,1.0,Richard Rodgers | Hannah Chissick | Adam Cooper | Sherrin | Jule Styne | revue | Mary Rodgers | Stephen Sondheim | Leonard Bernstein
+loose,1980,Jule Styne,48,3.296,5,1,True,1.0,Gower Champion | Soja Jovanović | Bob Merrill | Jule Styne | Peter Stone
+loose,1980,Jule Styne,72,2.146,3,1,True,1.0,Jule Styne | Leonard Spigelgass | Sammy Cahn
+loose,1985,Richard Rodgers,6,1.851,12,5,False,0.5,Martin Charnin | Richard Rodgers | Thomas Meehan | Cy Feuer | Joe Cascone | Ray Jessel | Joel Siegel | Bob Brush | Alan Johnson | Sheldon Harnick | Sherman Yellen | Charles Strouse
+loose,1985,Richard Rodgers,14,2.063,9,2,True,1.0,Richard Rodgers | revue | Sherrin | Hannah Chissick | Adam Cooper | Jule Styne | Stephen Sondheim | Mary Rodgers | Leonard Bernstein
+loose,1985,Alan Jay Lerner,36,2.543,6,2,False,0.667,Alan Jay Lerner | Leonard Bernstein | George Faison | Gilbert Moses | Charles Strouse | Billy Wilson
+loose,1985,Alan Jay Lerner,50,1.734,5,1,True,1.0,Peter Gennaro | José Ferrer | Burton Lane | Joseph Stein | Alan Jay Lerner
+loose,1985,Betty Comden,1,2.253,20,8,True,1.0,Sheldon Harnick | Betty Comden | Adolph Green | Peter Allen | Bruce Sussman | Joe Raposo | Barry Manilow | Jerry Bock | John Clifton | Jack Feldman | Phyllis Newman | Martin Charnin | Edward Kleban | Carole Bayer Sager | Stephen Sondheim | Leonard Bernstein | Mary Rodgers | Fred Ebb | John Kander | Arthur Laurents
+loose,1985,Betty Comden,5,1.602,12,6,False,0.583,Larry Fuller | Harold Prince | Betty Comden | Adolph Green | Cy Coleman | Ryan McBryde | Warren Carlyle | Larry Grossman | Jeffrey Kindley | Robert Nigro | Sidney Michaels | Hal Hackady
+loose,1985,Adolph Green,1,2.253,20,8,True,1.0,Sheldon Harnick | Betty Comden | Adolph Green | Peter Allen | Bruce Sussman | Joe Raposo | Barry Manilow | Jerry Bock | John Clifton | Jack Feldman | Phyllis Newman | Martin Charnin | Edward Kleban | Carole Bayer Sager | Stephen Sondheim | Leonard Bernstein | Mary Rodgers | Fred Ebb | John Kander | Arthur Laurents
+loose,1985,Adolph Green,5,1.602,12,6,False,0.583,Larry Fuller | Harold Prince | Betty Comden | Adolph Green | Cy Coleman | Ryan McBryde | Warren Carlyle | Larry Grossman | Jeffrey Kindley | Robert Nigro | Sidney Michaels | Hal Hackady
+loose,1985,Jule Styne,14,2.043,9,2,True,1.0,Richard Rodgers | revue | Sherrin | Hannah Chissick | Adam Cooper | Jule Styne | Stephen Sondheim | Mary Rodgers | Leonard Bernstein
+loose,1985,Jule Styne,57,1.72,4,1,True,1.0,Jule Styne | John Dexter | Peter Gennaro | Herb Gardner
+loose,1990,Alan Jay Lerner,12,0.266,8,3,False,0.5,Charles Strouse | Lee Adams | Frank O'Dowd | Michael Stewart | Warren Leight | Jeffrey B. Moss | Alan Jay Lerner | Billy Wilson
+loose,1990,Betty Comden,9,0.224,9,3,False,0.667,Larry Grossman | Harold Prince | Larry Vickers | Fay Kanin | Ellen Fitzhugh | Lester Wilson | Larry Fuller | Betty Comden | Adolph Green
+loose,1990,Betty Comden,23,2.839,6,2,False,0.833,Adolph Green | Betty Comden | Twyla Tharp | Raz Shaw | Jude Kelly | Larry Fuller
+loose,1990,Adolph Green,9,0.224,9,3,False,0.667,Larry Grossman | Harold Prince | Larry Vickers | Fay Kanin | Ellen Fitzhugh | Lester Wilson | Larry Fuller | Betty Comden | Adolph Green
+loose,1990,Adolph Green,23,2.839,6,2,False,0.833,Adolph Green | Betty Comden | Twyla Tharp | Raz Shaw | Jude Kelly | Larry Fuller
+loose,1990,Jule Styne,39,2.082,4,1,True,1.0,Herb Gardner | John Dexter | Jule Styne | Peter Gennaro
+loose,1995,Betty Comden,6,1.275,7,3,False,0.714,Cy Coleman | Tommy Tune | Peter Stone | Betty Comden | Adolph Green | Peter Mark Schifter | A. E. Hotchner
+loose,1995,Betty Comden,27,2.687,5,2,True,1.0,Raz Shaw | Twyla Tharp | Jude Kelly | Adolph Green | Betty Comden
+loose,1995,Adolph Green,6,1.275,7,3,False,0.714,Cy Coleman | Tommy Tune | Peter Stone | Betty Comden | Adolph Green | Peter Mark Schifter | A. E. Hotchner
+loose,1995,Adolph Green,27,2.687,5,2,True,1.0,Raz Shaw | Twyla Tharp | Jude Kelly | Adolph Green | Betty Comden
+loose,1995,Jule Styne,31,2.686,5,1,True,1.0,Marsha Norman | Stanley Donen | Jule Styne | Bob Merrill | Lar Lubovitch
+loose,2000,Betty Comden,4,1.124,8,2,False,0.625,Tommy Tune | Peter Stone | Cy Coleman | Betty Comden | Adolph Green | James Hammerstein | Louis Mattioli | Tom Briggs
+loose,2000,Adolph Green,4,1.124,8,2,False,0.625,Tommy Tune | Peter Stone | Cy Coleman | Betty Comden | Adolph Green | James Hammerstein | Louis Mattioli | Tom Briggs
+loose,2000,Jule Styne,22,1.72,5,1,True,1.0,Lar Lubovitch | Bob Merrill | Stanley Donen | Jule Styne | Marsha Norman

@@ -1,0 +1,11 @@
+mode,pair_type,n_pairs,n_reunited,observed_rate,null_mean,null_95,ratio,p_value
+strict,all,9681,416,0.043,0.0119,0.0100-0.0139,3.6,0.001
+strict,composer_lyricist,1483,137,0.0924,0.0235,0.0169-0.0308,3.93,0.001
+strict,writer_writer,3802,173,0.0455,0.0109,0.0082-0.0139,4.19,0.001
+strict,writer_staging,3811,91,0.0239,0.009,0.0063-0.0120,2.66,0.001
+strict,staging_staging,585,15,0.0256,0.0055,0.0000-0.0116,4.64,0.001
+loose,all,16942,542,0.032,0.0103,0.0089-0.0116,3.12,0.001
+loose,composer_lyricist,1483,137,0.0924,0.0236,0.0175-0.0303,3.92,0.001
+loose,writer_writer,3802,179,0.0471,0.0114,0.0084-0.0144,4.15,0.001
+loose,writer_staging,7650,195,0.0255,0.0092,0.0073-0.0113,2.76,0.001
+loose,staging_staging,4007,31,0.0077,0.0055,0.0032-0.0079,1.4,0.035
