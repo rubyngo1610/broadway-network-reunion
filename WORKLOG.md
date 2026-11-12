@@ -525,6 +525,18 @@ The show map will show where teams worked within NYC as time passes, so each sho
   3. having been on a small team
 
   Membership in a wider learned community adds nothing. This fits the step 11 finding that most communities are single show teams. It also fits H1's expectation that composer–lyricist pairs, the smallest teams, reunite most.
+- **Why H3 failed:**
+  - **In the data (the finding):**
+    1. **Little group structure.** About 72% of people have one original credit, so few people link show teams, and most communities are a single show's team.
+    2. **Every tested pair already shared a show.** A community that is basically a show team can't separate them.
+    3. **Team size points the wrong way.** Big teams (revues, many writers) form dense communities and score high, but rarely reunite.
+    4. **Reunions are pair-level.** They come from repeat partners who both stay active, in small teams. Communities blur those pairs into bigger groups.
+  - **In the method and data (limitations):**
+    5. **Edges are unweighted.** BigCLAM ignores how many shows a pair shared (the strongest predictor) and their roles.
+    6. **K selection is unstable.** BIC is noisy between neighbouring K.
+    7. **BigCLAM suits large social networks,** not a network that is mostly small, separate show teams.
+    8. **Original Broadway only.** Recurring circles may sit in Off-Broadway, revivals, London or regional work.
+    9. **Data gaps.** Missing credits (especially before 1930) and junk or split names remove links.
 - **Caveats:**
   - BigCLAM uses unweighted edges.
   - K is chosen by BIC, and the curve is noisy.
