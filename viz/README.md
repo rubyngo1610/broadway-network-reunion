@@ -57,6 +57,7 @@ The site appears at `https://<owner>.github.io/<repo>/`. Free GitHub Pages needs
 | `credits.json` | person–show pair (6,335) | `person`, `show`, `year`, `roles` (list), `original` (true/false/null), `strict`, `loose`, `posthumous` |
 | `basemap.json` | — | Manhattan from the Battery to about 100th St: `land` (borough outlines), `parks`, `streets.major` / `streets.minor` (lines of [lon, lat]), `labels` (squares, landmarks, rivers), `attribution`. Written by `scripts/14_build_basemap.py` (OpenStreetMap + NYC Open Data), 530 KB |
 | `reunions.json` | pair per cutoff, by mode | compact rows `[cutoff, person_a, person_b, shows_together, reunion_shows, first_reunion_year]`; `data.js` expands them to objects |
+| `h1.json` | by mode | Written by `scripts/10_null_model.py`, not step 13. `shows`: training-window shows whose team had a reunion, `[cutoff, show, team_size, reunited_pairs, null_mean, p_value]`. `windows`: observed vs null reunion rate per cutoff, `[cutoff, pairs, reunited, observed_rate, null_mean, null_lo, null_hi]`, for the reunions-over-time chart. Optional: `db.h1` is null if the file is missing. `db.glows(mode, reunionRow)` says whether a reunion should glow (the pair shared a show whose team reunited above chance, p < 0.05). In strict mode 342 of 416 reunions glow, so the filter mainly drops reunions from large teams |
 
 **`strict` and `loose`** match the network modes of step 08. `strict` keeps credits confirmed as part of the original production; `loose` also keeps unknowns. Both drop posthumous credits. Views default to `strict`.
 

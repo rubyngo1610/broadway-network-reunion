@@ -575,6 +575,37 @@ The show map will show where teams worked within NYC as time passes, so each sho
   - H1 (reunions beat chance): supported.
   - H3 (communities predict who reunites): not supported. Reunions are predicted by repeat work, both people staying active, and small teams.
 
+## 2026-11-12: H1 flags exported for the cohort view (Trang)
+
+- Step 10 now also writes **`viz/data/h1.json`** (32 KB). It contains:
+  - per mode, the training-window shows whose team had a reunion, with their p-value against the null
+  - the observed vs null reunion rate per cutoff, for the reunions-over-time chart in the proposal
+- **`viz/js/data.js`:**
+  - loads `h1.json` if it exists (`db.h1`; the page works without it)
+  - adds `db.aboveChance(mode, cutoff, show)` and `db.glows(mode, reunionRow)`
+- Checked: the JavaScript parses, and a Python version of the glow rule gives the counts below.
+- **Glow counts:** 342 of 416 strict reunions glow (415 of 542 loose).
+  - Reunions are rare by chance, so one reunited pair from a small team already beats the null. The filter mostly drops reunions from large teams.
+  - **For Ruby to decide:** whether the cohort view glows on that, or on a stricter rule (e.g. p < 0.01, or teams with 2+ reunited pairs).
+
+## 2026-11-12: Sanity check on well-known duos (Trang)
+
+- Checked whether step 11's communities recover 20 well-known partnerships, across all strict windows where both people shared a show (105 duo-windows). The duos:
+  - Rodgers & Hart, Rodgers & Hammerstein, Kern & Hammerstein
+  - Lerner & Loewe, Comden & Green, Kander & Ebb, Bock & Harnick, Schwartz & Dietz, Strouse & Adams, Adler & Ross
+  - Lloyd Webber & Rice, Boublil & Schönberg, Flaherty & Ahrens, the Gershwins, Coleman & Fields, Schmidt & Jones
+  - Shaiman & Wittman, Lane & Harburg, Arlen & Harburg, Styne & Cahn
+- **Duos share a community in 102 of 105 windows.**
+  - The one clear miss is Kern & Hammerstein: separate communities in 3 of 4 windows.
+  - In 1950, Rodgers's communities separate the Hart circle from the Hammerstein circle.
+- **But this alone isn't evidence:** 98% of all co-worker pairs share a community.
+- **A fairer test** is whether the shared community spans 2+ shows (a recurring circle, not one show's team):
+  - famous duos: 82% (84 of 102)
+  - ordinary pairs: 57%
+  - ordinary pairs who shared 2+ shows: 99%
+- **Reading:** BigCLAM does recover the famous partnerships as multi-show circles. But it does so because they shared several shows, which the shows-together count already shows. It adds no information beyond that, which is the H3 result again.
+- **For the report:** the sanity check passes, so communities are a valid *descriptive* layer (the case studies look right), while H3 shows they're not *predictive* beyond repeat work.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").

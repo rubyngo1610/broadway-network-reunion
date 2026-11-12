@@ -29,7 +29,9 @@ Outputs
                                            (for highlighting reunions above chance in the views)
   outputs/tables/h1_by_window.csv          observed vs null per mode, cutoff and pair type
   outputs/tables/h1_summary.csv            pooled over cutoffs per mode and pair type
+  viz/data/h1.json                         above-chance shows and per-cutoff rates for the cohort view
 """
+import json
 import sys
 from pathlib import Path
 
@@ -47,6 +49,7 @@ MODES = ["strict", "loose"]
 WRITERS = {"composer", "lyricist", "book_writer"}
 STAGING = {"director", "choreographer"}
 PAIR_TYPES = ["staging_staging", "writer_staging", "writer_writer", "composer_lyricist"]  # priority, low to high
+ALPHA = 0.05           # a show's reunions count as above chance below this one-sided p (viz highlight)
 
 
 class Window:
@@ -144,6 +147,33 @@ def p_value(null, observed):
     return (1 + np.sum(null >= observed)) / (len(null) + 1)
 
 
+def export_viz(shows, windows):
+    """viz/data/h1.json: per mode, the shows whose team reunited above chance (cohort-view glow) and
+    the observed vs null reunion rate per cutoff (the reunions-over-time chart)."""
+    out = {
+        "alpha": ALPHA,
+        "columns": {"shows": ["cutoff", "show", "team_size", "reunited_pairs", "null_mean", "p_value"],
+                    "windows": ["cutoff", "pairs", "reunited", "observed_rate", "null_mean", "null_lo", "null_hi"]},
+        "note": ("A training-window show (cutoff T, show in [T-10, T)) is above chance when more of its team's "
+                 "pairs reunite in [T, T+10) than in shuffled careers (one-sided p < alpha). Many shows are "
+                 "tested, so a few pass by chance: use it as a highlight, not a per-team test."),
+    }
+    for mode in MODES:
+        s = shows[(shows["mode"] == mode) & (shows["reunited_pairs"] > 0)]
+        w = windows[windows["mode"] == mode]
+        lo_hi = w["null_95"].str.split("-", expand=True).astype(float)
+        out[mode] = {
+            "shows": [[int(r.cutoff), r.show_id, int(r.team_size), int(r.reunited_pairs), r.null_mean, r.p_value]
+                      for r in s.itertuples()],
+            "windows": [[int(r.cutoff), int(r.n_pairs), int(r.n_reunited), r.observed_rate, r.null_mean,
+                         float(lo), float(hi)] for r, lo, hi in zip(w.itertuples(), lo_hi[0], lo_hi[1])],
+        }
+    path = config.ROOT / "viz" / "data" / "h1.json"
+    path.write_text(json.dumps(out, separators=(",", ":")))
+    log.info("Wrote %s (%d + %d shows with a reunion)", display_path(path),
+             len(out["strict"]["shows"]), len(out["loose"]["shows"]))
+
+
 def main():
     def extra(p):
         p.add_argument("--source", choices=["auto", "parquet", "json"], default="auto")
@@ -222,6 +252,7 @@ def main():
     log.info("Wrote %s and %s", display_path(config.OUTPUT_TABLES / "h1_summary.csv"),
              display_path(config.OUTPUT_TABLES / "h1_by_window.csv"))
     log.info("Summary:\n%s", summary.to_string(index=False))
+    export_viz(pd.DataFrame(show_rows), by_window[by_window["pair_type"] == "all"])
     allw = by_window[by_window["pair_type"] == "all"]
     for mode in MODES:
         w = allw[allw["mode"] == mode]
