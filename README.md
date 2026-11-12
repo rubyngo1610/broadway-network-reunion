@@ -37,6 +37,17 @@ export BROADWAY_CONTACT_EMAIL="you@nyu.edu"
 > ```
 > `outputs/` (small CSVs and figures) stays in the project folder either way.
 
+> **Shared data snapshot (team Drive folder):** `data/` in the shared Drive copy of this
+> project holds the latest full pipeline output (`raw/` caches, `interim/`, `processed/`),
+> copied there from the local `~/broadway-data` after each rerun (last update: 2026-11-12, after
+> Trang's name fixes, venue fixes and the Lady Day change). To use it:
+> - **Just read the outputs** (null model, BigCLAM): read `data/processed/...` from the Drive folder,
+>   or copy `data/` to your own disk first if reads are slow.
+> - **Rerun the pipeline:** copy the whole `data/` folder to local disk (e.g. `~/broadway-data`) and
+>   set `BROADWAY_DATA_DIR` to it. The raw caches mean nothing is downloaded again.
+> - Don't write into the shared `data/` from a pipeline run; copy results back by hand so two runs
+>   never overwrite each other.
+
 ## Running the pipeline
 
 Run the steps in order from the project root:
