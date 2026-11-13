@@ -6,18 +6,14 @@ import { loadData } from "./data.js";
 import { createStage } from "./stage.js";
 import { showsMode } from "./modes/shows.js";
 import { careerMode } from "./modes/career.js";
+import { cohortMode } from "./modes/cohort.js";
 import { comingSoon } from "./modes/comingSoon.js";
 import { renderDataCheck } from "./views/dataCheck.js";
 
 const MODES = [
   showsMode(),
   careerMode(),
-  comingSoon({
-    id: "cohort", label: "Cohort", caption: "teams scatter and reunite", usesYear: true,
-    title: "Cohorts",
-    text: "Everyone working on a show in the chosen year is a dot in that show's colour, clustered at its theatre. Play the timeline to watch teams disperse and reunite. A toggle recolours the dots by BigCLAM community.",
-    mapNote: "people as dots that move between theatres year by year.",
-  }),
+  cohortMode(),
   comingSoon({
     id: "birthplaces", label: "Birthplaces", caption: "where they came from", usesYear: true,
     title: "Birthplaces",
