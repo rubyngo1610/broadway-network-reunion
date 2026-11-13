@@ -36,22 +36,59 @@ function buildCareer(db, personId) {
     theatre: list[0].theatre, shows: list, reunion: list.some(s => s.reunited.length > 0),
   }));
   // the line: theatres in show order, skipping repeats of the same theatre back to back
-  const path = [];
-  for (const s of shows) if (s.theatre && path[path.length - 1] !== s.theatre) path.push(s.theatre);
-  return { shows, stations, path };
+  const path = [];   // { theatre, year } for each stop, year = first show of that stop
+  for (const s of shows) if (s.theatre && path[path.length - 1]?.theatre !== s.theatre) path.push({ theatre: s.theatre, year: s.year });
+  const span = shows.length ? [shows[0].year, shows[shows.length - 1].year] : null;
+  return { shows, stations, path, span };
 }
 
 export function careerMode() {
   let g = null, offZoom = null, career = null, personId = null, ctxRef = null;
+  let year = Infinity;          // the timeline year: the career is drawn up to here
+  let currentTheatre = null;    // where the latest show by `year` opened
+  const curve = d3.line().curve(d3.curveCatmullRom.alpha(0.5));
 
-  function place(tr) {
+  function place(tr = ctxRef.map.transform) {
     if (!g || !career) return;
     const xy = t => ctxRef.map.xy(t.lat, t.lon);
-    g.select("path.career-line").attr("d", d3.line().curve(d3.curveCatmullRom.alpha(0.5))(career.path.map(xy)));
+    g.select("path.career-route").attr("d", curve(career.path.map(p => xy(p.theatre))));
+    g.select("path.career-line").attr("d", curve(career.path.filter(p => p.year <= year).map(p => xy(p.theatre))));
     g.selectAll("circle.station").attr("cx", d => xy(d.theatre)[0]).attr("cy", d => xy(d.theatre)[1]);
     g.selectAll("text.station-label")
       .attr("x", d => xy(d.theatre)[0]).attr("y", d => xy(d.theatre)[1])
-      .attr("display", tr.k >= 4 ? null : "none");
+      .attr("display", d => (tr.k >= 4 || d.theatre === currentTheatre ? null : "none"));
+  }
+
+  /** Show the career up to year y: travelled line, reached stations, current stop, list state. */
+  function applyYear(y, { scroll = true } = {}) {
+    year = y;
+    const done = career.shows.filter(s => s.year <= y);
+    const latest = done.length ? done[done.length - 1].year : null;
+    currentTheatre = [...done].reverse().find(s => s.theatre)?.theatre ?? null;
+    g.select("path.career-line").interrupt().attr("stroke-dasharray", null).attr("stroke-dashoffset", null);
+    g.selectAll("circle.station")
+      .classed("future", d => d.shows[0].year > y)
+      .classed("reunion", d => d.shows.some(s => s.year <= y && s.reunited.length))
+      .classed("current", d => d.theatre === currentTheatre);
+    g.selectAll("circle.station").filter(d => d.theatre === currentTheatre).raise();
+    place();
+
+    const atEnd = !career.span || y >= career.span[1];
+    const prog = ctxRef.panel.querySelector(".career-progress");
+    if (prog) prog.textContent = atEnd ? "" : `By ${y}: ${done.length} of ${career.shows.length} shows`;
+    let first = null;
+    ctxRef.panel.querySelectorAll(".career-list li").forEach(li => {
+      const ly = +li.dataset.year;
+      li.classList.toggle("future", ly > y);
+      const cur = !atEnd && ly === latest;
+      li.classList.toggle("current", cur);
+      if (cur && !first) first = li;
+    });
+    // scroll only the panel (scrollIntoView would also move the page)
+    if (scroll && first) {
+      const panel = ctxRef.panel;
+      panel.scrollTo({ top: first.offsetTop - panel.clientHeight / 2 + first.offsetHeight / 2, behavior: "smooth" });
+    }
   }
 
   function draw(ctx) {
@@ -59,6 +96,17 @@ export function careerMode() {
     career = buildCareer(db, personId);
     g.selectAll("*").interrupt().remove();
 
+    // the timeline covers this career; show all of it unless the link names a year
+    const urlYear = +ctx.state.params.get("year");
+    ctx.setRange(career.span);
+    if (career.span) {
+      const y = urlYear >= career.span[0] && urlYear <= career.span[1] ? urlYear : career.span[1];
+      ctx.state.year = y;
+      ctx.setRange(career.span);   // refreshes the slider with the new year
+    }
+    year = career.span ? ctx.state.year : Infinity;
+
+    g.append("path").attr("class", "career-route");
     const line = g.append("path").attr("class", "career-line");
     const r = d => 4 + 2.2 * Math.sqrt(d.shows.length);
     g.selectAll("circle.station").data(career.stations, d => d.theatre.id).join("circle")
@@ -69,7 +117,8 @@ export function careerMode() {
     g.selectAll("text.station-label").data(career.stations, d => d.theatre.id).join("text")
       .attr("class", "station-label").attr("dx", d => r(d) + 4).attr("dy", "0.35em")
       .text(d => d.theatre.name);
-    place(map.transform);
+    fillPanel(ctx);
+    applyYear(year, { scroll: false });
 
     // draw the line, then pop the stations in along it
     const len = line.node().getTotalLength();
@@ -80,7 +129,6 @@ export function careerMode() {
     g.selectAll("circle.station").transition().delay((d, i) => 200 + i * 60).duration(300).attr("r", r);
 
     map.zoomTo(career.stations.map(s => [s.theatre.lat, s.theatre.lon]), { pad: 120, duration: 900 });
-    fillPanel(ctx);
   }
 
   function highlight(theatreId) {
@@ -111,15 +159,17 @@ export function careerMode() {
         ${p?.wiki ? ` · <a href="${esc(p.wiki)}" target="_blank" rel="noopener">Wikipedia</a>` : ""}</p>
       <p class="career-stats"><strong>${career.shows.length}</strong> shows ·
         <strong>${nTheatres}</strong> theatre${nTheatres === 1 ? "" : "s"} ·
-        <strong>${nReunion}</strong> reunion${nReunion === 1 ? "" : "s"}</p>
+        <strong>${nReunion}</strong> reunion${nReunion === 1 ? "" : "s"}
+        <span class="career-progress"></span></p>
       <div class="legend">
         <span><span class="key line"></span>career, in order</span>
         <span><span class="key station"></span>theatre</span>
+        <span><span class="key current"></span>latest show by the timeline year</span>
         <span><span class="key reunion"></span>reunion: back with a collaborator after ${REUNION_GAP}+ years apart</span>
       </div>
       <ol class="career-list">
         ${career.shows.map(s => `
-          <li data-theatre="${s.theatre?.id ?? ""}" class="${s.reunited.length ? "reunion" : ""} ${s.theatre ? "" : "no-venue"}">
+          <li data-theatre="${s.theatre?.id ?? ""}" data-year="${s.year}" class="${s.reunited.length ? "reunion" : ""} ${s.theatre ? "" : "no-venue"}">
             <span class="yr">${s.year}</span>
             <div><strong>${esc(s.showObj?.title ?? s.show)}</strong> <span class="roles">${esc(roleText(s.roles))}</span>
               <div class="where">${s.theatre ? esc(s.theatre.name) : "theatre unknown"}</div>
@@ -155,7 +205,7 @@ export function careerMode() {
   }
 
   return {
-    id: "career", label: "Career", caption: "one person's path", usesYear: false,
+    id: "career", label: "Career", caption: "one person's path", usesYear: true,
 
     enter(ctx) {
       ctxRef = ctx;
@@ -170,7 +220,10 @@ export function careerMode() {
     /** Same mode, new URL parameters: another person. */
     onParams(ctx) {
       const next = ctx.state.params.get("p");
-      if (!next || next === personId || !ctx.db.personById.has(next)) return;
+      if (!next || next === personId || !ctx.db.personById.has(next)) {
+        if (career?.span) applyYear(ctx.state.year);
+        return;
+      }
       personId = next;
       draw(ctx);
       ctx.panel.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250 });
@@ -181,6 +234,8 @@ export function careerMode() {
       g?.transition().duration(250).attr("opacity", 0).remove();
       g = null;
     },
+
+    setYear(ctx, y) { if (career?.span) applyYear(y); },
 
     params: () => ({ p: personId }),
 

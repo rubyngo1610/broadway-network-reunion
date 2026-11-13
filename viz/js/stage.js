@@ -11,6 +11,9 @@
 //     onParams(ctx)         optional: the URL changed while this mode is active (e.g. another person)
 //     params()              optional: extra URL parameters to keep in the hash, as an object }
 //
+// A mode can narrow the timeline with ctx.setRange([from, to]) (e.g. one person's career); the
+// range resets to all years whenever the mode changes.
+//
 // ctx = { db, map, panel, theatres: { dots, hits }, state: { year, params }, years, setYear }
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { createManhattanMap, drawTheatres } from "./manhattanMap.js";
@@ -48,7 +51,18 @@ export function createStage(el, db, modes, { startYear = 1927 } = {}) {
     onHover: (ev, t) => { const html = current?.tip?.(t, ctx); if (html) showTooltip(ev, html); },
     onLeave: hideTooltip,
   });
-  const ctx = { db, map, panel, theatres, state, years, setYear };
+  const ctx = { db, map, panel, theatres, state, years, setYear, setRange };
+  let range = years;
+  const clamp = y => Math.max(range[0], Math.min(range[1], y));
+
+  /** Limit the timeline to [from, to] (null = all years) and keep the year inside it. */
+  function setRange(r) {
+    range = r || years;
+    slider.min = range[0];
+    slider.max = range[1];
+    state.year = clamp(state.year);
+    slider.value = out.value = state.year;
+  }
 
   function syncUrl() {
     const p = new URLSearchParams(current.params?.() || {});
@@ -58,7 +72,7 @@ export function createStage(el, db, modes, { startYear = 1927 } = {}) {
   }
 
   function setYear(y) {
-    state.year = Math.max(years[0], Math.min(years[1], y));
+    state.year = clamp(y);
     slider.value = out.value = state.year;
     current?.setYear?.(ctx, state.year);
     if (current) syncUrl();
@@ -75,6 +89,7 @@ export function createStage(el, db, modes, { startYear = 1927 } = {}) {
       hideTooltip();
       current?.exit?.(ctx);
       current = next;
+      setRange(null);
       el.querySelectorAll(".mode-bar a").forEach(a =>
         a.dataset.mode === next.id ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
       timeline.classList.toggle("off", !next.usesYear);
@@ -103,7 +118,7 @@ export function createStage(el, db, modes, { startYear = 1927 } = {}) {
     timer = d3.timer(elapsed => {
       if (elapsed - last < 450) return;
       last = elapsed;
-      setYear(state.year >= years[1] ? years[0] : state.year + 1);
+      setYear(state.year >= range[1] ? range[0] : state.year + 1);
     });
   });
 
