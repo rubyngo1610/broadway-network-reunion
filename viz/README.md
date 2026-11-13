@@ -38,12 +38,14 @@ The site appears at `https://<owner>.github.io/<repo>/`. Free GitHub Pages needs
 |---|---|
 | `index.html` | Page shell: header, view navigation, one `<main>` the views render into, a shared tooltip |
 | `css/style.css` | Design tokens (colours, type) as CSS custom properties for light and dark mode, then layout. Restyle the project by changing the tokens, not the views |
-| `js/main.js` | Loads the data once, then renders the view named in the URL hash (`#data`, `#trajectory`, …) |
+| `js/main.js` | Loads the data once, builds the stage, then switches mode when the URL hash changes (`#shows?year=1927`, `#cohort`, …). Old page names (`#showmap`, `#trajectory`, `#multiples`) still work |
+| `js/stage.js` | **One map for every view.** Builds the mode bar, the shared timeline (year slider and play), the map and the side panel once. Switching modes animates the map instead of loading a new page; zoom and year carry over. The comment at the top defines the mode interface (`enter`, `setYear`, `exit`, `tip`) |
+| `js/modes/*.js` | One file per mode. `shows.js` is the NYC show map; `comingSoon.js` stands in for modes not built yet |
 | `js/data.js` | `loadData()` returns a `db` object: the raw tables, lookup maps (`showById`, `personById`, `theatreById`, `creditsByPerson`, `creditsByShow`, `showsByTheatre`) and helpers (`theatreOf`, `standing`, `career`) |
 | `js/manhattanMap.js` | **The shared zoomable map.** `createManhattanMap(container, db)` draws the Manhattan basemap (shoreline, parks, streets, squares), rotated to grid north. It handles zoom and pan (drag, scroll, or the + / − / ⌂ buttons) and returns `xy(lat, lon)`, `layer(name)`, `onZoom(fn)` and `zoomTo(points)`. Basemap lines keep their screen width; views re-place their dots on every zoom, so dots keep their size and spread apart as you zoom in. `drawTheatres(map, db)` adds every theatre |
 | `js/grid.js` | `toGrid(lat, lon)` converts to Manhattan grid units (street number, avenue number). Used by the data-check plot; could also be used for the small multiples |
 | `js/tooltip.js` | One shared tooltip |
-| `js/views/*.js` | One file per view, each exporting `render…(el, db)` |
+| `js/views/dataCheck.js` | The data check (`#data`, linked from the footer), shown in place of the stage |
 | `data/*.json` | Written by `scripts/13_export_viz_data.py`. Don't edit by hand |
 
 ## Data files
@@ -60,16 +62,18 @@ The site appears at `https://<owner>.github.io/<repo>/`. Free GitHub Pages needs
 
 **`strict` and `loose`** match the network modes of step 08. `strict` keeps credits confirmed as part of the original production; `loose` also keeps unknowns. Both drop posthumous credits. Views default to `strict`.
 
-## Views
+## Views (modes of one map)
 
-| Hash | View | Status |
+The page is one map with a mode bar above it. Each mode restyles the same map; nothing reloads.
+
+| Hash | Mode | Status |
 |---|---|---|
-| `#showmap` (default) | NYC show map: zoomable Manhattan; pick or play a year; theatres where a show opened that year are filled, with the year's openings listed. `#showmap?year=1927` opens a year | working |
-| `#trajectory` | One person's career as a path between theatres (on the shared map) | next |
-| `#birthplaces` | Birthplace map | planned |
-| `#cohort` | Cohort view (animated) | planned |
-| `#multiples` | Small-multiples baseline | planned |
-| `#data` | Data check: counts, coverage notes, theatres on the street grid with a year slider | working |
+| `#shows` (default) | Where each year's new musicals opened: theatres with an opening are filled, and the openings are listed. `#shows?year=1927` opens a year | working |
+| `#career` | One person's career as a transit line between theatres; the map zooms to fit it | next |
+| `#cohort` | People as dots in their show's (or BigCLAM community's) colour, moving between theatres as the timeline plays | planned |
+| `#birthplaces` | Birthplaces; the map zooms out from Manhattan to the US and the world | planned (needs a US/world basemap) |
+| `#compare` | Small multiples: the map splits into a grid of five-year panels | planned |
+| `#data` | Data check: counts, coverage notes, theatres on the street grid. Linked from the footer, not the mode bar | working |
 
 ## Style
 

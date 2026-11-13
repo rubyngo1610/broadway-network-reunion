@@ -375,6 +375,13 @@ The show map will show where teams worked within NYC as time passes, so each sho
     Checked by screenshot: 1927 shows *Show Boat* and *Rio Rita* at the Ziegfeld, and Broadway's diagonal through the squares.
 - **Next:** the trajectory view on the shared map (Rodgers as the test case), then the birthplace map, then the cohort view and small multiples on stand-in data.
 
+## 2026-11-12: One map for every view (Ruby, views track)
+
+- **Change:** the views are now modes of one page instead of separate pages. The Manhattan map is built once and stays on screen, and a mode bar above it switches between Shows, Career, Cohort, Birthplaces and Compare. Switching animates the theatre dots and swaps the side panel. The zoom and the year on the shared timeline carry over between modes.
+- **Why:** jumping to a new page lost the context (zoom, year), and the views are about the same places and the same people.
+- **How it works:** `viz/js/stage.js` holds the map, the timeline and the panel. Each view is a mode in `viz/js/modes/` with `enter`, `setYear` and `exit`. Links still work (`#cohort?year=1943`, and old ones such as `#showmap`), and the data check moved to a link in the footer.
+- **Still to decide:** Birthplaces needs a US/world basemap; the plan is for the map to zoom out from Manhattan when that mode is entered. Compare (small multiples) will split the map into a grid of small copies.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").

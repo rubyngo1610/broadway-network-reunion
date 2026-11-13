@@ -109,13 +109,6 @@ body {
   text-transform: uppercase; letter-spacing: 0.12em;
 }
 h2, h3 { font-family: var(--font-display); font-weight: 700; }
-.views { display: flex; flex-wrap: wrap; gap: 4px; }
-.views a {
-  color: var(--text-secondary); text-decoration: none; padding: 6px 10px; border-radius: 6px; font-size: 14px;
-}
-.views a:hover { color: var(--text-primary); background: var(--surface-1); }
-.views a[aria-current="page"] { color: var(--text-primary); background: var(--surface-1); box-shadow: inset 0 -2px 0 var(--accent); }
-
 .view { flex: 1; padding: 20px 24px; max-width: 1200px; width: 100%; margin: 0 auto; }
 .loading, .error { color: var(--text-secondary); }
 .error { color: #d03b3b; }
@@ -184,9 +177,36 @@ svg.map .theatre-label { fill: var(--text-primary); font-size: 11px; pointer-eve
   background: color-mix(in srgb, var(--surface-1) 75%, transparent); padding: 1px 4px; border-radius: 3px; }
 .hint { color: var(--text-muted); font-size: 12px; margin: 6px 0 0; }
 
-.showmap-layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr); gap: 16px; align-items: start; }
-@media (max-width: 900px) { .showmap-layout { grid-template-columns: minmax(0, 1fr); } }
-.show-list { list-style: none; margin: 0; padding: 0; font-size: 14px; max-height: 560px; overflow: auto; }
+/* the stage: one map for every view, modes switch above it */
+.stage {
+  display: grid; gap: 10px 16px; align-items: start;
+  grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+  grid-template-areas: "modes modes" "time panel" "map panel";
+}
+@media (max-width: 900px) {
+  .stage { grid-template-columns: minmax(0, 1fr); grid-template-areas: "modes" "time" "map" "panel"; }
+}
+.mode-bar { grid-area: modes; display: flex; flex-wrap: wrap; gap: 2px; border-bottom: 1px solid var(--border); }
+.mode-bar a {
+  display: flex; flex-direction: column; gap: 1px; padding: 8px 14px 9px; text-decoration: none;
+  color: var(--text-secondary); border-radius: var(--radius) var(--radius) 0 0;
+  box-shadow: inset 0 -3px 0 transparent; transition: box-shadow .25s, color .25s, background .25s;
+}
+.mode-bar .mode-label { font: 700 16px/1.1 var(--font-display); }
+.mode-bar .mode-cap { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.mode-bar a:hover { color: var(--text-primary); background: var(--surface-1); }
+.mode-bar a[aria-current="page"] { color: var(--text-primary); background: var(--surface-1); box-shadow: inset 0 -3px 0 var(--accent); }
+.stage-map { grid-area: map; min-width: 0; }
+.stage-panel { grid-area: panel; align-self: stretch; margin: 0; max-height: 720px; overflow: auto; }
+.stage-panel .list-title { margin: 14px 0 6px; font-size: 16px; }
+.stage-panel .map-note { font-size: 14px; color: var(--text-secondary); }
+.timeline { grid-area: time; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 14px; transition: opacity .3s; }
+.timeline label { color: var(--text-secondary); }
+.timeline output { font: 700 20px/1 var(--font-display); font-variant-numeric: tabular-nums; min-width: 4ch; }
+.timeline input[type="range"] { flex: 1; min-width: 160px; accent-color: var(--accent); }
+.timeline.off { opacity: 0.35; }
+svg.map circle.t { transition: fill .4s, stroke .4s, stroke-width .4s; }
+.show-list { list-style: none; margin: 0; padding: 0; font-size: 14px; }
 .show-list li { padding: 6px 0; border-bottom: 1px solid var(--grid); }
 .show-list li .where { color: var(--text-secondary); font-size: 13px; }
 .show-list li.no-venue .where { font-style: italic; color: var(--text-muted); }
