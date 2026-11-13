@@ -68,7 +68,6 @@ export function careerMode() {
   let root = null, offZoom = null, ctxRef = null;
   let people = [];            // [{ id, slot, career, g, grow, done, current }] in selection order
   let year = Infinity;        // the timeline year
-  let hovered = null;         // theatre id under the pointer (map or list)
   let lastSelection = [];     // remembered when leaving the mode and coming back via the mode bar
 
   const ids = () => people.map(p => p.id);
@@ -106,7 +105,6 @@ export function careerMode() {
 
   function place() {
     if (!root) return;
-    const tr = ctxRef.map.transform;
     const xy = t => ctxRef.map.xy(t.lat, t.lon);
     people.forEach((p, i) => {
       const [dx, dy] = offset(i);
@@ -114,34 +112,7 @@ export function careerMode() {
       p.g.select("path.career-route").attr("d", curve(p.career.path.map(q => xy(q.theatre))));
       p.g.select("path.career-line").attr("d", lineD(p));
       p.g.selectAll("circle.station, circle.halo").attr("cx", d => xy(d.theatre)[0]).attr("cy", d => xy(d.theatre)[1]);
-      p.g.selectAll("text.station-label")
-        .attr("x", d => xy(d.theatre)[0]).attr("y", d => xy(d.theatre)[1])
-        .attr("display", d => {
-          if (p.labelOwner && !p.labelOwner(d.theatre.id)) return "none";
-          const nowHere = people.some(q => q.current === d.theatre);
-          return d.theatre.id === hovered || nowHere || tr.k >= 4 ? null : "none";
-        })
-        .attr("transform", null);
     });
-    // nudge overlapping labels apart, top to bottom (stations close together, e.g. the Shubert
-    // and the St. James, would otherwise print over each other)
-    const shown = root.selectAll("text.station-label").filter(function () { return this.getAttribute("display") !== "none"; })
-      .nodes().map(n => {
-        const g = n.parentNode.parentNode, m = /translate\(([-\d.]+),([-\d.]+)\)/.exec(g.getAttribute("transform") || "");
-        const b = n.getBBox();
-        return { n, x: b.x + (m ? +m[1] : 0), y: b.y + (m ? +m[2] : 0), w: b.width, h: b.height };
-      })
-      .sort((a, b) => a.y - b.y);
-    const placed = [];
-    for (const l of shown) {
-      let dy = 0;
-      for (const q of placed)
-        if (l.x < q.x + q.w && q.x < l.x + l.w && l.y + dy < q.y + q.dy + q.h && q.y + q.dy < l.y + dy + l.h)
-          dy = q.y + q.dy + q.h + 1 - l.y;
-      l.dy = dy;
-      if (dy) l.n.setAttribute("transform", `translate(0,${dy})`);
-      placed.push(l);
-    }
   }
 
   function drawPerson(person, animate) {
@@ -156,7 +127,6 @@ export function careerMode() {
       .on("pointerenter", (ev, d) => highlight(d.theatre.id))
       .on("pointermove", (ev, d) => showTooltip(ev, tipHtml(d.theatre)))
       .on("pointerleave", () => { highlight(null); hideTooltip(); });
-    st.append("text").attr("class", "station-label").attr("dx", d => stationR(d) + 5).attr("dy", "0.35em");
 
     person.grow = animate ? 0 : 1;
     if (animate) {
@@ -179,29 +149,6 @@ export function careerMode() {
         .classed("reunion", d => d.shows.some(s => s.year <= y && reunions(s).length))
         .classed("current", d => d.theatre === p.current);
       p.g.selectAll("g.stop").filter(d => d.theatre === p.current).raise();
-    }
-    // one label per theatre, drawn by the first selected person with a stop there. It names the
-    // show each person had there by the timeline year (their latest; their first if still to come),
-    // people on the same show share it: "Rodgers, Hammerstein · Oklahoma! (1943)"
-    const owner = new Map();
-    for (const p of people) for (const st of p.career.stations) if (!owner.has(st.theatre.id)) owner.set(st.theatre.id, p);
-    const labelFor = theatreId => {
-      const byShow = new Map();
-      // people with a show there by the year; if nobody yet, the first show(s) still to come
-      const here = people.map(p => [p, p.career.stations.find(x => x.theatre.id === theatreId)]).filter(([, st]) => st);
-      const already = here.filter(([, st]) => st.shows[0].year <= y);
-      const soonest = d3.min(here, ([, st]) => st.shows[0].year);
-      for (const [p, st] of already.length ? already : here.filter(([, st]) => st.shows[0].year === soonest)) {
-        const s = [...st.shows].reverse().find(x => x.year <= y) ?? st.shows[0];
-        if (!byShow.has(s.show)) byShow.set(s.show, { s, names: [] });
-        byShow.get(s.show).names.push(shortName(p.id));
-      }
-      return [...byShow.values()].map(({ s, names }) =>
-        `${people.length > 1 ? names.join(", ") + " · " : ""}${s.showObj?.title ?? s.show} (${s.year})`).join("; ");
-    };
-    for (const p of people) {
-      p.labelOwner = id => owner.get(id) === p;
-      p.g.selectAll("text.station-label").text(d => labelFor(d.theatre.id));
     }
     updateMapKey();
     place();
@@ -228,9 +175,7 @@ export function careerMode() {
   }
 
   function highlight(theatreId) {
-    hovered = theatreId;
     root?.selectAll("g.stop").classed("active", d => d.theatre.id === theatreId);
-    place();
     ctxRef.panel.querySelectorAll(".career-list li").forEach(li =>
       li.classList.toggle("active", theatreId != null && li.dataset.theatre === theatreId));
   }
