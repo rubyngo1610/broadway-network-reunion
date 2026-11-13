@@ -69,6 +69,9 @@ export function careerMode() {
   let lastSelection = [];     // remembered when leaving the mode and coming back via the mode bar
 
   const ids = () => people.map(p => p.id);
+  /** Reunions that count for the gold marks: with one person, every reunion; with two or more,
+   *  only reunions between the people selected (so Rodgers + Hammerstein hides Rodgers-Hart). */
+  const reunions = s => people.length > 1 ? s.reunited.filter(m => ids().includes(m)) : s.reunited;
   const hrefFor = list => `#career?p=${list.join(",")}`;
   const stationR = d => 4 + 2.2 * Math.sqrt(d.shows.length);
   /** Surname for compact labels, skipping suffixes ("Oscar Hammerstein II" -> "Hammerstein"). */
@@ -150,7 +153,7 @@ export function careerMode() {
       p.current = [...done].reverse().find(s => s.theatre)?.theatre ?? null;
       p.g.selectAll("g.stop")
         .classed("future", d => d.shows[0].year > y)
-        .classed("reunion", d => d.shows.some(s => s.year <= y && s.reunited.length))
+        .classed("reunion", d => d.shows.some(s => s.year <= y && reunions(s).length))
         .classed("current", d => d.theatre === p.current);
       p.g.selectAll("g.stop").filter(d => d.theatre === p.current).raise();
     }
@@ -182,7 +185,7 @@ export function careerMode() {
 
   function tipHtml(t) {
     const rows = people.flatMap(p => p.career.shows.filter(s => s.theatre?.id === t.id)
-      .map(s => `<div><span class="swatch s${p.slot}"></span>${s.year} · <em>${esc(s.showObj?.title)}</em>${people.length > 1 ? ` · ${esc(shortName(p.id))}` : ""}${s.reunited.length ? " · reunion" : ""}</div>`));
+      .map(s => `<div><span class="swatch s${p.slot}"></span>${s.year} · <em>${esc(s.showObj?.title)}</em>${people.length > 1 ? ` · ${esc(shortName(p.id))}` : ""}${reunions(s).length ? " · reunion" : ""}</div>`));
     return `<div class="t-title">${esc(t.name)}</div>` + (rows.length ? rows.join("") : `<div class="t-sub">No show here by the people selected</div>`);
   }
 
@@ -234,7 +237,7 @@ export function careerMode() {
       <div class="people-chips">
         ${people.map(p => {
           const q = db.personById.get(p.id), c = p.career;
-          const nRe = c.shows.filter(s => s.reunited.length).length;
+          const nRe = c.shows.filter(s => reunions(s).length).length;
           return `<div class="chip s${p.slot}">
             <svg class="chip-line" width="28" height="8" aria-hidden="true"><line x1="1" y1="4" x2="27" y2="4"></line></svg>
             <div class="chip-body">
@@ -252,18 +255,18 @@ export function careerMode() {
       <div class="legend">
         <span><span class="key station"></span>theatre</span>
         <span><span class="key current"></span>latest show by the timeline year</span>
-        <span><span class="key reunion"></span>reunion: back with a collaborator after ${REUNION_GAP}+ years apart</span>
+        <span><span class="key reunion"></span>reunion: back with ${multi ? "someone selected" : "a collaborator"} after ${REUNION_GAP}+ years apart</span>
       </div>
       <ol class="career-list">
         ${rows.map(list => {
           const { s } = list[0];
-          return `<li data-theatre="${s.theatre?.id ?? ""}" data-year="${s.year}" class="${list.some(d => d.s.reunited.length) ? "reunion" : ""} ${s.theatre ? "" : "no-venue"}">
+          return `<li data-theatre="${s.theatre?.id ?? ""}" data-year="${s.year}" class="${list.some(d => reunions(d.s).length) ? "reunion" : ""} ${s.theatre ? "" : "no-venue"}">
             <span class="yr">${s.year}</span>
             <div><strong>${esc(s.showObj?.title ?? s.show)}</strong>${multi ? "" : ` <span class="roles">${esc(roleText(s.roles))}</span>`}
               <div class="where">${s.theatre ? esc(s.theatre.name) : "theatre unknown"}</div>
               ${list.map(({ p, s: c }) => `
                 ${multi ? `<div class="who"><span class="swatch s${p.slot}"></span>${esc(shortName(p.id))} <span class="roles">${esc(roleText(c.roles))}</span></div>` : ""}
-                ${c.reunited.length ? `<div class="again">reunited with ${names(c.reunited, m => ` after ${c.gaps.get(m)} yrs`)}</div>` : ""}
+                ${reunions(c).length ? `<div class="again">reunited with ${names(reunions(c), m => ` after ${c.gaps.get(m)} yrs`)}</div>` : ""}
                 ${!multi && c.continuing.length ? `<div class="still">still with ${names(c.continuing)}</div>` : ""}`).join("")}
             </div>
           </li>`;
