@@ -363,3 +363,14 @@ svg.chart .cohort-pen text { font-size: 10px; letter-spacing: 0.08em; text-trans
 .event-list li.current { background: color-mix(in srgb, var(--accent) 14%, transparent); }
 .event-list li.none { cursor: default; color: var(--text-muted); }
 .event-list .yr { font-variant-numeric: tabular-nums; color: var(--text-secondary); font-weight: 600; }
+
+/* career: on-map key, so who is who stays visible while the panel scrolls */
+.career-key { position: absolute; top: 10px; left: 10px; max-width: min(260px, 55%); display: grid; gap: 7px;
+  padding: 8px 10px; background: color-mix(in srgb, var(--surface-1) 90%, transparent); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: 0 1px 4px rgb(0 0 0 / .12); pointer-events: none; font-size: 12px; line-height: 1.3; }
+.career-key .key-row { display: flex; gap: 8px; align-items: flex-start; }
+.career-key .chip-line { flex: none; margin-top: 5px; }
+.career-key .key-name { font-weight: 700; color: var(--text-primary); }
+.career-key .key-role { color: var(--text-secondary); text-transform: capitalize; }
+.career-key .key-now { color: var(--text-muted); }
+@media (max-width: 640px) { .career-key .key-now { display: none; } }
