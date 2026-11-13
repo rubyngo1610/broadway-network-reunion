@@ -390,6 +390,13 @@ The show map will show where teams worked within NYC as time passes, so each sho
 - **Timeline in Career:** the year slider now works here too, limited to the person's career (1920–1979 for Rodgers). The line is drawn up to the chosen year with the rest dashed, theatres not reached yet are faded, the latest show's theatre is filled and labelled, and the list scrolls to it. Entering the mode shows the whole career unless the link names a year. Checked: 1935 = *Jumbo* at the Hippodrome, 1943 = *Oklahoma!* at the St. James, 1947 = *Allegro* at the Majestic.
 - **Known limits:** most theatres sit within a few blocks of Times Square, so the line knots there until you zoom in (theatre names appear from zoom 4). 4 of Rodgers' 35 shows have no known theatre and are listed but not mapped.
 
+## 2026-11-13: Compare careers (Career mode, up to 4 people)
+
+- **What:** Career mode now shows up to four people at once on the shared map, each a transit line in their own colour and dash pattern. Lines share streets side by side (a small offset per person). The panel has a card per person (dates, birthplace, shows, theatres, reunions), a search box to add someone, a "shows together" summary for the selected people, and one list of shows in order with the people on each. Collaborator names add that person (when full, they replace the last one); × removes a person, and the others keep their colours.
+- **Timeline:** back to the full range of the data (1900–2027), as Ruby asked, so careers line up on one calendar. Entering the mode, or adding someone while whole careers are shown, sets the year to the latest career end.
+- **Colours:** validated with the dataviz palette script against the map land colour, all pairs, light and dark. Light: #9b2335 red, #2a78d6 blue, #0b7f63 teal, #b8459f magenta. Dark: #e8584a, #3987e5, #14907a, #c158b8. A fifth hue could not be separated from these even for normal vision, hence the cap of 4. The closest pair (red/teal, colour-blind ΔE 7.9) is in the band where a second cue is required: each person also has a dash pattern and is named in labels and the list. Gold stays reserved for reunions, now a halo around the station so the person's colour still shows.
+- **Checked:** Rodgers and Hart 20 shows together, Rodgers and Hammerstein 9 (Oklahoma! to The Sound of Music), Rodgers and Sondheim 2. In 1943 Rodgers and Hammerstein are both at the St. James (Oklahoma!), shown as one label.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").

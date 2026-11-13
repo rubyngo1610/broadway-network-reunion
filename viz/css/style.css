@@ -26,6 +26,11 @@
   --series-1:       #9b2335;   /* marquee red: the focused person / theatre */
   --accent:         #b8860b;   /* gold: reunions and highlights (marks only, never body text) */
   --accent-ink:     #7a5a06;   /* gold dark enough for text */
+  /* people compared in Career mode: four slots, each also has its own dash pattern */
+  --person-1:       #9b2335;
+  --person-2:       #2a78d6;
+  --person-3:       #0b7f63;
+  --person-4:       #b8459f;
   --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
   --font-ui: "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --radius: 4px;
@@ -54,6 +59,10 @@
     --series-1:       #e0707c;
     --accent:         #e0b341;
     --accent-ink:     #e0b341;
+    --person-1:       #e8584a;
+    --person-2:       #3987e5;
+    --person-3:       #14907a;
+    --person-4:       #c158b8;
   }
 }
 :root[data-theme="dark"] {
@@ -79,6 +88,10 @@
   --series-1:       #e0707c;
   --accent:         #e0b341;
   --accent-ink:     #e0b341;
+  --person-1:       #e8584a;
+  --person-2:       #3987e5;
+  --person-3:       #14907a;
+  --person-4:       #c158b8;
 }
 
 * { box-sizing: border-box; }
@@ -220,10 +233,39 @@ svg.map circle.t { transition: fill .4s, stroke .4s, stroke-width .4s; }
 .picker { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 13px; color: var(--text-secondary); }
 .picker input { flex: 1; min-width: 0; font: 15px var(--font-ui); padding: 6px 8px; border: 1px solid var(--rule);
   border-radius: var(--radius); background: var(--page); color: var(--text-primary); }
-.career-stats { margin: 0 0 8px; font-size: 14px; }
-.legend .key.line { width: 18px; height: 3px; border-radius: 2px; background: var(--series-1); vertical-align: 3px; }
-.legend .key.station { background: var(--surface-1); border: 2.5px solid var(--series-1); }
-.legend .key.reunion { background: var(--surface-1); border: 3px solid var(--accent); }
+/* person slots: colour + dash pattern (the dash is the second cue for colour-blind readers) */
+.s0 { --pc: var(--person-1); --dash: none; }
+.s1 { --pc: var(--person-2); --dash: 10 4; }
+.s2 { --pc: var(--person-3); --dash: 10 3 2 3; }
+.s3 { --pc: var(--person-4); --dash: 4 3; }
+svg.chart .career-line { fill: none; stroke: var(--pc); stroke-width: 3; stroke-dasharray: var(--dash); stroke-linecap: round; stroke-linejoin: round; }
+svg.chart .career-route { fill: none; stroke: var(--pc); stroke-width: 1.5; stroke-dasharray: 1 5; stroke-linecap: round; opacity: 0.5; }
+svg.chart .stop .station { fill: var(--surface-1); stroke: var(--pc); stroke-width: 2.5; cursor: pointer; transition: stroke-width .2s; }
+svg.chart .stop .halo { fill: none; stroke: var(--accent); stroke-width: 2.5; opacity: 0; pointer-events: none; transition: opacity .3s; }
+svg.chart .stop.reunion .halo { opacity: 1; }
+svg.chart .stop.current .station { fill: var(--pc); stroke: var(--surface-1); stroke-width: 2; }
+svg.chart .stop.future { opacity: 0.3; }
+svg.chart .stop.active .station { stroke-width: 5; }
+svg.chart .station-label { fill: var(--text-primary); font-size: 11px; font-weight: 600; pointer-events: none;
+  paint-order: stroke; stroke: var(--surface-1); stroke-width: 3px; stroke-linejoin: round; }
+.swatch { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--pc); margin-right: 5px; vertical-align: 0; }
+.legend .key.station { background: var(--surface-1); border: 2.5px solid var(--text-secondary); }
+.legend .key.current { background: var(--text-secondary); }
+.legend .key.reunion { background: var(--surface-1); border: 2.5px solid var(--text-secondary); box-shadow: 0 0 0 2.5px var(--accent); }
+.people-chips { display: grid; gap: 6px; margin-bottom: 10px; }
+.chip { display: flex; align-items: flex-start; gap: 10px; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--page); }
+.chip-line { flex: none; margin-top: 8px; }
+.chip-line line { stroke: var(--pc); stroke-width: 3; stroke-dasharray: var(--dash); stroke-linecap: round; }
+.chip-body { flex: 1; min-width: 0; }
+.chip-name { font: 700 17px/1.2 var(--font-display); }
+.chip-sub { font-size: 12px; color: var(--text-secondary); }
+.chip-stats { font-size: 13px; margin-top: 2px; }
+.chip-remove { flex: none; text-decoration: none; color: var(--text-muted); font-size: 20px; line-height: 1; padding: 0 2px; }
+.chip-remove:hover { color: var(--text-primary); }
+.together { font-size: 13px; color: var(--text-secondary); margin: 0 0 8px; }
+.career-list .who { font-size: 12px; margin-top: 2px; }
+.career-list .selected { font-weight: 600; }
+.career-list li.current { background: color-mix(in srgb, var(--text-secondary) 10%, transparent); }
 .career-list { list-style: none; margin: 12px 0 0; padding: 0; font-size: 14px; }
 .career-list li { display: grid; grid-template-columns: 3.2em 1fr; gap: 6px; padding: 6px 4px; border-bottom: 1px solid var(--grid);
   border-left: 3px solid transparent; transition: background .2s; }
@@ -236,25 +278,10 @@ svg.map circle.t { transition: fill .4s, stroke .4s, stroke-width .4s; }
 .career-list .again { font-size: 12px; color: var(--accent-ink); }
 .career-list .again a, .career-list .still a { color: inherit; }
 .career-list .still { font-size: 12px; color: var(--text-muted); }
-svg.chart .station { cursor: pointer; transition: stroke-width .2s; }
-svg.chart .station.active { stroke-width: 5; }
-svg.chart .station-label { pointer-events: none; }
-svg.chart .career-route { fill: none; stroke: var(--series-1); stroke-width: 1.5; stroke-dasharray: 2 5; stroke-linecap: round; opacity: 0.45; }
-svg.chart .station.future { opacity: 0.3; }
-svg.chart .station.current { fill: var(--series-1); stroke: var(--surface-1); stroke-width: 3; }
-svg.chart .station.current.reunion { stroke: var(--accent); }
-.legend .key.current { background: var(--series-1); }
-.career-progress { display: block; margin-top: 2px; color: var(--accent-ink); font-weight: 600; }
+.career-progress { display: block; color: var(--text-secondary); font-weight: 600; }
 .career-progress:empty { display: none; }
 .career-list li.future { opacity: 0.45; }
-.career-list li.current { background: color-mix(in srgb, var(--series-1) 10%, transparent); }
-svg.chart .career-line { fill: none; stroke: var(--series-1); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0.9; }
-svg.chart .station { fill: var(--surface-1); stroke: var(--series-1); stroke-width: 2.5; }
-svg.chart .station.reunion { stroke: var(--accent); stroke-width: 3.5; }
-svg.chart .station.active { fill: var(--series-1); }
 svg.chart .mate { fill: var(--text-muted); opacity: 0.55; }
-svg.chart .station-label { fill: var(--text-primary); font-size: 11px; font-weight: 600; paint-order: stroke; stroke: var(--surface-1); stroke-width: 3px; stroke-linejoin: round; }
-svg.chart .station-label .yr { fill: var(--text-secondary); font-weight: 400; }
 svg.chart .axis-line { stroke: var(--axis); stroke-width: 1; }
 svg.chart .axis-label { fill: var(--text-muted); font-size: 11px; }
 svg.chart .tl-dot { fill: var(--series-1); stroke: var(--surface-1); stroke-width: 2; }
