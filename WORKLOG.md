@@ -605,6 +605,7 @@ The show map will show where teams worked within NYC as time passes, so each sho
   - ordinary pairs who shared 2+ shows: 99%
 - **Reading:** BigCLAM does recover the famous partnerships as multi-show circles. But it does so because they shared several shows, which the shows-together count already shows. It adds no information beyond that, which is the H3 result again.
 - **For the report:** the sanity check passes, so communities are a valid *descriptive* layer (the case studies look right), while H3 shows they're not *predictive* beyond repeat work.
+
 ## 2026-11-12: One map for every view (Ruby, views track)
 
 - **Change:** the views are now modes of one page instead of separate pages. The Manhattan map is built once and stays on screen, and a mode bar above it switches between Shows, Career, Cohort, Birthplaces and Compare. Switching animates the theatre dots and swaps the side panel. The zoom and the year on the shared timeline carry over between modes.
@@ -655,6 +656,76 @@ The show map will show where teams worked within NYC as time passes, so each sho
 2. **Glow rule for reunions (H1):** with `h1.json`, p < 0.05 makes 342 of 416 strict reunions glow (82%), which singles little out; p < 0.01 gives 237 (57%), p < 0.05 with 2+ reunited pairs 273 (66%), p < 0.05 with a team of 4 or fewer 204 (49%). Ruby's suggestion: p < 0.01.
 3. **Suspect credits:** `outputs/tables/suspect_strict_credits.csv` (35 strict credits on 31 shows where the person was under 16 or not yet born). They also feed steps 08, 10, 11 and 15. Decide who fixes them (year and team overrides in `src/filters.py`, or a rule in step 05) and rerun 05 → 06 → 08 → 09 → 13 and Trang's steps afterwards.
 4. **Merging `bigclam-h3`** into `main`, which also publishes it.
+
+## 2026-11-13: Weighted BigCLAM, exploratory (Trang)
+
+- **Why:** plain BigCLAM finds mostly single show teams (see "Why H3 failed"). The aim is communities that reach beyond one show. This is option 1 of the plan; option 4 (clustering shows into circles) is next.
+- **Change to `scripts/11_bigclam.py`:**
+  - New flag `--weights newman` selects weighted BigCLAM, the Poisson form (Ball, Karrer & Newman 2011): the link weight between u and v has mean F_u·F_v.
+  - Weight = the sum over shared shows of 1 / (team size − 1) (Newman's collaboration weight). A duo's show counts 1, a 20-person revue 1/19, and repeat partners add up.
+  - Membership: F ≥ √(mean link weight).
+  - K is chosen by BIC, as before.
+  - Outputs go to `processed/communities_weighted/` and `outputs/tables/bigclam_weighted_*.csv`. The default (unweighted) results are unchanged: refitting strict 1950 gives identical communities. The Poisson gradient was checked numerically.
+  - Ran strict mode only, all 18 windows, in about 30 s.
+- **Results (strict):**
+
+  | | BigCLAM | weighted |
+  |---|---|---|
+  | communities that fit inside one show's team | 53–84% per window | **0–72%**; 1950: 80% → 40%; 1980: 72% → 37% |
+  | people in 2+ communities | 6–23% | 2–23% (lower after 1990) |
+  | famous duos in the same community (20 duos, 105 duo-windows) | 102 / 105 | **105 / 105** |
+  | …and that community spans 2+ shows | 80% (ordinary pairs 57%) | **96%** (ordinary pairs 80%) |
+  | AUC for reunions, all pairs (shows together 0.620) | 0.492 | **0.636** (CI 0.606–0.664) |
+  | AUC for reunions, one-show pairs (chance 0.5) | 0.402 | **0.565** (CI 0.530–0.596) |
+
+- **Reading:**
+  - The weighted communities are real circles that span shows, not show teams, and every famous duo lands together.
+  - **Exploratory H3:**
+    - Over all pairs, the weighted score ties shows together. The difference is −0.010 to +0.043, and it's ahead in 10 of 18 windows.
+    - Among pairs who shared one show, it predicts reunions above chance and above shows together (+0.033 to +0.098). That signal is absent in plain BigCLAM.
+    - It's still below activity (both people still working).
+  - The primary H3 result stands. This is a post-hoc variant, but it shows that weighting by team size recovers some community signal.
+- **Trade-off:** the weighted communities are broader.
+  - In 1950, Rodgers is in one 18-person circle with both Hart and Hammerstein (11 shows), where plain BigCLAM separated the Hart and Hammerstein circles.
+  - Some windows collapse into a few large communities (1925: 6 communities of about 23 people; 1965: 16). BIC is still noisy.
+- **Data error found:** Thomas Kail (director) and Steven Hoggett (choreographer) are credited on *Sweeney Todd* (1979) as original production. They did the 2023 revival.
+  - Kail also has revival credits on *The Wiz* (1975) and *Once on This Island* (1990), though those aren't flagged as original.
+  - Fix in step 05 once Ruby's data is here. It affects every analysis (step 08 onward).
+- **Next:**
+  - Loose mode.
+  - Option 4: show clustering with Leiden on team-size-weighted show–show links. Compare with the same checks.
+
+## 2026-11-13: Team size and partner threads on the cohort map: tried, dropped (Trang)
+
+- Tried colouring Cohort-mode dots by starting team size and drawing threads between past partners. **Dropped:** the theatres sit so close together that the map became one moving bundle of lines and dots. A static chart is next. Ruby's Cohort mode is unchanged.
+- **Kept, the numbers (strict, all cohort years 1900–2015 pooled, starting-teammate *pairs*, "again" = any later show together):**
+  - teams of 2–3: 17.0% of 895 pairs
+  - teams of 4–5: 14.2%
+  - teams of 6–8: 9.2%
+  - teams of 9+: 2.4% of 710 pairs
+  - past partners: 44.5% of 722
+  - first-time pairs: 7.6% of 5,649
+- Counted per *person* the pattern disappears (teams of 2–3 23.5%, 4–5 30%, 9+ 21%), because a person on a big team has more teammates who might return. Count pairs.
+
+## 2026-11-13: Table, partnership history and team size (Trang)
+
+- **New `scripts/16_partnership_table.py`** writes:
+  - `outputs/tables/reunion_by_team_size_history.md`, the readable table
+  - `outputs/tables/reunion_by_team_size_history.csv`, long form with 95% Wilson intervals
+
+  It reads `credits.json` (or `person_show.parquet`) and takes `--mode strict|loose`.
+- **What it counts:** every pair of teammates on a show that opened 1900–2015 (strict, 6,371 pairs; a pair on several shows counts once per show). Did they share another show within 10 years? Pairs are grouped by team size and by shows done together before.
+- **Results:**
+
+  | team size | first time | 1 show before | 2+ shows before |
+  |---|---|---|---|
+  | 2–3 | 7% (745) | 22% (90) | 68% (60) |
+  | 4–5 | 8% (2,507) | 26% (204) | 54% (179) |
+  | 6–8 | 5% (1,714) | 32% (93) | 55% (69) |
+  | 9+ | 1% (683) | 18% (17) | 30% (10) |
+
+- **Reading:** past partnership is the big effect. Team size matters most among first-time pairs (7–8% vs 1%).
+- **A dot plot was tried first and dropped.** The table is easier to read, and the plot and its script were deleted.
 
 ## Open items (as of 2026-11-09)
 
