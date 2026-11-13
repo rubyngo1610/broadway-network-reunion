@@ -253,8 +253,6 @@ svg.chart .stop.reunion .halo { opacity: 1; }
 svg.chart .stop.current .station { fill: var(--pc); stroke: var(--surface-1); stroke-width: 2; }
 svg.chart .stop.future { opacity: 0.3; }
 svg.chart .stop.active .station { stroke-width: 5; }
-svg.chart .station-label { fill: var(--text-primary); font-size: 11px; font-weight: 600; pointer-events: none;
-  paint-order: stroke; stroke: var(--surface-1); stroke-width: 3px; stroke-linejoin: round; }
 .swatch { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--pc); margin-right: 5px; vertical-align: 0; }
 .legend .key.station { background: var(--surface-1); border: 2.5px solid var(--text-secondary); }
 .legend .key.current { background: var(--text-secondary); }
