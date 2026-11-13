@@ -30,7 +30,7 @@ One-time setup on GitHub:
 1. Open **Settings → Pages** and set **Source** to **GitHub Actions**.
 2. Merge to `main`, or run the workflow from the **Actions** tab.
 
-The site appears at `https://<owner>.github.io/<repo>/`. Free GitHub Pages needs a public repository.
+Live at **https://rubyngo1610.github.io/broadway-network-reunion/** (Pages source set to GitHub Actions on 2026-11-13). Every push to `main` that changes `viz/` republishes it, so whatever is merged to `main` is public. Free GitHub Pages needs a public repository.
 
 ## Layout
 

@@ -412,6 +412,20 @@ The show map will show where teams worked within NYC as time passes, so each sho
 - **Not built yet:** the community timeline panel (needs step 12's links between windows); H1 "above chance" glow (Trang's `h1.json` / `db.glows()` are on `bigclam-h3`, not merged into this branch yet).
 - **Data problem found (for the team):** `outputs/tables/suspect_strict_credits.csv` lists 35 strict credits on 31 shows where the person was under 16 or not yet born. Mostly revival or rewrite credits marked original (Aaron Sorkin on *Camelot* 1960, Thomas Kail on *Sweeney Todd* 1979, John Weidman on *Anything Goes* 1934); *Operation Mincemeat* dated 1943 (its subject's year, not its opening); and a few wrong people or placeholder birth years (b. 2000). These also enter steps 08, 10 and 11. Not fixed yet.
 
+## 2026-11-13: Web views published on GitHub Pages (Ruby)
+
+- **Live site:** https://rubyngo1610.github.io/broadway-network-reunion/ (Shows, Career and Cohort modes; Birthplaces and Compare are placeholders).
+- **How:** `main` was fast-forwarded to `single-map` (the six commits from "one map for every view" to "Cohort mode on stand-in communities") and pushed. The publish workflow (`.github/workflows/pages.yml`) ran on that push and succeeded; the deployed page was checked in headless Chrome (Cohort 1943 loads and plays, no console errors).
+- **Why the Nov 10 run failed:** `actions/configure-pages` stopped with "Get Pages site failed": the repository's Pages source was not yet set to GitHub Actions. It is set now (Settings → Pages → Source: GitHub Actions). Every push to `main` that changes `viz/` now republishes the site in about a minute, so anything merged to `main` is public.
+- **Not on the site yet:** Trang's `bigclam-h3` branch (H1 null model, BigCLAM, H3 test, `viz/data/h1.json`, `db.glows()`). It merges into `main` with one conflict, in `WORKLOG.md` (both branches added entries in the same place).
+
+**For the Nov 13 team meeting:**
+
+1. **Communities for the views:** who exports step 11's `communities.parquet` to `viz/data` (step 13), and whether step 12 (tracking communities across windows, `community_links.parquet`) is being built. The Cohort mode uses stand-in communities until then; `viz/js/communities.js` switches to the real rows without view changes. The community timeline panel waits on step 12.
+2. **Glow rule for reunions (H1):** with `h1.json`, p < 0.05 makes 342 of 416 strict reunions glow (82%), which singles little out; p < 0.01 gives 237 (57%), p < 0.05 with 2+ reunited pairs 273 (66%), p < 0.05 with a team of 4 or fewer 204 (49%). Ruby's suggestion: p < 0.01.
+3. **Suspect credits:** `outputs/tables/suspect_strict_credits.csv` (35 strict credits on 31 shows where the person was under 16 or not yet born). They also feed steps 08, 10, 11 and 15. Decide who fixes them (year and team overrides in `src/filters.py`, or a rule in step 05) and rerun 05 → 06 → 08 → 09 → 13 and Trang's steps afterwards.
+4. **Merging `bigclam-h3`** into `main`, which also publishes it.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").
