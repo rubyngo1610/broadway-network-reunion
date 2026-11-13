@@ -97,7 +97,12 @@ export function createManhattanMap(container, db, { height = 640, home = HOME, m
     layer: name => layers[name],
     xy,
     get transform() { return transform; },
-    onZoom(fn) { listeners.push(fn); fn(transform); },
+    /** Call fn(transform) now and after every zoom/pan. Returns a function that removes it. */
+    onZoom(fn) {
+      listeners.push(fn);
+      fn(transform);
+      return () => { const i = listeners.indexOf(fn); if (i >= 0) listeners.splice(i, 1); };
+    },
     /** Animate to fit a set of [lat, lon] points, keeping at least `minSpan` degrees of context. */
     zoomTo(latLons, { pad = 60, duration = 750 } = {}) {
       if (!latLons.length) return;

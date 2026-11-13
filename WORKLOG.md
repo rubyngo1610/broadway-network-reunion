@@ -605,6 +605,56 @@ The show map will show where teams worked within NYC as time passes, so each sho
   - ordinary pairs who shared 2+ shows: 99%
 - **Reading:** BigCLAM does recover the famous partnerships as multi-show circles. But it does so because they shared several shows, which the shows-together count already shows. It adds no information beyond that, which is the H3 result again.
 - **For the report:** the sanity check passes, so communities are a valid *descriptive* layer (the case studies look right), while H3 shows they're not *predictive* beyond repeat work.
+## 2026-11-12: One map for every view (Ruby, views track)
+
+- **Change:** the views are now modes of one page instead of separate pages. The Manhattan map is built once and stays on screen, and a mode bar above it switches between Shows, Career, Cohort, Birthplaces and Compare. Switching animates the theatre dots and swaps the side panel. The zoom and the year on the shared timeline carry over between modes.
+- **Why:** jumping to a new page lost the context (zoom, year), and the views are about the same places and the same people.
+- **How it works:** `viz/js/stage.js` holds the map, the timeline and the panel. Each view is a mode in `viz/js/modes/` with `enter`, `setYear` and `exit`. Links still work (`#cohort?year=1943`, and old ones such as `#showmap`), and the data check moved to a link in the footer.
+- **Still to decide:** Birthplaces needs a US/world basemap; the plan is for the map to zoom out from Manhattan when that mode is entered. Compare (small multiples) will split the map into a grid of small copies.
+
+## 2026-11-13: Career mode (trajectory view)
+
+- **What:** the Career mode draws one person's strict-network credits as a transit line from theatre to theatre, in opening order, and zooms the map to fit. Stations grow with the number of shows at a theatre. The panel lists every show with role and theatre; hovering a row lights up its station. Collaborator names open that person's career on the same map.
+- **Reunion in this view:** a show counts as a reunion when the person works again with a collaborator after **5 or more years apart** (the step between cutoffs). Collaborators from the last 5 years are shown as "still with" instead. Counting every repeat collaborator made almost every show gold (29 of Rodgers' 35, nearly all Hart).
+- **Rodgers check:** 35 shows, 16 theatres, 5 reunions: Hart in 1925 (after *Poor Little Ritz Girl*, 1920), Joshua Logan on *South Pacific* (9 years after *Higher and Higher*), Sondheim in 1977 (12 years after *Do I Hear a Waltz?*), Martin Charnin in 1979 (9 years after *Two by Two*). All match the history.
+- **Timeline in Career:** the year slider now works here too, limited to the person's career (1920–1979 for Rodgers). The line is drawn up to the chosen year with the rest dashed, theatres not reached yet are faded, the latest show's theatre is filled and labelled, and the list scrolls to it. Entering the mode shows the whole career unless the link names a year. Checked: 1935 = *Jumbo* at the Hippodrome, 1943 = *Oklahoma!* at the St. James, 1947 = *Allegro* at the Majestic.
+- **Known limits:** most theatres sit within a few blocks of Times Square, so the line knots there until you zoom in (theatre names appear from zoom 4). 4 of Rodgers' 35 shows have no known theatre and are listed but not mapped.
+
+## 2026-11-13: Compare careers (Career mode, up to 4 people)
+
+- **What:** Career mode now shows up to four people at once on the shared map, each a transit line in their own colour and dash pattern. Lines share streets side by side (a small offset per person). The panel has a card per person (dates, birthplace, shows, theatres, reunions), a search box to add someone, a "shows together" summary for the selected people, and one list of shows in order with the people on each. Collaborator names add that person (when full, they replace the last one); × removes a person, and the others keep their colours.
+- **Timeline:** back to the full range of the data (1900–2027), as Ruby asked, so careers line up on one calendar. Entering the mode, or adding someone while whole careers are shown, sets the year to the latest career end.
+- **Colours:** validated with the dataviz palette script against the map land colour, all pairs, light and dark. Light: #9b2335 red, #2a78d6 blue, #0b7f63 teal, #b8459f magenta. Dark: #e8584a, #3987e5, #14907a, #c158b8. A fifth hue could not be separated from these even for normal vision, hence the cap of 4. The closest pair (red/teal, colour-blind ΔE 7.9) is in the band where a second cue is required: each person also has a dash pattern and is named in labels and the list. Gold stays reserved for reunions, now a halo around the station so the person's colour still shows.
+- **Checked:** Rodgers and Hart 20 shows together, Rodgers and Hammerstein 9 (Oklahoma! to The Sound of Music), Rodgers and Sondheim 2. In 1943 Rodgers and Hammerstein are both at the St. James (Oklahoma!), shown as one label.
+
+## 2026-11-13: Career comparisons limited to related people
+
+- **Change (Ruby's request):** Career mode starts blank instead of on Rodgers. The first person chosen is the anchor; the "Compare with" dropdown lists only people who worked with the anchor on **2+ shows**, most shows first, tagged "reunion" when there was also a 5+ year reunion. Every person card has ×. Removing the anchor makes the next person the anchor and drops anyone unrelated to them; removing everyone returns to the blank state. Old links that mix unrelated people drop the unrelated ones.
+- **Why 2+ shows rather than the 5-year reunion rule:** under the 5-year rule Rodgers' list would be Hart, Logan, Sondheim and Charnin only; Hammerstein (9 shows, one continuous partnership) would be missing.
+- **Data note:** 1,666 of the 1,997 people with credits never worked with anyone on 2 shows, so for most people the dropdown is empty (the panel says so). The largest list is 13 (Sondheim). The first-person search lists only the 1,997 people with credits.
+
+## 2026-11-13: Cohort mode on stand-in communities (Ruby, views track)
+
+- **What:** the Cohort mode. Pick a cohort year; everyone on a show that opened then is a dot clustered at its theatre. Playing the timeline moves each dot to the theatre of the person's latest show (hollow when idle that year, faded after 10 idle years or after death; unknown theatres sit in a corner area). The panel lists every later show with 2+ cohort members as a **reunion** (starting teammates back together after 5+ years apart, the Career-mode rule), **still together**, or a **new pairing**; a gold halo marks reunion people in that year. Colour by starting show or by community. Clicking a dot opens the person's career.
+- **Why 5+ years here too:** counting any later show with starting teammates made 22 of the 1943 cohort's 25 later shows "reunions" (Rodgers & Hammerstein's whole run). With the rule: Weill & Kazan on *Love Life* (1948), Lerner & Loewe on *My Fair Lady* (1956, 5 years after *Paint Your Wagon*) and *Gigi* (1973), Dorothy & Herbert Fields on *Redhead* (1959).
+- **Stand-in communities:** `viz/js/communities.js` computes them in the browser, per step 08 window, by weighted label propagation (edge weight = shows shared; ties keep the current label so one shared person doesn't chain teams together). Same row format as step 11 (mode, cutoff, community_id, person_id, strength). When step 11's rows are exported as `db.communityRows`, the module uses them and the view is unchanged. Like BigCLAM, the stand-in separates Rodgers (Hart-era circle) from Hammerstein (*Oklahoma!*/*Carmen Jones* people) in 1935–1944.
+- **Colours:** seven categorical slots (blue, orange, aqua, violet, magenta, green, red) plus grey for the rest, validated with the dataviz script on the map land colour in light and dark, in that order. Yellow was left out (too close to the reunion gold). A year has a median of 8 shows (max 17), so the 7 largest teams get colours.
+- **Not built yet:** the community timeline panel (needs step 12's links between windows); H1 "above chance" glow (Trang's `h1.json` / `db.glows()` are on `bigclam-h3`, not merged into this branch yet).
+- **Data problem found (for the team):** `outputs/tables/suspect_strict_credits.csv` lists 35 strict credits on 31 shows where the person was under 16 or not yet born. Mostly revival or rewrite credits marked original (Aaron Sorkin on *Camelot* 1960, Thomas Kail on *Sweeney Todd* 1979, John Weidman on *Anything Goes* 1934); *Operation Mincemeat* dated 1943 (its subject's year, not its opening); and a few wrong people or placeholder birth years (b. 2000). These also enter steps 08, 10 and 11. Not fixed yet.
+
+## 2026-11-13: Web views published on GitHub Pages (Ruby)
+
+- **Live site:** https://rubyngo1610.github.io/broadway-network-reunion/ (Shows, Career and Cohort modes; Birthplaces and Compare are placeholders).
+- **How:** `main` was fast-forwarded to `single-map` (the six commits from "one map for every view" to "Cohort mode on stand-in communities") and pushed. The publish workflow (`.github/workflows/pages.yml`) ran on that push and succeeded; the deployed page was checked in headless Chrome (Cohort 1943 loads and plays, no console errors).
+- **Why the Nov 10 run failed:** `actions/configure-pages` stopped with "Get Pages site failed": the repository's Pages source was not yet set to GitHub Actions. It is set now (Settings → Pages → Source: GitHub Actions). Every push to `main` that changes `viz/` now republishes the site in about a minute, so anything merged to `main` is public.
+- **Not on the site yet:** Trang's `bigclam-h3` branch (H1 null model, BigCLAM, H3 test, `viz/data/h1.json`, `db.glows()`). It merges into `main` with one conflict, in `WORKLOG.md` (both branches added entries in the same place).
+
+**For the Nov 13 team meeting:**
+
+1. **Communities for the views:** who exports step 11's `communities.parquet` to `viz/data` (step 13), and whether step 12 (tracking communities across windows, `community_links.parquet`) is being built. The Cohort mode uses stand-in communities until then; `viz/js/communities.js` switches to the real rows without view changes. The community timeline panel waits on step 12.
+2. **Glow rule for reunions (H1):** with `h1.json`, p < 0.05 makes 342 of 416 strict reunions glow (82%), which singles little out; p < 0.01 gives 237 (57%), p < 0.05 with 2+ reunited pairs 273 (66%), p < 0.05 with a team of 4 or fewer 204 (49%). Ruby's suggestion: p < 0.01.
+3. **Suspect credits:** `outputs/tables/suspect_strict_credits.csv` (35 strict credits on 31 shows where the person was under 16 or not yet born). They also feed steps 08, 10, 11 and 15. Decide who fixes them (year and team overrides in `src/filters.py`, or a rule in step 05) and rerun 05 → 06 → 08 → 09 → 13 and Trang's steps afterwards.
+4. **Merging `bigclam-h3`** into `main`, which also publishes it.
 
 ## Open items (as of 2026-11-09)
 

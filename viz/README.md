@@ -30,7 +30,7 @@ One-time setup on GitHub:
 1. Open **Settings → Pages** and set **Source** to **GitHub Actions**.
 2. Merge to `main`, or run the workflow from the **Actions** tab.
 
-The site appears at `https://<owner>.github.io/<repo>/`. Free GitHub Pages needs a public repository.
+Live at **https://rubyngo1610.github.io/broadway-network-reunion/** (Pages source set to GitHub Actions on 2026-11-13). Every push to `main` that changes `viz/` republishes it, so whatever is merged to `main` is public. Free GitHub Pages needs a public repository.
 
 ## Layout
 
@@ -38,12 +38,15 @@ The site appears at `https://<owner>.github.io/<repo>/`. Free GitHub Pages needs
 |---|---|
 | `index.html` | Page shell: header, view navigation, one `<main>` the views render into, a shared tooltip |
 | `css/style.css` | Design tokens (colours, type) as CSS custom properties for light and dark mode, then layout. Restyle the project by changing the tokens, not the views |
-| `js/main.js` | Loads the data once, then renders the view named in the URL hash (`#data`, `#trajectory`, …) |
+| `js/main.js` | Loads the data once, builds the stage, then switches mode when the URL hash changes (`#shows?year=1927`, `#cohort`, …). Old page names (`#showmap`, `#trajectory`, `#multiples`) still work |
+| `js/stage.js` | **One map for every view.** Builds the mode bar, the shared timeline (year slider and play), the map and the side panel once. Switching modes animates the map instead of loading a new page; zoom and year carry over. The comment at the top defines the mode interface (`enter`, `setYear`, `exit`, `tip`, `onParams`); a mode can narrow the timeline with `ctx.setRange` |
+| `js/communities.js` | `communitiesFor(db, mode, cutoff)` returns communities in step 11's format. **Stand-in for now:** weighted label propagation on the window's co-credit graph, computed in the browser. When step 11's rows are exported as `db.communityRows`, it uses them instead; no view changes needed |
+| `js/modes/*.js` | One file per mode. `shows.js` is the NYC show map, `career.js` the trajectory, `cohort.js` the cohort view; `comingSoon.js` stands in for modes not built yet |
 | `js/data.js` | `loadData()` returns a `db` object: the raw tables, lookup maps (`showById`, `personById`, `theatreById`, `creditsByPerson`, `creditsByShow`, `showsByTheatre`) and helpers (`theatreOf`, `standing`, `career`) |
 | `js/manhattanMap.js` | **The shared zoomable map.** `createManhattanMap(container, db)` draws the Manhattan basemap (shoreline, parks, streets, squares), rotated to grid north. It handles zoom and pan (drag, scroll, or the + / − / ⌂ buttons) and returns `xy(lat, lon)`, `layer(name)`, `onZoom(fn)` and `zoomTo(points)`. Basemap lines keep their screen width; views re-place their dots on every zoom, so dots keep their size and spread apart as you zoom in. `drawTheatres(map, db)` adds every theatre |
 | `js/grid.js` | `toGrid(lat, lon)` converts to Manhattan grid units (street number, avenue number). Used by the data-check plot; could also be used for the small multiples |
 | `js/tooltip.js` | One shared tooltip |
-| `js/views/*.js` | One file per view, each exporting `render…(el, db)` |
+| `js/views/dataCheck.js` | The data check (`#data`, linked from the footer), shown in place of the stage |
 | `data/*.json` | Written by `scripts/13_export_viz_data.py`. Don't edit by hand |
 
 ## Data files
@@ -61,17 +64,19 @@ The site appears at `https://<owner>.github.io/<repo>/`. Free GitHub Pages needs
 
 **`strict` and `loose`** match the network modes of step 08. `strict` keeps credits confirmed as part of the original production; `loose` also keeps unknowns. Both drop posthumous credits. Views default to `strict`.
 
-## Views
+## Views (modes of one map)
 
-| Hash | View | Status |
+The page is one map with a mode bar above it. Each mode restyles the same map; nothing reloads.
+
+| Hash | Mode | Status |
 |---|---|---|
-| `#showmap` (default) | NYC show map: zoomable Manhattan; pick or play a year; theatres where a show opened that year are filled, with the year's openings listed. `#showmap?year=1927` opens a year | working |
-| `#trajectory` | One person's career as a path between theatres (on the shared map) | next |
-| `#birthplaces` | Birthplace map | planned |
-| `#cohort` | Cohort view (animated) | planned |
-| `#multiples` | Small-multiples baseline | planned |
-| `#data` | Data check: counts, coverage notes, theatres on the street grid with a year slider | working |
+| `#shows` (default) | Where each year's new musicals opened: theatres with an opening are filled, and the openings are listed. `#shows?year=1927` opens a year | working |
+| `#career` | Compare up to 4 people's careers as transit lines between theatres, each in its own colour and dash pattern. Stations grow with the number of shows; a gold halo marks a reunion (back with a collaborator after 5+ years apart). It starts blank: choose a person (search, or one of the most prolific). Others can then be added from a dropdown of people the first person worked with on 2+ shows, so comparisons are always between related people; every card has × to remove. The panel shows a card per person, shows the selected people did together, and one merged list of shows. Collaborator names that can be added are links. The timeline covers all years: lines are drawn up to the chosen year (the rest dotted). `#career?p=Q269094,Q319693&year=1943` is Rodgers and Hammerstein in 1943 (no year = whole careers; `p=` empty = blank; people unrelated to the first are dropped) | working |
+| `#cohort` | Pick a cohort year: everyone on a show that opened then is a dot, clustered at the theatre. Play the timeline and each dot moves to the theatre of the person's latest show (hollow when they have no show that year, faded after 10 idle years or after death; shows with no known theatre sit in a corner area). Gold halo = a reunion: starting teammates back together after 5+ years apart (same rule as Career); the panel lists every later show with 2+ cohort members as reunion, still together or new pairing, and clicking one jumps the timeline there. Colour by starting show (7 largest teams, the rest grey) or by community. Communities are a **stand-in** until step 11's output is exported (see `js/communities.js`). Clicking a dot opens that person's career. `#cohort?from=1943&color=community&year=1956` | working (stand-in communities) |
+| `#birthplaces` | Birthplaces; the map zooms out from Manhattan to the US and the world | planned (needs a US/world basemap) |
+| `#compare` | Small multiples: the map splits into a grid of five-year panels | planned |
+| `#data` | Data check: counts, coverage notes, theatres on the street grid. Linked from the footer, not the mode bar | working |
 
 ## Style
 
-Playbill / marquee for the page (cream paper, Playfair Display headings, Source Sans 3 text, a gold accent), a vintage atlas look for the map (tan blocks, sage parks, faded water, streets as paper showing through), and transit-diagram lines for careers. Colours are CSS custom properties in `css/style.css`, with a dark "marquee at night" mode. Gold marks reunions and highlights and is never used for body text (`--accent-ink` is the text-safe gold).
+Playbill / marquee for the page (cream paper, Playfair Display headings, Source Sans 3 text, a gold accent), a vintage atlas look for the map (tan blocks, sage parks, faded water, streets as paper showing through), and transit-diagram lines for careers. Colours are CSS custom properties in `css/style.css`, with a dark "marquee at night" mode. The four Career-mode colours (`--person-1` … `--person-4`) were checked with a colour-blindness validator in both modes; each also has a dash pattern, so colour is never the only cue. The Cohort dots use seven categorical colours (`--cat-1` … `--cat-7`, validated in this fixed order in both modes) plus grey for "other". Gold marks reunions and highlights and is never used for body text (`--accent-ink` is the text-safe gold).
