@@ -216,7 +216,29 @@ svg.map circle.t { transition: fill .4s, stroke .4s, stroke-width .4s; }
 .legend .key.standing { background: var(--surface-1); border: 1.5px solid var(--series-1); }
 .legend .key.gone { background: var(--map-theatre); opacity: 0.6; }
 
-/* trajectory (transit line) */
+/* career mode (transit line) */
+.picker { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 13px; color: var(--text-secondary); }
+.picker input { flex: 1; min-width: 0; font: 15px var(--font-ui); padding: 6px 8px; border: 1px solid var(--rule);
+  border-radius: var(--radius); background: var(--page); color: var(--text-primary); }
+.career-stats { margin: 0 0 8px; font-size: 14px; }
+.legend .key.line { width: 18px; height: 3px; border-radius: 2px; background: var(--series-1); vertical-align: 3px; }
+.legend .key.station { background: var(--surface-1); border: 2.5px solid var(--series-1); }
+.legend .key.reunion { background: var(--surface-1); border: 3px solid var(--accent); }
+.career-list { list-style: none; margin: 12px 0 0; padding: 0; font-size: 14px; }
+.career-list li { display: grid; grid-template-columns: 3.2em 1fr; gap: 6px; padding: 6px 4px; border-bottom: 1px solid var(--grid);
+  border-left: 3px solid transparent; transition: background .2s; }
+.career-list li.reunion { border-left-color: var(--accent); }
+.career-list li.active { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.career-list .yr { font-variant-numeric: tabular-nums; color: var(--text-secondary); font-weight: 600; }
+.career-list .roles { color: var(--text-muted); font-size: 12px; }
+.career-list .where { color: var(--text-secondary); font-size: 13px; }
+.career-list li.no-venue .where { font-style: italic; color: var(--text-muted); }
+.career-list .again { font-size: 12px; color: var(--accent-ink); }
+.career-list .again a, .career-list .still a { color: inherit; }
+.career-list .still { font-size: 12px; color: var(--text-muted); }
+svg.chart .station { cursor: pointer; transition: stroke-width .2s; }
+svg.chart .station.active { stroke-width: 5; }
+svg.chart .station-label { pointer-events: none; }
 svg.chart .career-line { fill: none; stroke: var(--series-1); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0.9; }
 svg.chart .station { fill: var(--surface-1); stroke: var(--series-1); stroke-width: 2.5; }
 svg.chart .station.reunion { stroke: var(--accent); stroke-width: 3.5; }

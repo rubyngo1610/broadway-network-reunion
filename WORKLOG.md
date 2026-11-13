@@ -382,6 +382,13 @@ The show map will show where teams worked within NYC as time passes, so each sho
 - **How it works:** `viz/js/stage.js` holds the map, the timeline and the panel. Each view is a mode in `viz/js/modes/` with `enter`, `setYear` and `exit`. Links still work (`#cohort?year=1943`, and old ones such as `#showmap`), and the data check moved to a link in the footer.
 - **Still to decide:** Birthplaces needs a US/world basemap; the plan is for the map to zoom out from Manhattan when that mode is entered. Compare (small multiples) will split the map into a grid of small copies.
 
+## 2026-11-13: Career mode (trajectory view)
+
+- **What:** the Career mode draws one person's strict-network credits as a transit line from theatre to theatre, in opening order, and zooms the map to fit. Stations grow with the number of shows at a theatre. The panel lists every show with role and theatre; hovering a row lights up its station. Collaborator names open that person's career on the same map.
+- **Reunion in this view:** a show counts as a reunion when the person works again with a collaborator after **5 or more years apart** (the step between cutoffs). Collaborators from the last 5 years are shown as "still with" instead. Counting every repeat collaborator made almost every show gold (29 of Rodgers' 35, nearly all Hart).
+- **Rodgers check:** 35 shows, 16 theatres, 5 reunions: Hart in 1925 (after *Poor Little Ritz Girl*, 1920), Joshua Logan on *South Pacific* (9 years after *Higher and Higher*), Sondheim in 1977 (12 years after *Do I Hear a Waltz?*), Martin Charnin in 1979 (9 years after *Two by Two*). All match the history.
+- **Known limits:** most theatres sit within a few blocks of Times Square, so the line knots there until you zoom in (theatre names appear from zoom 4). 4 of Rodgers' 35 shows have no known theatre and are listed but not mapped.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").

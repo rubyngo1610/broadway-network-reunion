@@ -8,6 +8,7 @@
 //     setYear(ctx, year)    the timeline moved (only called while the mode is active)
 //     exit(ctx)             remove its layers and listeners (fade them out if you like)
 //     tip(t, ctx)           optional: tooltip HTML for theatre t
+//     onParams(ctx)         optional: the URL changed while this mode is active (e.g. another person)
 //     params()              optional: extra URL parameters to keep in the hash, as an object }
 //
 // ctx = { db, map, panel, theatres: { dots, hits }, state: { year, params }, years, setYear }
@@ -82,6 +83,8 @@ export function createStage(el, db, modes, { startYear = 1927 } = {}) {
       next.enter(ctx);
       panel.animate([{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }],
         { duration: 280, easing: "ease-out" });
+    } else if (current.onParams) {
+      current.onParams(ctx);
     } else {
       current.setYear?.(ctx, state.year);
     }

@@ -5,17 +5,13 @@
 import { loadData } from "./data.js";
 import { createStage } from "./stage.js";
 import { showsMode } from "./modes/shows.js";
+import { careerMode } from "./modes/career.js";
 import { comingSoon } from "./modes/comingSoon.js";
 import { renderDataCheck } from "./views/dataCheck.js";
 
 const MODES = [
   showsMode(),
-  comingSoon({
-    id: "career", label: "Career", caption: "one person's path", usesYear: false,
-    title: "Career paths",
-    text: "Pick a person and follow their career show by show, with each role labelled. Earlier collaborators light up where they reunite.",
-    mapNote: "a transit-style line from theatre to theatre, and the map zooms to fit it.",
-  }),
+  careerMode(),
   comingSoon({
     id: "cohort", label: "Cohort", caption: "teams scatter and reunite", usesYear: true,
     title: "Cohorts",
