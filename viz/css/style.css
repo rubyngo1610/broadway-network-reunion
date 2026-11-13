@@ -260,8 +260,14 @@ svg.chart .station-label { fill: var(--text-primary); font-size: 11px; font-weig
 .chip-name { font: 700 17px/1.2 var(--font-display); }
 .chip-sub { font-size: 12px; color: var(--text-secondary); }
 .chip-stats { font-size: 13px; margin-top: 2px; }
-.chip-remove { flex: none; text-decoration: none; color: var(--text-muted); font-size: 20px; line-height: 1; padding: 0 2px; }
-.chip-remove:hover { color: var(--text-primary); }
+.stage-panel .chip-remove { flex: none; text-decoration: none; color: var(--text-muted); font-size: 20px; line-height: 1; padding: 0 2px; }
+.stage-panel .chip-remove:hover { color: var(--text-primary); }
+.picker select { flex: 1; min-width: 0; font: 14px var(--font-ui); padding: 6px 8px; border: 1px solid var(--rule);
+  border-radius: var(--radius); background: var(--page); color: var(--text-primary); }
+.picker select:disabled { color: var(--text-muted); border-color: var(--border); }
+.suggestions { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; font-size: 14px; }
+.stage-panel a { color: var(--text-primary); text-decoration-color: var(--axis); text-underline-offset: 2px; }
+.stage-panel a:hover { text-decoration-color: var(--accent); }
 .together { font-size: 13px; color: var(--text-secondary); margin: 0 0 8px; }
 .career-list .who { font-size: 12px; margin-top: 2px; }
 .career-list .selected { font-weight: 600; }

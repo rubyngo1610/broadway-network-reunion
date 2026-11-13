@@ -4,11 +4,14 @@
 // reunion (back with a collaborator after REUNION_GAP+ years apart). The timeline covers every
 // year in the data: each line is drawn up to the chosen year, the rest of the route dotted.
 //
-// URL: #career?p=Q269094,Q725828&year=1943  (no year = whole careers)
+// Starts blank. The first person chosen is the anchor: others can be added only if they worked
+// with the anchor on PARTNER_MIN+ shows, so every comparison is between related people.
+//
+// URL: #career?p=Q269094,Q725828&year=1943  (no year = whole careers; p= empty = blank)
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { esc, showTooltip, hideTooltip } from "../tooltip.js";
 
-const DEFAULT_PERSON = "Q269094";  // Richard Rodgers
+const PARTNER_MIN = 2;  // shows together needed to be offered as a comparison with the anchor
 const NETWORK = "strict";
 const REUNION_GAP = 5;  // years apart before working together again counts as a reunion (the cutoff step)
 const MAX_PEOPLE = 4;   // the palette has four validated slots (light and dark), see css --person-N
@@ -45,11 +48,25 @@ function buildCareer(db, personId) {
   return { shows, stations, path, span };
 }
 
+/** People who worked with personId on PARTNER_MIN+ shows: Map id -> shows together, most first. */
+const partnerCache = new Map();
+function partnersOf(db, personId) {
+  if (partnerCache.has(personId)) return partnerCache.get(personId);
+  const n = new Map();
+  for (const c of db.career(personId, NETWORK))
+    for (const m of new Set((db.creditsByShow.get(c.show) || []).filter(m => m[NETWORK]).map(m => m.person)))
+      if (m !== personId) n.set(m, (n.get(m) || 0) + 1);
+  const out = new Map([...n].filter(([, k]) => k >= PARTNER_MIN).sort((a, b) => b[1] - a[1]));
+  partnerCache.set(personId, out);
+  return out;
+}
+
 export function careerMode() {
   let root = null, offZoom = null, ctxRef = null;
   let people = [];            // [{ id, slot, career, g, grow, done, current }] in selection order
   let year = Infinity;        // the timeline year
   let hovered = null;         // theatre id under the pointer (map or list)
+  let lastSelection = [];     // remembered when leaving the mode and coming back via the mode bar
 
   const ids = () => people.map(p => p.id);
   const hrefFor = list => `#career?p=${list.join(",")}`;
@@ -175,11 +192,13 @@ export function careerMode() {
     const { db, panel } = ctx;
     const nameOf = id => db.personById.get(id)?.name ?? id;
     const multi = people.length > 1;
-    // collaborator names add that person to the comparison (replacing the last one when full)
+    // collaborator names add that person when they worked with the anchor on PARTNER_MIN+ shows
+    const partners = people.length ? partnersOf(db, people[0].id) : new Map();
+    const full = people.length >= MAX_PEOPLE;
     const linkTo = id => {
       if (ids().includes(id)) return `<span class="selected">${esc(nameOf(id))}</span>`;
-      const next = ids().length < MAX_PEOPLE ? [...ids(), id] : [...ids().slice(0, -1), id];
-      return `<a href="${hrefFor(next)}" title="Add to the comparison">${esc(nameOf(id))}</a>`;
+      if (!partners.has(id) || full) return esc(nameOf(id));
+      return `<a href="${hrefFor([...ids(), id])}" title="Add to the comparison">${esc(nameOf(id))}</a>`;
     };
     const names = (list, extra = () => "", max = 5) => list.slice(0, max).map(id => linkTo(id) + extra(id)).join(", ")
       + (list.length > max ? ` and ${list.length - max} more` : "");
@@ -197,8 +216,20 @@ export function careerMode() {
       .map(([, list]) => list)
       .sort((a, b) => a[0].s.year - b[0].s.year || people.indexOf(a[0].p) - people.indexOf(b[0].p));
 
-    const full = people.length >= MAX_PEOPLE;
-    const options = db.people.map(q => `<option value="${esc(q.name + lifespan(q))}"></option>`).join("");
+    if (!people.length) return fillBlank(ctx);
+    const anchor = shortName(people[0].id);
+    const reunitedWith = new Set(people[0].career.shows.flatMap(s => s.reunited));
+    const choices = [...partners].filter(([id]) => !ids().includes(id));
+    const compare = !partners.size
+      ? `<p class="hint">${esc(nameOf(people[0].id))} never worked with anyone on ${PARTNER_MIN}+ shows in our data, so there is no one to compare with.</p>`
+      : `<label class="picker"><span>Compare with</span>
+          <select ${full || !choices.length ? "disabled" : ""}>
+            <option value="">${full ? `Up to ${MAX_PEOPLE} people: remove someone first`
+              : choices.length ? `Add a collaborator (${choices.length})` : "Everyone is already on the map"}</option>
+            ${choices.map(([id, k]) => `<option value="${id}">${esc(nameOf(id))} · ${k} shows together${reunitedWith.has(id) ? " · reunion" : ""}</option>`).join("")}
+          </select>
+        </label>
+        <p class="hint">People ${esc(anchor)} worked with on ${PARTNER_MIN}+ shows, most shows first.</p>`;
     panel.innerHTML = `
       <div class="people-chips">
         ${people.map(p => {
@@ -212,14 +243,11 @@ export function careerMode() {
               <div class="chip-stats">${c.shows.length} shows · ${c.stations.length} theatres · ${nRe} reunion${nRe === 1 ? "" : "s"}
                 <span class="career-progress" data-id="${p.id}"></span></div>
             </div>
-            ${multi ? `<a class="chip-remove" href="${hrefFor(ids().filter(x => x !== p.id))}" aria-label="Remove ${esc(q?.name ?? p.id)}" title="Remove">×</a>` : ""}
+            <a class="chip-remove" href="${hrefFor(ids().filter(x => x !== p.id))}" aria-label="Remove ${esc(q?.name ?? p.id)}" title="Remove">×</a>
           </div>`;
         }).join("")}
       </div>
-      <label class="picker"><span>Compare with</span>
-        <input type="search" list="career-people" placeholder="${full ? `Up to ${MAX_PEOPLE} people: remove someone first` : "Type a name…"}" ${full ? "disabled" : ""}>
-      </label>
-      <datalist id="career-people">${options}</datalist>
+      ${compare}
       ${together.length ? `<p class="together">${together.join("<br>")}</p>` : ""}
       <div class="legend">
         <span><span class="key station"></span>theatre</span>
@@ -243,15 +271,36 @@ export function careerMode() {
       </ol>
       ${rows.length ? "" : `<p class="hint">No credits in the ${NETWORK} network for this selection.</p>`}`;
 
-    const byLabel = new Map(db.people.map(q => [q.name + lifespan(q), q.id]));
-    const input = panel.querySelector(".picker input");
-    input.addEventListener("change", () => {
-      const id = byLabel.get(input.value) ?? db.people.find(q => q.name.toLowerCase() === input.value.trim().toLowerCase())?.id;
-      if (id && !ids().includes(id) && people.length < MAX_PEOPLE) location.hash = hrefFor([...ids(), id]);
+    panel.querySelector(".picker select")?.addEventListener("change", ev => {
+      if (ev.target.value) location.hash = hrefFor([...ids(), ev.target.value]);
     });
     panel.querySelectorAll(".career-list li").forEach(li => {
       li.addEventListener("pointerenter", () => li.dataset.theatre && highlight(li.dataset.theatre));
       li.addEventListener("pointerleave", () => highlight(null));
+    });
+  }
+
+  /** Blank state: search everyone with credits, plus a few prolific people to start from. */
+  function fillBlank(ctx) {
+    const { db, panel } = ctx;
+    const withCredits = db.people.filter(q => db.career(q.id, NETWORK).length);
+    const top = [...withCredits].sort((a, b) => db.career(b.id, NETWORK).length - db.career(a.id, NETWORK).length).slice(0, 8);
+    panel.innerHTML = `
+      <h2>Career paths</h2>
+      <p class="sub">Choose a person to draw their career from theatre to theatre. Then compare it with
+        up to ${MAX_PEOPLE - 1} people they worked with again (${PARTNER_MIN}+ shows together).</p>
+      <label class="picker"><span>Person</span>
+        <input type="search" list="career-people" placeholder="Type a name…" autocomplete="off">
+      </label>
+      <datalist id="career-people">${withCredits.map(q => `<option value="${esc(q.name + lifespan(q))}"></option>`).join("")}</datalist>
+      <p class="hint">Or start with one of the most prolific:</p>
+      <ul class="suggestions">${top.map(q => `<li><a href="${hrefFor([q.id])}">${esc(q.name)}</a>
+        <span class="roles">${db.career(q.id, NETWORK).length} shows</span></li>`).join("")}</ul>`;
+    const byLabel = new Map(withCredits.map(q => [q.name + lifespan(q), q.id]));
+    const input = panel.querySelector(".picker input");
+    input.addEventListener("change", () => {
+      const id = byLabel.get(input.value) ?? withCredits.find(q => q.name.toLowerCase() === input.value.trim().toLowerCase())?.id;
+      if (id) location.hash = hrefFor([id]);
     });
   }
 
@@ -279,7 +328,7 @@ export function careerMode() {
 
   /** Make the selection match `wanted` (list of ids): keep existing people (and their colours),
    *  add new ones in free slots with a drawing animation, fade out the rest. */
-  function select(ctx, wanted) {
+  function select(ctx, wanted, { keepYear = false } = {}) {
     const before = people;
     const keep = before.filter(p => wanted.includes(p.id));
     for (const p of before) if (!keep.includes(p)) p.g.transition().duration(250).attr("opacity", 0).remove();
@@ -294,7 +343,8 @@ export function careerMode() {
     }
     // if the timeline was showing whole careers, keep doing so for the new selection
     const endOf = list => d3.max(list, p => p.career.span?.[1]);
-    const wasAtEnd = before.length && year >= endOf(before);
+    // (from a blank slate, a newly chosen person also starts with their whole career)
+    const wasAtEnd = before.length ? year >= endOf(before) : !keepYear;
     people = wanted.map(id => keep.find(p => p.id === id));
     if (wasAtEnd && endOf(people) > year) { year = endOf(people); ctx.state.year = year; ctx.setYear(year); }
     for (const p of added) drawPerson(p, true);
@@ -302,13 +352,19 @@ export function careerMode() {
     applyYear(year, { scroll: false });
     const pts = people.flatMap(p => p.career.stations.map(s => [s.theatre.lat, s.theatre.lon]));
     ctx.map.zoomTo(pts, { pad: 120, duration: 900 });
+    lastSelection = ids();
     if (before.length) ctx.panel.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 250 });
   }
 
+  /** The selection named in the URL: the first person is the anchor; anyone else who isn't one
+   *  of the anchor's partners is dropped (e.g. after the anchor was removed). No p = last time. */
   function wantedFromUrl(ctx) {
-    const raw = (ctx.state.params.get("p") || "").split(",").map(s => s.trim()).filter(id => ctx.db.personById.has(id));
-    const list = [...new Set(raw)].slice(0, MAX_PEOPLE);
-    return list.length ? list : (people.length ? ids() : [DEFAULT_PERSON]);
+    if (!ctx.state.params.has("p")) return lastSelection;
+    const raw = ctx.state.params.get("p").split(",").map(s => s.trim()).filter(id => ctx.db.personById.has(id));
+    const [anchor, ...rest] = [...new Set(raw)];
+    if (!anchor) return [];
+    const partners = partnersOf(ctx.db, anchor);
+    return [anchor, ...rest.filter(id => partners.has(id))].slice(0, MAX_PEOPLE);
   }
 
   return {
@@ -328,7 +384,7 @@ export function careerMode() {
         if (end) ctx.setYear(end);
       }
       year = ctx.state.year;
-      select(ctx, wanted);
+      select(ctx, wanted, { keepYear: true });
     },
 
     /** Same mode, new URL: people added or removed, or the year changed (back/forward). */

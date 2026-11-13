@@ -397,6 +397,12 @@ The show map will show where teams worked within NYC as time passes, so each sho
 - **Colours:** validated with the dataviz palette script against the map land colour, all pairs, light and dark. Light: #9b2335 red, #2a78d6 blue, #0b7f63 teal, #b8459f magenta. Dark: #e8584a, #3987e5, #14907a, #c158b8. A fifth hue could not be separated from these even for normal vision, hence the cap of 4. The closest pair (red/teal, colour-blind ΔE 7.9) is in the band where a second cue is required: each person also has a dash pattern and is named in labels and the list. Gold stays reserved for reunions, now a halo around the station so the person's colour still shows.
 - **Checked:** Rodgers and Hart 20 shows together, Rodgers and Hammerstein 9 (Oklahoma! to The Sound of Music), Rodgers and Sondheim 2. In 1943 Rodgers and Hammerstein are both at the St. James (Oklahoma!), shown as one label.
 
+## 2026-11-13: Career comparisons limited to related people
+
+- **Change (Ruby's request):** Career mode starts blank instead of on Rodgers. The first person chosen is the anchor; the "Compare with" dropdown lists only people who worked with the anchor on **2+ shows**, most shows first, tagged "reunion" when there was also a 5+ year reunion. Every person card has ×. Removing the anchor makes the next person the anchor and drops anyone unrelated to them; removing everyone returns to the blank state. Old links that mix unrelated people drop the unrelated ones.
+- **Why 2+ shows rather than the 5-year reunion rule:** under the 5-year rule Rodgers' list would be Hart, Logan, Sondheim and Charnin only; Hammerstein (9 shows, one continuous partnership) would be missing.
+- **Data note:** 1,666 of the 1,997 people with credits never worked with anyone on 2 shows, so for most people the dropdown is empty (the panel says so). The largest list is 13 (Sondheim). The first-person search lists only the 1,997 people with credits.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").
