@@ -109,6 +109,7 @@ export function createStage(el, db, modes, { startYear = 1927 } = {}) {
   slider.addEventListener("input", () => { stop(); setYear(+slider.value); });
 
   // play through the years
+  const YEAR_MS = 1000;   // play speed: one year per second
   let timer = null;
   function stop() { if (timer) { timer.stop(); timer = null; playBtn.textContent = "▶ Play"; } }
   playBtn.addEventListener("click", () => {
@@ -116,7 +117,7 @@ export function createStage(el, db, modes, { startYear = 1927 } = {}) {
     playBtn.textContent = "❚❚ Pause";
     let last = 0;
     timer = d3.timer(elapsed => {
-      if (elapsed - last < 450) return;
+      if (elapsed - last < YEAR_MS) return;
       last = elapsed;
       setYear(state.year >= range[1] ? range[0] : state.year + 1);
     });

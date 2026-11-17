@@ -64,6 +64,7 @@ function buildCohort(db, from) {
 export function cohortMode() {
   let root = null, pen = null, labelG = null, offZoom = null, ctxRef = null;
   let cohort = null, from = null, colorBy = "show", year = null, focus = null;
+  let seats = new Map();   // member id -> { key: theatre id or "pen", i: seat number in that theatre's sunflower }
   let comm = null;   // { cutoff, method, slotOf: Map communityId -> slot, ranked: [{ id, members }] }
 
   // --- state at a year --------------------------------------------------------------------------
@@ -96,22 +97,42 @@ export function cohortMode() {
 
   // --- map --------------------------------------------------------------------------------------
 
+  /** Seats are sticky: a member keeps their seat while their theatre stays the same, so a dot only
+   *  moves when that person's latest show (and so their theatre) changes. Newcomers take the lowest
+   *  free seat; seats of people who left are freed. (Fading or recolouring never moves a dot.) */
+  function assignSeats() {
+    const keyOf = m => m.st.theatre?.id ?? "pen";
+    const taken = new Map();   // key -> Set of seat numbers
+    const newcomers = [];
+    for (const m of cohort.members) {
+      const old = seats.get(m.id), key = keyOf(m);
+      if (old && old.key === key) {
+        if (!taken.has(key)) taken.set(key, new Set());
+        taken.get(key).add(old.i);
+      } else newcomers.push(m);
+    }
+    newcomers.sort((a, b) => ((colourSlot(a) ?? 99) - (colourSlot(b) ?? 99)) || d3.ascending(a.id, b.id));
+    for (const m of newcomers) {
+      const key = keyOf(m);
+      if (!taken.has(key)) taken.set(key, new Set());
+      const used = taken.get(key);
+      let i = 0;
+      while (used.has(i)) i++;
+      used.add(i);
+      seats.set(m.id, { key, i });
+    }
+  }
+
   /** Screen positions: dots sharing a theatre are laid out in a sunflower around it. */
   function positions() {
     const { map } = ctxRef;
-    const groups = d3.groups(cohort.members, m => m.st.theatre?.id ?? "pen");
     const pos = new Map();
-    for (const [key, list] of groups) {
-      list.sort((a, b) => (a.st.faded - b.st.faded) || ((colourSlot(a) ?? 99) - (colourSlot(b) ?? 99)) || d3.ascending(a.id, b.id));
-      if (key === "pen") {
-        list.forEach((m, i) => pos.set(m.id, [26 + (i % 12) * 10, map.height - 40 - Math.floor(i / 12) * 10]));
-        continue;
-      }
-      const [x, y] = map.xy(list[0].st.theatre.lat, list[0].st.theatre.lon);
-      list.forEach((m, i) => {
-        const r = SPACING * Math.sqrt(i), a = i * 2.39996;   // golden angle
-        pos.set(m.id, [x + r * Math.cos(a), y + r * Math.sin(a)]);
-      });
+    for (const m of cohort.members) {
+      const { key, i } = seats.get(m.id);
+      if (key === "pen") { pos.set(m.id, [26 + (i % 12) * 10, map.height - 40 - Math.floor(i / 12) * 10]); continue; }
+      const [x, y] = map.xy(m.st.theatre.lat, m.st.theatre.lon);
+      const r = SPACING * Math.sqrt(i), a = i * 2.39996;   // golden angle
+      pos.set(m.id, [x + r * Math.cos(a), y + r * Math.sin(a)]);
     }
     return pos;
   }
@@ -125,7 +146,7 @@ export function cohortMode() {
     const halo = root.selectAll("circle.chalo");
     (animate ? halo.transition("move").duration(550).ease(d3.easeCubicInOut) : halo)
       .attr("cx", m => pos.get(m.id)[0]).attr("cy", m => pos.get(m.id)[1]);
-    const inPen = cohort.members.filter(m => !m.st.theatre).length;
+    const inPen = d3.max(cohort.members.filter(m => !m.st.theatre), m => seats.get(m.id).i + 1) ?? 0;
     pen.attr("display", inPen ? null : "none")
       .select("text").attr("x", 21).attr("y", ctxRef.map.height - 52 - Math.floor((inPen - 1) / 12) * 10);
     placeLabels();
@@ -139,6 +160,7 @@ export function cohortMode() {
   function update(y, animate = true) {
     year = y;
     for (const m of cohort.members) m.st = statusAt(m, y);
+    assignSeats();
     const nowReunited = new Set(cohort.events.filter(e => e.year === y && e.reunion).flatMap(e => e.reunited));
     root.selectAll("circle.cdot")
       .attr("class", m => `cdot ${slotClass(m)}${m.st.working ? " working" : ""}${m.st.faded ? " faded" : ""}${focus && !focus(m) ? " dim" : ""}`);
@@ -274,6 +296,7 @@ export function cohortMode() {
 
   function build(ctx, { yearFromUrl } = {}) {
     cohort = buildCohort(ctx.db, from);
+    seats = new Map();
     setupCommunities();
     root.selectAll("*").remove();
     labelG.selectAll("*").remove();
