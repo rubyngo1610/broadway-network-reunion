@@ -473,3 +473,28 @@ svg.chart .cdot.picked { stroke: var(--text-primary); stroke-width: 2.5; }
 }
 .map-seg { margin: 8px 0 2px; }
 .comm-legend li { cursor: default; }
+
+/* Collaboration graph tab (prototype): js/modes/graph.js */
+.graph-host { background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.graph-svg { width: 100%; height: 100%; display: block; cursor: grab; }
+.g-edge { stroke: var(--text-muted); stroke-opacity: .55; }
+.g-edge.repeat { stroke: var(--accent); stroke-opacity: 1; }
+.g-edge.sel { stroke: var(--series-1); stroke-opacity: 1; }
+.g-hit { stroke: transparent; stroke-width: 9; cursor: pointer; }
+.g-node { stroke: var(--surface-1); stroke-width: 1; cursor: pointer; }
+.g-node.new { stroke: var(--text-primary); stroke-width: 1.8; stroke-dasharray: 2 1.5; }
+.g-node.sel { stroke: var(--series-1); stroke-width: 3; }
+.g-label { font: 11px var(--font-ui); fill: var(--text-primary); pointer-events: none;
+  paint-order: stroke; stroke: var(--surface-1); stroke-width: 3px; }
+.graph-svg .dim { opacity: .12; }
+.g-controls { display: grid; grid-template-columns: max-content max-content; align-items: center; gap: 8px 12px;
+  margin: 10px 0; font-size: 13px; color: var(--text-secondary); }
+.g-controls .seg { justify-self: start; }
+.g-key { display: inline-block; width: 18px; border-top: 2px solid var(--text-muted); vertical-align: middle; margin-right: 6px; }
+.g-key.repeat { border-top: 3px solid var(--accent); }
+.g-key-ring { display: inline-block; width: 9px; height: 9px; border-radius: 50%; border: 1.5px dashed var(--text-primary);
+  vertical-align: -1px; margin-right: 6px; }
+.g-career { margin: 4px 0 8px; padding-left: 20px; font-size: 13px; color: var(--text-secondary); }
+.g-career li.shared { color: var(--text-primary); font-weight: 600; }
+.g-career li.future { opacity: .45; }
+.stage-panel h4 { margin: 12px 0 2px; font-size: 14px; }

@@ -801,6 +801,71 @@ The show map will show where teams worked within NYC as time passes, so each sho
 - Styles in `style.css` under "Shuffle careers button".
 - Checked in headless Chrome, light and dark, for the 1930s and 1980s windows.
 
+## 2026-11-23: Collaboration graph tab, prototype (Trang)
+
+- **Why:** the professor suggested a collaboration graph independent of the map. On the map most theatres sit close together, so teams pile up in Midtown. A graph shows who is linked to whom, which is what H1 and H3 actually test.
+- **Where:** a new tab, **Collaboration graph** (`#graph`), in `viz/js/modes/graph.js`. It draws its graph in place of the map (the map comes back when you leave the tab) and uses the shared timeline. Additions to `main.js` and `style.css` are commented "Collaboration graph tab".
+- **What is drawn:** each dot is a person and each line joins two people who shared a show (strict credits). The timeline year Y shows the 10-year window Y−9 to Y (W = 10, as in the models), or every show up to Y ("everything so far"). Play moves one year at a time: people already on screen keep their place, and newcomers appear next to a collaborator.
+- **What decides the sizes:**
+
+  | Mark | Size or colour set by |
+  |---|---|
+  | Dot size, "shows" (default) | The person's number of shows in the window. Radius = 2.5 + 2.2 × √shows, so area grows with shows: big = prolific |
+  | Dot size, "collaborators" | The person's number of distinct collaborators (lines) in the window. Radius = 2.5 + 2.2 × √(lines ÷ 2). One 15-person team gives everyone 14 lines from a single show, so this mostly measures team size, the confound that hurt BigCLAM |
+  | Line width | Shows the pair did together **inside the window**: 0.9 px for one show, +1.4 px for each extra show (+0.8 px when gold) |
+  | Line colour | Gold when the pair had done 2+ shows together by year Y, also counting shows before the window (repeat collaborators). Grey otherwise |
+  | Dashed ring | The person's first Broadway credit in our data is in year Y |
+  | Dot colour | None, or the person's strongest BigCLAM community in the model window nearest to Y−9 to Y (`models.json`, step 11). The 7 largest communities get colours, the rest grey. Each colour is mostly one show's team: the H3 failure made visible |
+
+- **Position:** a force layout. Linked people pull together and everyone pushes everyone apart, so each show's team forms a tight cluster and people who bridge teams sit between clusters. Distances are only roughly meaningful. The motion after each change is the layout settling (about 2 s), not data.
+- **Interaction:** hover for names. Click a line to list both careers (shared shows in bold) with a link that opens both on the Cohort & Career maps; click a person for their career. Drag to rearrange, scroll to zoom. Labels mark the 8 people with the most shows in the window.
+- **Focus view:** clicking a person (or a line) pauses the layout and glides, in 0.65 s with an ease-in-out and no bounce, the selection to the centre (a pair side by side) and everyone they worked with in the window to evenly spaced spots on a ring around them, in the order they already sat, so nobody crosses over. A big ring alternates two radii. Everyone else stays where they were but fades to 6% and can't be hovered or clicked, and only the selection's own lines are drawn; lines between people on the ring are hidden. The user can then only (1) hover or click one of those lines, (2) click someone on the ring to glide them into the centre, or (3) click anywhere else (or "clear") to glide everyone back to where they were in the full graph. The view pans back to the centre on each change. Example: Sondheim in 1969–1978 has 20 collaborators on the ring; only those 20 lines and 21 people respond to the mouse (of 279 people).
+- **URL:** `#graph?year=1960&span=window|all&size=shows|lines&colour=none|comm&pair=Q1,Q2&person=Q1`, e.g. `#graph?year=1960&pair=Q175078,Q329849` (Comden & Green).
+- **Sizes seen:** a 10-year window has about 160–250 people and 400–750 lines, readable. "Everything so far" by 1990 is 1,374 people and 4,547 lines, one tangle, so the 10-year window is the default.
+- **Drawing without the stylesheet:** in one browser the graph rules of `style.css` didn't apply, so lines had no stroke colour (invisible) and the panel controls lost their layout. `graph.js` now also sets line, dot and label colours as SVG attributes (resolved from the theme tokens each render) and the control layout inline, so the graph draws either way; the CSS rules set the same values and win where they apply.
+- **Open:** whether it replaces or sits beside the cohort map in Cohort & Career (decide with Ruby). Checked in headless Chrome (dark mode) for 1934–43, 1950–59 with communities, and 1951–60 with a pair selected.
+
+## 2026-11-23: "Various Artists" removed (data error, Trang)
+
+- **Error:** three placeholder credits were parsed as people: **Various Artists** (15 strict credits as composer or lyricist), **Various Composers** and **Various Lyricists** (1 each). They come from jukebox and revue musicals whose songs have many writers: *Oh! Calcutta!*, *The 1940's Radio Hour*, *Swinging on a Star*, *Marlene*, *Come Fly Away*, *Everyday Rapture*, *Million Dollar Quartet*, *Baby It's You!*, *Priscilla, Queen of the Desert*, *After Midnight*, *Motown: The Musical*, *Beautiful*, *The Cher Show*, *A Wonderful World*, *Buena Vista Social Club* and *Dirty Dancing*. "Various Artists" became a fake hub in the collaboration graph, linking every team on those shows.
+- **Why it got through:** `looks_like_name` in `src/wikitext.py` rejected a name only when it was exactly "various".
+- **Fixed in the pipeline:** `looks_like_name` now rejects any name starting with "Various", so step 04 marks these as implausible and step 05 keeps them out of `credits` (as it does for other implausible names). Takes effect on the next rerun from step 04.
+- **Fixed in the site now:** `viz/js/data.js` drops people whose name starts with "Various" on load, along with their credits, reunion rows, model pairs and community rows, so every tab (Collaboration graph, Cohort & Career, Chance, Predict) leaves them out: 3,186 people instead of 3,189.
+- **Not yet fixed:** the exported files and the H1/H3 results still include them: 20 of 9,681 strict reunion rows, 20 of 9,681 model pairs, and 9 BigCLAM (8 weighted) community rows. A rerun of steps 04→17 removes them there; the effect on the H1 and H3 numbers should be small, but it isn't measured yet. The other suspect credits (`outputs/tables/suspect_strict_credits.csv`, plus loose-only junk such as "Artistic Director") are still open.
+
+## 2026-11-23: Other junk "people" removed from the site (Trang)
+
+- **Error:** 11 entries in the strict credits aren't people (13 credits, 84 of 9,681 strict reunion rows):
+  - **"revue"** (`Q918727`): Wikidata's item for the *revue* genre, linked as book writer of *Don't Bother Me, I Can't Cope* (1972), *Side by Side by Sondheim* (1977) and *Eubie!* (1978). Because it sits on three shows it made fake reunions: most of the 84 rows, and it showed up on Sondheim's ring in the collaboration graph.
+  - **Pieces of titles or text parsed as names:** "Filipino", "If", "Earth", "Wind", "Panama", "He", "Act", "Warriors", "The Ham Tree", "Gentlemen Prefer Blondes".
+- **Fixed in the site:** `JUNK_IDS` in `viz/js/data.js` drops them on load with the "Various …" placeholders (same code path: credits, reunion rows, model pairs and community rows). 3,175 people now instead of 3,189.
+- **Not fixed yet:** the pipeline still produces them, and the H1/H3 numbers include them. Mark them EXCLUDE in step 05's manual review and rerun 05→17. The fake "revue" reunions slightly inflate the observed reunion counts for the 1965–1975 windows.
+- **Kept on purpose (need merging, not removal):** surname-only entries that are real people already in the data under their full name, e.g. "Robbins" (Fiddler, Forum), "Prince" and "Fuller" (Merrily), "Sherrin" (Side by Side by Sondheim), "Kidd", "Logan", "Tharp", "Ockrent", "Greif"; and "Additional Lyrics Betty Comden" / "Additional Music Jule Styne" (Peter Pan), which should map to Comden and Styne. Until merged, each of these is a second, separate dot for the same person.
+
+## 2026-11-23: Insight: Broadway's network breaks into islands after the 1960s (Trang)
+
+- **Seen first in the collaboration graph:** playing the timeline, the graph is one tight bunch until about the 1960s and then falls apart into many small separate pieces.
+- **Checked in the data:** `scripts/18_network_fragmentation.py` (new step 18) measures, per 10-year window, the **big bunch** (share of the window's people in the largest connected piece, i.e. connected through some chain of collaborators). Table: `outputs/tables/network_fragmentation.{csv,md}`.
+
+  | Windows | Big bunch | Separate pieces | Pairs who repeat in the window | People with 3+ shows |
+  |---|---|---|---|---|
+  | 1910–1964 | 69–84% (peak 84%, 1955–64) | 12–20 | 4–12% | 12–21% |
+  | 1965–1984 | 50–58% | 33–38 | 2.4–3.5% | 7–12% |
+  | 1980–2009 | **10–22%** | 32–57 | 1–2% | 2–5% |
+  | 2005–2019 | 38–61% | 34–48 | ~2% | 5–8% |
+  | 2015–2024 | 24% | 42 | 1.5% | 4% |
+
+- **Not team size:** average team size stays at 3–4 people in every window.
+- **The glue disappears:** the prolific core, people with 3+ shows in a window, shrinks from about 20% of creators (1910s–1930s) to 2–5% (1980s–2000s), and each show brings more new faces (people per show 1.7 → 2.9). Repeat pairs fall from about 12% (1920s) to 1–2%, the same decline as in steps 08 and 16.
+- **Who glues it together:** the people whose removal shrinks the big bunch the most. Early on these are prolific writers (Cole Porter, Guy Bolton, Kurt Weill, Jule Styne, Abe Burrows); from the 1950s more often directors and choreographers who work across teams (Onna White, Herbert Ross, Joe Layton, Susan Stroman, Casey Nicholaw). After 1980 single bridges matter a lot: the 2010–2019 rebound to 61% rests largely on Casey Nicholaw (removing him alone drops it 8 points), so the rebound is fragile.
+- **Caveats:**
+  - The measure is sensitive to a single bridge.
+  - Surname-only duplicate people (see the junk-names entry) split one person's links across two dots and can make the network look more broken than it is.
+  - It's worth checking whether recent shows have fewer strict credits recorded.
+  - This is correlation. Explanations to test: the end of the producer-run studio era, more revivals and jukebox musicals, more creators from outside Broadway (film, pop music).
+- **Why it matters for the project:** it explains why reunions are rare and getting rarer, and it gives the collaboration graph a guided question.
+- **In the collaboration graph tab:** the panel now shows the big-bunch share for the current graph and a small line of it for every 10-year window (dot = current window; clicking the line jumps the timeline there), with the prompt "Play from 1940 to 2010: what happens to the big bunch?". It computes the same measure in the browser (`giantShare` in `graph.js`), and gives 84% for 1955–1964 and 13% for 1980–1989, matching step 18.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").

@@ -158,6 +158,8 @@ def looks_like_name(s: str) -> bool:
     s = re.sub(r",\s*(Jr|Sr)\.?$", r" \1.", s.strip())
     if not s or s.lower() in _NOT_NAMES | _ROLE_WORDS or any(c.isdigit() for c in s):
         return False
+    if re.match(r"various\b", s, re.I):   # 'Various Artists', 'Various Composers', ... on jukebox musicals
+        return False
     return bool(_NAME_RE.match(s)) and 1 <= len(s.split()) <= 6
 
 

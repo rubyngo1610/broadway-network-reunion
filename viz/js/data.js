@@ -55,11 +55,34 @@ function expandModels(raw) {
   };
 }
 
+/** Placeholder credits parsed as people ("Various Artists", "Various Composers", "Various
+ *  Lyricists" on jukebox musicals). Not people, so every view drops them on load. The pipeline
+ *  (src/wikitext.py looks_like_name) now rejects them too; until it is rerun they are still in
+ *  the exported files and in the H1/H3 numbers. (Trang, 2026-11-23) */
+const NOT_A_PERSON = /^various\b/i;
+
+/** Junk "people" in strict credits, dropped on load the same way (Trang, 2026-11-23). Not in this
+ *  list on purpose: surname-only duplicates of real people ("name:robbins", "name:prince", …) and
+ *  "Additional Lyrics Betty Comden" / "Additional Music Jule Styne", which need merging, not
+ *  dropping. The pipeline still produces these until they are marked EXCLUDE in step 05's review. */
+const JUNK_IDS = new Set([
+  "Q918727",                          // "revue": Wikidata's revue concept, linked as book writer of 3 revues
+  "name:filipino", "name:if", "name:earth", "name:wind", "name:panama", "name:he", "name:act",
+  "name:warriors", "name:the ham tree", "name:gentlemen prefer blondes",   // pieces of titles or text
+]);
+
 export async function loadData() {
-  const [[meta, theatres, shows, people, credits, reunionsRaw, basemap], h1Raw, modelsRaw] = await Promise.all([
+  const [[meta, theatres, shows, peopleRaw, creditsRaw, reunionsRaw, basemap], h1Raw, modelsRaw] = await Promise.all([
     Promise.all(FILES.map(fetchJson)), fetchOptional("h1"), fetchOptional("models")]);
+  const dropped = new Set(peopleRaw.filter(p => NOT_A_PERSON.test(p.name) || JUNK_IDS.has(p.id)).map(p => p.id));
+  const people = peopleRaw.filter(p => !dropped.has(p.id));
+  const credits = creditsRaw.filter(c => !dropped.has(c.person));
   const h1 = expandH1(h1Raw);
   const models = expandModels(modelsRaw);
+  if (models) {
+    models.pairs = models.pairs.filter(p => !dropped.has(p.person_a) && !dropped.has(p.person_b));
+    for (const k of Object.keys(models.communities)) models.communities[k] = models.communities[k].filter(r => !dropped.has(r.person_id));
+  }
 
   const theatreById = new Map(theatres.map(t => [t.id, t]));
   const showById = new Map(shows.map(s => [s.id, s]));
@@ -69,7 +92,8 @@ export async function loadData() {
   const cols = meta.columns.reunions;
   const reunions = {};
   for (const [mode, rows] of Object.entries(reunionsRaw)) {
-    reunions[mode] = rows.map(r => Object.fromEntries(cols.map((c, i) => [c, r[i]])));
+    reunions[mode] = rows.map(r => Object.fromEntries(cols.map((c, i) => [c, r[i]])))
+      .filter(r => !dropped.has(r.person_a) && !dropped.has(r.person_b));   // placeholders (NOT_A_PERSON)
   }
 
   const db = {
