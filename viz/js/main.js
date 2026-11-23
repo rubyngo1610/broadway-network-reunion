@@ -8,6 +8,7 @@ import { showsMode } from "./modes/shows.js";
 import { cohortCareerMode } from "./modes/cohortCareer.js";
 import { chanceMode } from "./modes/chance.js";
 import { predictMode } from "./modes/predict.js";
+import { graphMode } from "./modes/graph.js";   // Collaboration graph tab (prototype)
 import { renderDataCheck } from "./views/dataCheck.js";
 
 const MODES = [
@@ -15,6 +16,7 @@ const MODES = [
   cohortCareerMode(),   // cohort map and career map side by side; click a cohort member to follow them
   chanceMode(),
   predictMode(),
+  graphMode(),          // Collaboration graph tab (prototype): people linked by shared shows, no map
 ];
 // old page names still work
 const ALIASES = { showmap: "shows", trajectory: "cohort", career: "cohort" };

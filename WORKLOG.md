@@ -801,6 +801,27 @@ The show map will show where teams worked within NYC as time passes, so each sho
 - Styles in `style.css` under "Shuffle careers button".
 - Checked in headless Chrome, light and dark, for the 1930s and 1980s windows.
 
+## 2026-11-23: Collaboration graph tab, prototype (Trang)
+
+- **Why:** the professor suggested a collaboration graph independent of the map. On the map most theatres sit close together, so teams pile up in Midtown. A graph shows who is linked to whom, which is what H1 and H3 actually test.
+- **Where:** a new tab, **Collaboration graph** (`#graph`), in `viz/js/modes/graph.js`. It draws its graph in place of the map (the map comes back when you leave the tab) and uses the shared timeline. Additions to `main.js` and `style.css` are commented "Collaboration graph tab".
+- **What is drawn:** each dot is a person and each line joins two people who shared a show (strict credits). The timeline year Y shows the 10-year window Y−9 to Y (W = 10, as in the models), or every show up to Y ("everything so far"). Play moves one year at a time: people already on screen keep their place, and newcomers appear next to a collaborator.
+- **What decides the sizes:**
+
+  | Mark | Size or colour set by |
+  |---|---|
+  | Dot size, "shows" (default) | The person's number of shows in the window. Radius = 2.5 + 2.2 × √shows, so area grows with shows: big = prolific |
+  | Dot size, "collaborators" | The person's number of distinct collaborators (lines) in the window. Radius = 2.5 + 2.2 × √(lines ÷ 2). One 15-person team gives everyone 14 lines from a single show, so this mostly measures team size, the confound that hurt BigCLAM |
+  | Line width | Shows the pair did together **inside the window**: 0.6 px for one show, +1.4 px for each extra show (+0.8 px when gold) |
+  | Line colour | Gold when the pair had done 2+ shows together by year Y, also counting shows before the window (repeat collaborators). Grey otherwise |
+  | Dashed ring | The person's first Broadway credit in our data is in year Y |
+  | Dot colour | None, or the person's strongest BigCLAM community in the model window nearest to Y−9 to Y (`models.json`, step 11). The 7 largest communities get colours, the rest grey. Each colour is mostly one show's team: the H3 failure made visible |
+
+- **Interaction:** hover for names. Click a line to list both careers (shared shows in bold) with a link that opens both on the Cohort & Career maps; click a person for their career. Drag to rearrange, scroll to zoom. Labels mark the 8 people with the most shows in the window.
+- **URL:** `#graph?year=1960&span=window|all&size=shows|lines&colour=none|comm&pair=Q1,Q2&person=Q1`, e.g. `#graph?year=1960&pair=Q175078,Q329849` (Comden & Green).
+- **Sizes seen:** a 10-year window has about 160–250 people and 400–750 lines, readable. "Everything so far" by 1990 is 1,374 people and 4,547 lines, one tangle, so the 10-year window is the default.
+- **Open:** whether it replaces or sits beside the cohort map in Cohort & Career (decide with Ruby). Checked in headless Chrome (dark mode) for 1934–43, 1950–59 with communities, and 1951–60 with a pair selected.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").
