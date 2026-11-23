@@ -64,7 +64,9 @@ function partnersOf(db, personId) {
   return out;
 }
 
-export function careerMode() {
+/** followTimeline: never move the shared timeline (the split Cohort & Career view, where the
+ *  cohort drives the year); the career is drawn up to the timeline year. intro: blank-state text. */
+export function careerMode({ followTimeline = false, intro = null } = {}) {
   let root = null, offZoom = null, ctxRef = null;
   let people = [];            // [{ id, slot, career, g, grow, done, current }] in selection order
   let year = Infinity;        // the timeline year
@@ -287,7 +289,7 @@ export function careerMode() {
     const top = [...withCredits].sort((a, b) => db.career(b.id, NETWORK).length - db.career(a.id, NETWORK).length).slice(0, 8);
     panel.innerHTML = `
       <h2>Career paths</h2>
-      <p class="sub">Choose a person to draw their career from theatre to theatre. Then compare it with
+      <p class="sub">${intro ?? "Choose a person to draw their career from theatre to theatre."} Then compare it with
         up to ${MAX_PEOPLE - 1} people they worked with again (${PARTNER_MIN}+ shows together).</p>
       <label class="picker"><span>Person</span>
         <input type="search" list="career-people" placeholder="Type a name…" autocomplete="off">
@@ -344,7 +346,7 @@ export function careerMode() {
     // if the timeline was showing whole careers, keep doing so for the new selection
     const endOf = list => d3.max(list, p => p.career.span?.[1]);
     // (from a blank slate, a newly chosen person also starts with their whole career)
-    const wasAtEnd = before.length ? year >= endOf(before) : !keepYear;
+    const wasAtEnd = followTimeline ? false : before.length ? year >= endOf(before) : !keepYear;
     people = wanted.map(id => keep.find(p => p.id === id));
     if (wasAtEnd && endOf(people) > year) { year = endOf(people); ctx.state.year = year; ctx.setYear(year); }
     for (const p of added) drawPerson(p, true);
@@ -379,7 +381,7 @@ export function careerMode() {
       people = [];
       const wanted = wantedFromUrl(ctx);
       // whole careers unless the link names a year
-      if (!ctx.state.params.get("year")) {
+      if (!followTimeline && !ctx.state.params.get("year")) {
         const end = d3.max(wanted, id => d3.max(ctx.db.career(id, NETWORK), c => c.year));
         if (end) ctx.setYear(end);
       }
@@ -398,7 +400,7 @@ export function careerMode() {
 
     exit() {
       offZoom?.();
-      document.querySelector(".career-key")?.remove();
+      ctxRef?.map.svg.node().closest(".map-wrap")?.querySelector(".career-key")?.remove();
       root?.transition().duration(250).attr("opacity", 0).remove();
       root = null;
       people = [];

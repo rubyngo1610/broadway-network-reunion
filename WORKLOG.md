@@ -758,6 +758,28 @@ The show map will show where teams worked within NYC as time passes, so each sho
   - Fun views on the same models: "the reunions nobody saw coming" (reunited pairs every score ranked low), "partnerships that should have lasted" (top-ranked pairs who never reunited, e.g. Herbert Fields & Cole Porter), a "would they work together again?" quiz with the model's odds, and "who's the glue" (people linking teams).
 - **Not done:** the supervised "what predicts a reunion" model (the explorer's score switch can take it as one more score once it exists); loose mode in the model views.
 
+## 2026-11-22: Tab order, Cohort keeps its state, Birthplaces and Compare removed (Ruby)
+
+- **Tabs:** Shows, Cohort, Career, Chance, Predict. Cohort comes before Career for the flow "find a reunion in a cohort, click a person, read their career, come back".
+- **Every tab returns to its view as last left** (the link carries the last URL: cohort year and colouring, Career people, Predict score, year).
+- **Cohort on return** (tab or browser Back): same cohort, year, colouring and method, the same map zoom and panel scroll. The person you clicked is ringed, the cohort members they shared a later show with stay lit and the rest are dimmed; a box in the panel lists those shows (reunion, still together or new pairing) with a link back to the career and a "clear" button.
+- **Removed** the Birthplaces and Compare placeholders (`comingSoon.js` deleted). The small-multiples baseline for the user study is dropped with them; revisit if the study needs it.
+
+## 2026-11-22: Cohort & Career side by side; communities moved to Predict (Ruby)
+
+- **One "Cohort & Career" tab** replaces the separate Cohort and Career tabs: cohort panel | cohort map | career map | career panel, on a page widened to 1,760 px for this tab (narrower screens: each panel under its map). Manhattan is tall and narrow, so two maps side by side still read well (about 450 px wide each on a laptop).
+  - Clicking a cohort member draws their career on the right map, up to the shared timeline year (the career no longer jumps the timeline to its end). The left side rings that person and dims everyone they never worked with again.
+  - The right side keeps all of Career mode (compare with up to 3 partners, remove, search). Its first person stays ringed on the left when they are in the cohort.
+  - The URL holds both sides (`#cohort?from=1943&p=Q269094,Q319693&year=1956`), so Back and shared links work. Old `#career?p=` links open this view.
+  - Built from the two existing modes, each on its own map: `js/modes/cohortCareer.js`; the stage gained a split layout (`split: true`, `ctx.split.left/right`).
+- **Communities moved from Cohort to Predict.** Cohort colours by starting show only. Predict has a "Map: communities" switch: each person in the window's network at the theatre of their last show in it, coloured by their strongest community, with the plain/weighted switch, the one-show-team check (1940–1949: plain 39 of 49, weighted 10 of 25) and a legend of the largest communities (hover to highlight). Choosing the BigCLAM or weighted score switches the communities to match.
+
+## 2026-11-22: Stale browser cache fix (Ruby)
+
+- Ruby saw the Cohort & Career tab selected with Predict's content: her browser had loaded the new `main.js` with an old cached `stage.js` (no split layout). In a clean browser the same steps worked.
+- New `viz/bump_version.py` adds `?v=<timestamp>` to every module (import map in `index.html`), the stylesheet and the entry script. Run it before pushing any JS/CSS change.
+- Also fixed: opening Predict directly with the communities map crashed (the map placed dots before the communities were computed).
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").

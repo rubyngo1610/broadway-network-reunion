@@ -7,11 +7,15 @@
 // On the map, each top pair is a mark at the theatre of their last shared training show; when they
 // reunited, a gold arc runs to the theatre of their first show together again.
 //
+// Map switch "Communities": what BigCLAM learned in the window. Each person in the window's network
+// sits at the theatre of their last show in it, coloured by their strongest community (plain or
+// weighted BigCLAM); the panel shows how many communities are just one show's team (why H3 failed).
+//
 // Data: db.models (viz/data/models.json, scripts/17_export_model_viz.py).
-// URL: #predict?score=bigclam&year=1955
+// URL: #predict?score=bigclam&map=pairs|communities&method=bigclam|weighted&year=1955
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { esc, showTooltip, hideTooltip } from "../tooltip.js";
-import { cutoffFor } from "../communities.js";
+import { cutoffFor, communitiesFor, showTeamCheck, METHODS } from "../communities.js";
 
 const NETWORK = "strict";
 const TOP = 20, MISSED = 6;
@@ -32,6 +36,8 @@ const pct = v => `${(100 * v).toFixed(v < 0.1 ? 1 : 0)}%`;
 export function predictMode() {
   let root = null, offZoom = null, ctxRef = null, cutoff = null, score = "bigclam";
   let ranked = [], top = [], missed = [];
+  let mapView = "pairs", method = "bigclam", comm = null, commFocus = null;
+  const COMM_SLOTS = 7;   // categorical colours --cat-1..7, validated in this order; the rest grey
 
   const nameOf = id => ctxRef.db.personById.get(id)?.name ?? id;
   const short = id => { const p = nameOf(id).replace(/,/g, "").split(" "); while (p.length > 1 && /^(II|III|IV|Jr\.?|Sr\.?)$/i.test(p.at(-1))) p.pop(); return p.at(-1); };
@@ -62,6 +68,7 @@ export function predictMode() {
 
   function place() {
     if (!root) return;
+    if (mapView === "communities") return comm && placeComm();   // onZoom fires before the first window is set up
     const xy = t => ctxRef.map.xy(t.lat, t.lon);
     // pairs meeting at the same theatre fan out around it
     const seat = new Map();
@@ -83,6 +90,7 @@ export function predictMode() {
 
   function drawMap() {
     root.selectAll("*").remove();
+    if (mapView === "communities") return drawComm();
     const onMap = top.filter(d => d.met?.theatre);
     const hits = onMap.filter(d => d.reunion_shows > 0 && d.again?.theatre);
     root.selectAll("path.arc").data(hits).join("path").attr("class", "arc");
@@ -100,6 +108,81 @@ export function predictMode() {
         .transition().duration(900).delay(200).attr("stroke-dashoffset", 0)
         .on("end", function () { d3.select(this).attr("stroke-dasharray", null); });
     });
+  }
+
+  // --- communities ---------------------------------------------------------------------------------
+
+  /** The window's communities (plain or weighted BigCLAM) and its people placed at their last theatre. */
+  function setupComm() {
+    const { db } = ctxRef;
+    const c = communitiesFor(db, NETWORK, cutoff, method);
+    const list = [...c.members].map(([id, members]) => ({ id, members }))
+      .sort((a, b) => b.members.length - a.members.length || a.id - b.id);
+    const slotOf = new Map(list.slice(0, COMM_SLOTS).map((r, i) => [r.id, i]));
+    const people = new Set(ranked.flatMap(p => [p.person_a, p.person_b]));
+    const dots = [...people].map(id => {
+      const inWin = db.career(id, NETWORK).filter(x => x.year >= cutoff - 10 && x.year < cutoff);
+      const last = [...inWin].reverse().find(x => db.theatreOf(x.show));
+      const mine = c.byPerson.get(id) || [];
+      return { id, last, theatre: last ? db.theatreOf(last.show) : null, cid: mine[0]?.id ?? null, n: mine.length,
+        slot: slotOf.get(mine[0]?.id) ?? null };
+    });
+    comm = { ...c, list, slotOf, dots, check: showTeamCheck(db, NETWORK, cutoff, method) };
+  }
+
+  const commClass = d => (d.slot == null ? "kother" : `k${d.slot}`);
+
+  function placeComm() {
+    const pos = new Map();
+    for (const [, list] of d3.groups(comm.dots.filter(d => d.theatre), d => d.theatre.id)) {
+      list.sort((a, b) => ((a.slot ?? 99) - (b.slot ?? 99)) || d3.ascending(a.id, b.id));
+      const [x, y] = ctxRef.map.xy(list[0].theatre.lat, list[0].theatre.lon);
+      list.forEach((d, i) => { const r = 6 * Math.sqrt(i), a = i * 2.39996; pos.set(d.id, [x + r * Math.cos(a), y + r * Math.sin(a)]); });
+    }
+    root.selectAll("circle.cdot").attr("cx", d => pos.get(d.id)[0]).attr("cy", d => pos.get(d.id)[1]);
+  }
+
+  function drawComm() {
+    const nameOf = id => ctxRef.db.personById.get(id)?.name ?? id;
+    root.selectAll("circle.cdot").data(comm.dots.filter(d => d.theatre), d => d.id).join("circle")
+      .attr("r", 4).attr("class", d => `cdot working ${commClass(d)}`)
+      .on("pointermove", (ev, d) => showTooltip(ev, `<div class="t-title">${esc(nameOf(d.id))}</div>
+        <div class="t-sub">last show in ${cutoff - 10}–${cutoff - 1}: <em>${esc(ctxRef.db.showById.get(d.last.show)?.title)}</em> (${d.last.year})</div>
+        <div>${d.cid == null ? `in no ${esc(METHODS[method])} community` : `${esc(METHODS[method])} community ${d.cid} (${comm.members.get(d.cid).length} people)${d.n > 1 ? `, and ${d.n - 1} more` : ""}`}</div>`))
+      .on("pointerleave", hideTooltip)
+      .on("click", (ev, d) => { location.hash = `#career?p=${d.id}`; });
+    root.selectAll("circle.cdot").filter(d => d.slot != null).raise();
+    focusComm(commFocus);
+    placeComm();
+  }
+
+  function focusComm(cid) {
+    commFocus = cid;
+    root?.selectAll("circle.cdot").classed("dim", d => cid != null && (cid === "other" ? d.slot != null : d.cid !== cid));
+  }
+
+  /** Panel section: method switch, the show-team check and the largest communities. */
+  function commBlock() {
+    const nameOf = id => ctxRef.db.personById.get(id)?.name ?? id;
+    const chk = comm.check, share = chk.communities ? Math.round(100 * chk.single / chk.communities) : 0;
+    const about = {
+      bigclam: "BigCLAM learns overlapping groups from who worked with whom; every link counts the same.",
+      weighted: "Weighted BigCLAM counts a link by team size: a duo's show counts 1, a 20-person revue 1/19. Exploratory, after H3.",
+    }[method] ?? "";
+    const rows = comm.list.slice(0, COMM_SLOTS).map((c, i) => `<li data-cid="${c.id}"><span class="swatch k${i}"></span><div>
+        <strong>Community ${c.id}</strong> <span class="roles">${c.members.length} people</span>
+        <div class="where">${c.members.slice(0, 4).map(id => esc(nameOf(id))).join(", ")}${c.members.length > 4 ? ` and ${c.members.length - 4} more` : ""}</div></div></li>`);
+    if (comm.list.length > COMM_SLOTS) rows.push(`<li data-cid="other"><span class="swatch kother"></span><div>${comm.list.length - COMM_SLOTS} smaller communities, and people in none</div></li>`);
+    return `<h3>What BigCLAM learned, ${cutoff - 10}–${cutoff - 1}</h3>
+      <div class="seg method-seg" role="group" aria-label="Community method">
+        ${["bigclam", "weighted"].map(k => `<button type="button" data-method="${k}" aria-pressed="${k === method}">${esc(METHODS[k])}</button>`).join("")}
+      </div>
+      <p class="hint">${about} ${mapView === "communities" ? "Each dot is a person at the theatre of their last show in the window, coloured by their strongest community."
+        : `<button type="button" class="link-btn show-comm">Show the communities on the map</button>`}</p>
+      <p class="comm-check"><strong>${chk.single} of ${chk.communities}</strong> communities (${share}%) are just one show's team.
+        ${method === "bigclam" ? "A community that is one show's team can't tell apart people who already shared that show, so it can't predict who works together again (H3)." : ""}
+        ${method === "weighted" ? "Weighting by team size gives fewer show teams: communities reach across shows, and the score recovers some signal." : ""}</p>
+      <ul class="cohort-legend comm-legend">${rows.join("")}</ul>`;
   }
 
   function highlight(d) {
@@ -318,6 +401,10 @@ export function predictMode() {
         ${db.models.scores.map(k => `<button type="button" data-score="${k}" aria-pressed="${k === score}">${esc(SCORE_INFO[k].label)}</button>`).join("")}
       </div>
       <p class="hint">${esc(info.text)}</p>
+      <div class="seg map-seg" role="group" aria-label="Map shows">
+        <button type="button" data-map="pairs" aria-pressed="${mapView === "pairs"}">Map: top pairs</button>
+        <button type="button" data-map="communities" aria-pressed="${mapView === "communities"}">Map: communities</button>
+      </div>
       <h3>How well each score ranks (AUC)</h3>
       <div class="auc-wrap"></div>
       <p class="hint">Bar: this window. Tick: all ${db.models.auc.windows.length} windows pooled. AUC is how often a pair who reunited
@@ -325,6 +412,7 @@ export function predictMode() {
       <h3>Does a higher score mean more reunions?</h3>
       <div class="level-wrap"></div>
       <p class="hint">All windows, ${db.models.pairs.length.toLocaleString()} pairs; ${pct(d3.mean(db.models.pairs, p => +(p.reunion_shows > 0)))} reunite overall.</p>
+      ${commBlock()}
       <h3>It's the pair, not the team</h3>
       <p class="sub">Why communities miss: big teams (revues, many writers) make dense communities, so BigCLAM scores
         their pairs high, but those pairs rarely work together again. Compare the two charts for each score.</p>
@@ -361,6 +449,14 @@ export function predictMode() {
       among first-time pairs, small teams still beat big ones (${pct(c(0, 0).rate)} vs ${pct(c(3, 0).rate)}).
       Pale or "few" cells have fewer than 15 pairs.`;
     panel.querySelectorAll(".seg button[data-score]").forEach(b => b.addEventListener("click", () => setScore(b.dataset.score)));
+    panel.querySelectorAll(".seg button[data-map]").forEach(b => b.addEventListener("click", () => go({ map: b.dataset.map })));
+    panel.querySelector(".show-comm")?.addEventListener("click", () => go({ map: "communities" }));
+    panel.querySelectorAll(".seg button[data-method]").forEach(b => b.addEventListener("click", () => go({ method: b.dataset.method })));
+    panel.querySelectorAll(".comm-legend li[data-cid]").forEach(li => {
+      const cid = li.dataset.cid === "other" ? "other" : +li.dataset.cid;
+      li.addEventListener("pointerenter", () => { if (mapView === "communities") focusComm(cid); });
+      li.addEventListener("pointerleave", () => { if (mapView === "communities") focusComm(null); });
+    });
     const all = [...top, ...missed];
     panel.querySelectorAll(".pair-list li[data-key]").forEach(li => {
       const d = all.find(x => x.person_a + x.person_b === li.dataset.key);
@@ -370,9 +466,21 @@ export function predictMode() {
     });
   }
 
-  function setScore(k) {
-    if (k === score) return;
-    location.hash = `#predict?score=${k}&year=${ctxRef.state.year}`;
+  /** Change score / map / method through the URL (Back works, the tab remembers it). Picking a
+   *  BigCLAM score also shows that method's communities. */
+  function go(over) {
+    const next = { score, map: mapView, method, year: ctxRef.state.year, ...over };
+    if (over.score === "bigclam" || over.score === "weighted") next.method = over.score;
+    location.hash = `#predict?${new URLSearchParams(next)}`;
+  }
+  function setScore(k) { if (k !== score) go({ score: k }); }
+
+  function readParams(p) {
+    const s = p.get("score");
+    if (s && SCORE_INFO[s] && ctxRef.db.models.scores.includes(s)) score = s;
+    if (["pairs", "communities"].includes(p.get("map"))) mapView = p.get("map");
+    if (["bigclam", "weighted"].includes(p.get("method"))) method = p.get("method");
+    else if (score === "bigclam" || score === "weighted") method = score;
   }
 
   function apply(year, force = false) {
@@ -380,6 +488,7 @@ export function predictMode() {
     if (T === cutoff && !force) return;
     cutoff = T;
     rank();
+    setupComm();
     drawMap();
     const scrollTop = ctxRef.panel.scrollTop;
     fillPanel();
@@ -396,22 +505,22 @@ export function predictMode() {
         ctx.panel.innerHTML = `<h2>Who works together again?</h2><p class="hint">viz/data/models.json is missing: run scripts/17_export_model_viz.py.</p>`;
         return;
       }
-      const s = ctx.state.params.get("score");
-      if (s && SCORE_INFO[s] && ctx.db.models.scores.includes(s)) score = s;
+      readParams(ctx.state.params);
       const cut = ctx.db.meta.network.cutoffs;
       ctx.setRange([cut[0] - 10, cut[cut.length - 1] - 1]);
       ctx.theatres.dots.attr("class", "t theatre faint").transition("mode").duration(500).attr("r", 2.5).attr("opacity", 0.3);
       root = ctx.map.layer("overlay").append("g").attr("class", "mode-predict");
       offZoom = ctx.map.onZoom(place);
       apply(ctx.state.year);
-      const pts = top.flatMap(d => [d.met?.theatre, d.again?.theatre]).filter(Boolean).map(t => [t.lat, t.lon]);
+      const pts = (mapView === "communities" ? comm.dots.map(d => d.theatre) : top.flatMap(d => [d.met?.theatre, d.again?.theatre]))
+        .filter(Boolean).map(t => [t.lat, t.lon]);
       if (pts.length) ctx.map.zoomTo(pts, { pad: 80, duration: 900 });
     },
 
     onParams(ctx) {
-      const s = ctx.state.params.get("score");
-      if (s && SCORE_INFO[s] && s !== score) { score = s; apply(ctx.state.year, true); }
-      else apply(ctx.state.year);
+      const before = [score, mapView, method].join();
+      readParams(ctx.state.params);
+      apply(ctx.state.year, [score, mapView, method].join() !== before);
     },
 
     setYear(ctx, y) { if (root) apply(y); },
@@ -423,7 +532,7 @@ export function predictMode() {
       hideTooltip();
     },
 
-    params: () => ({ score }),
+    params: () => ({ score, map: mapView, method }),
     tip: t => `<div class="t-title">${esc(t.name)}</div>`,
   };
 }

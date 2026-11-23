@@ -9,7 +9,10 @@
 //     exit(ctx)             remove its layers and listeners (fade them out if you like)
 //     tip(t, ctx)           optional: tooltip HTML for theatre t
 //     onParams(ctx)         optional: the URL changed while this mode is active (e.g. another person)
-//     params()              optional: extra URL parameters to keep in the hash, as an object }
+//     params()              optional: extra URL parameters to keep in the hash, as an object
+//     split                 optional: true = two maps side by side (panel | map | map | panel);
+//                           ctx.split = { left, right } holds a ctx per side (own map, panel and
+//                           theatre dots; the timeline and URL stay shared). The page widens. }
 //
 // A mode can narrow the timeline with ctx.setRange([from, to]) (e.g. one person's career); the
 // range resets to all years whenever the mode changes.
@@ -36,6 +39,12 @@ export function createStage(el, db, modes, { startYear = 1927 } = {}) {
         <button type="button" id="tl-play" class="btn">▶ Play</button>
       </div>
       <aside class="stage-panel panel"></aside>
+      <div class="split-area" hidden>
+        <aside class="stage-panel split-panel split-panel-l panel"></aside>
+        <div class="split-map split-map-l"></div>
+        <div class="split-map split-map-r"></div>
+        <aside class="stage-panel split-panel split-panel-r panel"></aside>
+      </div>
     </div>`;
 
   const mapEl = el.querySelector(".stage-map");
@@ -52,6 +61,39 @@ export function createStage(el, db, modes, { startYear = 1927 } = {}) {
     onLeave: hideTooltip,
   });
   const ctx = { db, map, panel, theatres, state, years, setYear, setRange };
+  // not enumerable, so the per-side contexts below can copy ctx with {...ctx}
+  Object.defineProperty(ctx, "split", { get: () => ensureSplit() });
+
+  // --- split layout: built the first time a split mode opens (it must be visible to be measured) ---
+  const splitEl = el.querySelector(".split-area");
+  let split = null;
+  function ensureSplit() {
+    if (split) return split;
+    const side = (mapBox, panelEl, isRight) => {
+      const w = mapBox.clientWidth || 480;
+      const m = createManhattanMap(mapBox, db, { height: Math.min(720, Math.max(460, w * 1.3)) });
+      const th = drawTheatres(m, db, {
+        onHover: (ev, t) => { const html = (isRight ? current?.tipRight : current?.tip)?.(t, ctx); if (html) showTooltip(ev, html); },
+        onLeave: hideTooltip,
+      });
+      return { map: m, panel: panelEl, theatres: th };
+    };
+    const l = side(splitEl.querySelector(".split-map-l"), splitEl.querySelector(".split-panel-l"), false);
+    const r = side(splitEl.querySelector(".split-map-r"), splitEl.querySelector(".split-panel-r"), true);
+    split = {
+      // left side drives the shared timeline; the right side follows it
+      left: { ...ctx, ...l },
+      right: { ...ctx, ...r, setYear: () => {}, setRange: () => {} },
+    };
+    return split;
+  }
+  function setLayout(isSplit) {
+    el.querySelector(".stage").classList.toggle("is-split", isSplit);
+    el.closest(".view")?.classList.toggle("wide", isSplit);
+    splitEl.hidden = !isSplit;
+    mapEl.hidden = panel.hidden = isSplit;
+    if (isSplit) ensureSplit();
+  }
   let range = years;
   const clamp = y => Math.max(range[0], Math.min(range[1], y));
 
@@ -68,7 +110,10 @@ export function createStage(el, db, modes, { startYear = 1927 } = {}) {
     const p = new URLSearchParams(current.params?.() || {});
     if (current.usesYear) p.set("year", state.year);
     const q = p.toString();
-    history.replaceState(null, "", `#${current.id}${q ? `?${q}` : ""}`);
+    const hash = `#${current.id}${q ? `?${q}` : ""}`;
+    history.replaceState(null, "", hash);
+    // the tab returns to this view as it was left (cohort year, people, score, …)
+    el.querySelector(`.mode-bar a[data-mode="${current.id}"]`)?.setAttribute("href", hash);
   }
 
   function setYear(y) {
@@ -95,9 +140,10 @@ export function createStage(el, db, modes, { startYear = 1927 } = {}) {
       timeline.classList.toggle("off", !next.usesYear);
       if (!next.usesYear) stop();
       slider.disabled = playBtn.disabled = !next.usesYear;
+      setLayout(!!next.split);
       next.enter(ctx);
-      panel.animate([{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }],
-        { duration: 280, easing: "ease-out" });
+      (next.split ? [split.left.panel, split.right.panel] : [panel]).forEach(p => p.animate([{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }],
+        { duration: 280, easing: "ease-out" }));
     } else if (current.onParams) {
       current.onParams(ctx);
     } else {

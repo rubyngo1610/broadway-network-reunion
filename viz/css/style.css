@@ -433,3 +433,32 @@ svg.chart .heat-val.on-dark { fill: var(--heat-ink-strong); }
 :root { --heat-ink-strong: #1d1a16; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --heat-ink-strong: #1c1913; } }
 :root[data-theme="dark"] { --heat-ink-strong: #1c1913; }
+
+/* cohort: the person opened from the map, when coming back from their career */
+svg.chart .cdot.picked { stroke: var(--text-primary); stroke-width: 2.5; }
+.picked-box { margin: 10px 0; padding: 8px 10px; border: 1px solid var(--border); border-left: 3px solid var(--text-primary); border-radius: var(--radius); background: var(--surface-1); }
+.picked-head { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 14px; }
+.picked-box .event-list { margin: 6px 0 0; }
+.event-list li.picked { box-shadow: inset 3px 0 0 var(--text-primary); }
+.link-btn { background: none; border: 0; padding: 0; font: inherit; color: var(--accent-ink); text-decoration: underline; cursor: pointer; }
+
+/* split view (Cohort & Career): panel | map | map | panel, on a wider page */
+.view.wide { max-width: 1760px; }
+.stage.is-split { grid-template-columns: minmax(0, 1fr); grid-template-areas: "modes" "time" "split"; }
+.split-area { grid-area: split; display: grid; gap: 12px; align-items: start;
+  grid-template-columns: minmax(250px, 300px) minmax(0, 1fr) minmax(0, 1fr) minmax(250px, 300px); }
+.split-area[hidden] { display: none; }
+.split-area .stage-panel { grid-area: auto; max-height: 760px; }
+.split-map { min-width: 0; }
+/* narrower screens: each panel under its own map */
+@media (max-width: 1180px) {
+  .split-area { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "ml mr" "pl pr"; }
+  .split-map-l { grid-area: ml; } .split-map-r { grid-area: mr; }
+  .split-panel-l { grid-area: pl; } .split-panel-r { grid-area: pr; }
+}
+@media (max-width: 700px) {
+  .split-area { grid-template-columns: minmax(0, 1fr); grid-template-areas: "ml" "pl" "mr" "pr"; }
+}
+.map-seg { margin: 8px 0 2px; }
+.comm-legend li { cursor: default; }

@@ -5,34 +5,19 @@
 import { loadData } from "./data.js";
 import { createStage } from "./stage.js";
 import { showsMode } from "./modes/shows.js";
-import { careerMode } from "./modes/career.js";
-import { cohortMode } from "./modes/cohort.js";
+import { cohortCareerMode } from "./modes/cohortCareer.js";
 import { chanceMode } from "./modes/chance.js";
 import { predictMode } from "./modes/predict.js";
-import { comingSoon } from "./modes/comingSoon.js";
 import { renderDataCheck } from "./views/dataCheck.js";
 
 const MODES = [
   showsMode(),
-  careerMode(),
-  cohortMode(),
+  cohortCareerMode(),   // cohort map and career map side by side; click a cohort member to follow them
   chanceMode(),
   predictMode(),
-  comingSoon({
-    id: "birthplaces", label: "Birthplaces", caption: "where they came from", usesYear: true,
-    title: "Birthplaces",
-    text: "Where Broadway's creative people were born, filterable by role and decade. Covers people with a Wikidata entry.",
-    mapNote: "the map zooms out from Manhattan to the US and the world, and back in when you leave.",
-  }),
-  comingSoon({
-    id: "compare", label: "Compare", caption: "five-year panels", usesYear: true,
-    title: "Small multiples",
-    text: "The cohort view as static panels, one per five-year step from the year on the timeline. This is the baseline for the user study.",
-    mapNote: "the single map splits into a grid of small maps.",
-  }),
 ];
 // old page names still work
-const ALIASES = { showmap: "shows", trajectory: "career", multiples: "compare" };
+const ALIASES = { showmap: "shows", trajectory: "cohort", career: "cohort" };
 
 const stageEl = document.getElementById("stage");
 const dataEl = document.getElementById("data-view");

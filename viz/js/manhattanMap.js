@@ -103,6 +103,10 @@ export function createManhattanMap(container, db, { height = 640, home = HOME, m
       fn(transform);
       return () => { const i = listeners.indexOf(fn); if (i >= 0) listeners.splice(i, 1); };
     },
+    /** Animate back to a transform saved earlier from map.transform (e.g. when returning to a view). */
+    restore(t, { duration = 600 } = {}) {
+      svg.transition().duration(duration).call(zoom.transform, d3.zoomIdentity.translate(t.x, t.y).scale(t.k));
+    },
     /** Animate to fit a set of [lat, lon] points, keeping at least `minSpan` degrees of context. */
     zoomTo(latLons, { pad = 60, duration = 750 } = {}) {
       if (!latLons.length) return;
