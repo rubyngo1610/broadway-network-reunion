@@ -758,6 +758,27 @@ The show map will show where teams worked within NYC as time passes, so each sho
   - Fun views on the same models: "the reunions nobody saw coming" (reunited pairs every score ranked low), "partnerships that should have lasted" (top-ranked pairs who never reunited, e.g. Herbert Fields & Cole Porter), a "would they work together again?" quiz with the model's odds, and "who's the glue" (people linking teams).
 - **Not done:** the supervised "what predicts a reunion" model (the explorer's score switch can take it as one more score once it exists); loose mode in the model views.
 
+## 2026-11-22: Shuffle careers button on the Chance tab (Trang)
+
+- **Why:** the Chance tab told users the H1 answer ("3.7× chance"). The button lets them build the chance baseline themselves and see that real Broadway beats it.
+- **`viz/js/shuffle.js` (new):** a browser version of step 10's null model for one window.
+  - People swap only among credits with the same role set, separately in the training and reunion windows. Team sizes and years stay fixed, and nobody lands twice on one show.
+  - **Checked:** with real careers it reproduces all 36 published window counts (strict and loose).
+  - Over 150 shuffles per window its mean rate matches step 10's (e.g. 1980s 0.27% vs 0.27%).
+  - 5,400 shuffles ran in under 3 s, so presses are instant.
+- **`viz/js/modes/chance.js` (Ruby's tab; every addition is commented as part of the Shuffle careers button):**
+  - Buttons **Shuffle careers / Shuffle again**, **Shuffle 1,000×** and **Back to real**.
+  - While shuffled, the map shows the made-up Broadway (ring = a team with a reunion, grey = none), with a note saying so.
+  - A tally of reunions per shuffle, with the real number in gold, and a plain verdict (e.g. 1930s: "0 of 1,000 shuffled Broadways reached 28 reunions").
+  - The line chart marks the window's slice of the grey band.
+  - Everything resets when the window changes.
+- **`scripts/10_null_model.py`:**
+  - `h1.json` now also stores every shuffle's reunion count per window (`draws`; 119 KB in total, up from 32 KB).
+  - New `--viz-only` rewrites `h1.json` from saved results without reshuffling. Rewriting it this way left every existing field identical.
+- **`viz/js/data.js`:** loads `draws` into `db.h1[mode].draws`.
+- Styles in `style.css` under "Shuffle careers button".
+- Checked in headless Chrome, light and dark, for the 1930s and 1980s windows.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").

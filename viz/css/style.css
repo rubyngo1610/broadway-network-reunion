@@ -397,6 +397,17 @@ svg.chart .hdot.active { stroke: var(--text-primary); stroke-width: 3; }
 .legend .key.h1-reunited { background: var(--surface-1); border: 2px solid var(--accent); }
 .legend .key.h1-none { background: var(--text-muted); opacity: .55; }
 .h1-list li.active, .pair-list li.active { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+/* Shuffle careers button (Chance tab) */
+.h1-shuffle { margin: 14px 0 6px; padding-top: 10px; border-top: 1px solid var(--grid); }
+.shuffle-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+.shuffle-buttons .btn[disabled] { opacity: 0.45; cursor: default; box-shadow: none; }
+.shuffle-count { font-size: 14px; margin: 6px 0; }
+.shuffle-verdict { font-size: 13px; color: var(--text-secondary); margin: 4px 0 0; }
+svg.chart .shuffle-bar { fill: var(--text-muted); opacity: 0.55; }
+svg.chart .shuffle-bar:hover { opacity: 0.85; }
+svg.chart .shuffle-real { stroke: var(--accent); stroke-width: 2.5; }
+svg.chart .shuffle-real-label { fill: var(--accent-ink); font-size: 11px; font-weight: 600; }
+svg.chart .band-now { stroke: var(--accent); stroke-width: 5; stroke-linecap: round; opacity: 0.55; pointer-events: none; }
 .method-seg { margin: 8px 0 4px; }
 .comm-check { font-size: 13px; margin: 4px 0 10px; padding: 6px 8px; border-left: 3px solid var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
 
