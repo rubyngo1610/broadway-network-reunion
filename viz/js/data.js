@@ -34,6 +34,9 @@ function expandH1(raw) {
     h1[mode] = {
       shows: new Map(shows.map(s => [`${s.cutoff}|${s.show}`, s])),
       windows: toObj(raw.columns.windows, raw[mode].windows),
+      // Shuffle careers button (Chance tab): reunited pairs in each of step 10's 1,000 shuffles,
+      // keyed by cutoff; empty in an older h1.json, and the button then offers live shuffles only
+      draws: new Map(Object.entries(raw[mode].draws ?? {}).map(([T, v]) => [+T, v])),
     };
   }
   return h1;

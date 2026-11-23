@@ -29,7 +29,9 @@ Outputs
                                            (for highlighting reunions above chance in the views)
   outputs/tables/h1_by_window.csv          observed vs null per mode, cutoff and pair type
   outputs/tables/h1_summary.csv            pooled over cutoffs per mode and pair type
-  viz/data/h1.json                         above-chance shows and per-cutoff rates for the cohort view
+  viz/data/h1.json                         above-chance shows, per-cutoff rates, and every shuffle's reunion
+                                           count per cutoff (Chance tab: Shuffle careers button).
+                                           --viz-only rewrites it from the saved results without reshuffling
 """
 import json
 import sys
@@ -41,7 +43,7 @@ import numpy as np
 import pandas as pd
 
 import config
-from src.common import display_path, log, parse_args, write_parquet
+from src.common import display_path, log, parse_args, read_parquet, write_parquet
 from src.network import in_mode, load_person_show
 
 OUT_DIR = config.DATA_PROCESSED / "h1"
@@ -147,7 +149,7 @@ def p_value(null, observed):
     return (1 + np.sum(null >= observed)) / (len(null) + 1)
 
 
-def export_viz(shows, windows):
+def export_viz(shows, windows, draws=None):
     """viz/data/h1.json: per mode, the shows whose team reunited above chance (cohort-view glow) and
     the observed vs null reunion rate per cutoff (the reunions-over-time chart)."""
     out = {
@@ -168,6 +170,11 @@ def export_viz(shows, windows):
             "windows": [[int(r.cutoff), int(r.n_pairs), int(r.n_reunited), r.observed_rate, r.null_mean,
                          float(lo), float(hi)] for r, lo, hi in zip(w.itertuples(), lo_hi[0], lo_hi[1])],
         }
+        # Shuffle careers button (Chance tab): every shuffle's number of reunited pairs, per cutoff, so
+        # "Shuffle 1,000x" shows exactly the shuffles behind the published H1 numbers
+        if draws is not None:
+            d = draws[(draws["mode"] == mode) & (draws["pair_type"] == "all")].sort_values(["cutoff", "draw"])
+            out[mode]["draws"] = {str(int(T)): g["n_reunited"].astype(int).tolist() for T, g in d.groupby("cutoff")}
     path = config.ROOT / "viz" / "data" / "h1.json"
     path.write_text(json.dumps(out, separators=(",", ":")))
     log.info("Wrote %s (%d + %d shows with a reunion)", display_path(path),
@@ -178,7 +185,15 @@ def main():
     def extra(p):
         p.add_argument("--source", choices=["auto", "parquet", "json"], default="auto")
         p.add_argument("--draws", type=int, default=1000, help="Shuffles per mode and cutoff.")
+        p.add_argument("--viz-only", action="store_true",
+                       help="Only rewrite viz/data/h1.json from the saved results (no new shuffles).")
     args = parse_args(__doc__.splitlines()[0], extra)
+
+    if args.viz_only:
+        windows = pd.read_csv(config.OUTPUT_TABLES / "h1_by_window.csv")
+        export_viz(read_parquet(OUT_DIR / "show_reunions.parquet"), windows[windows["pair_type"] == "all"],
+                   read_parquet(OUT_DIR / "null_draws.parquet"))
+        return
 
     ps, source = load_person_show(args.source)
     log.info("Input: %s (%d person-show rows); %d shuffles per window", source, len(ps), args.draws)
@@ -252,7 +267,7 @@ def main():
     log.info("Wrote %s and %s", display_path(config.OUTPUT_TABLES / "h1_summary.csv"),
              display_path(config.OUTPUT_TABLES / "h1_by_window.csv"))
     log.info("Summary:\n%s", summary.to_string(index=False))
-    export_viz(pd.DataFrame(show_rows), by_window[by_window["pair_type"] == "all"])
+    export_viz(pd.DataFrame(show_rows), by_window[by_window["pair_type"] == "all"], draws)
     allw = by_window[by_window["pair_type"] == "all"]
     for mode in MODES:
         w = allw[allw["mode"] == mode]
