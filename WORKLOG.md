@@ -825,6 +825,23 @@ The show map will show where teams worked within NYC as time passes, so each sho
 - **Drawing without the stylesheet:** in one browser the graph rules of `style.css` didn't apply, so lines had no stroke colour (invisible) and the panel controls lost their layout. `graph.js` now also sets line, dot and label colours as SVG attributes (resolved from the theme tokens each render) and the control layout inline, so the graph draws either way; the CSS rules set the same values and win where they apply.
 - **Open:** whether it replaces or sits beside the cohort map in Cohort & Career (decide with Ruby). Checked in headless Chrome (dark mode) for 1934–43, 1950–59 with communities, and 1951–60 with a pair selected.
 
+## 2026-11-23: "Various Artists" removed (data error, Trang)
+
+- **Error:** three placeholder credits were parsed as people: **Various Artists** (15 strict credits as composer or lyricist), **Various Composers** and **Various Lyricists** (1 each). They come from jukebox and revue musicals whose songs have many writers: *Oh! Calcutta!*, *The 1940's Radio Hour*, *Swinging on a Star*, *Marlene*, *Come Fly Away*, *Everyday Rapture*, *Million Dollar Quartet*, *Baby It's You!*, *Priscilla, Queen of the Desert*, *After Midnight*, *Motown: The Musical*, *Beautiful*, *The Cher Show*, *A Wonderful World*, *Buena Vista Social Club* and *Dirty Dancing*. "Various Artists" became a fake hub in the collaboration graph, linking every team on those shows.
+- **Why it got through:** `looks_like_name` in `src/wikitext.py` rejected a name only when it was exactly "various".
+- **Fixed in the pipeline:** `looks_like_name` now rejects any name starting with "Various", so step 04 marks these as implausible and step 05 keeps them out of `credits` (as it does for other implausible names). Takes effect on the next rerun from step 04.
+- **Fixed in the site now:** `viz/js/data.js` drops people whose name starts with "Various" on load, along with their credits, reunion rows, model pairs and community rows, so every tab (Collaboration graph, Cohort & Career, Chance, Predict) leaves them out: 3,186 people instead of 3,189.
+- **Not yet fixed:** the exported files and the H1/H3 results still include them: 20 of 9,681 strict reunion rows, 20 of 9,681 model pairs, and 9 BigCLAM (8 weighted) community rows. A rerun of steps 04→17 removes them there; the effect on the H1 and H3 numbers should be small, but it isn't measured yet. The other suspect credits (`outputs/tables/suspect_strict_credits.csv`, plus loose-only junk such as "Artistic Director") are still open.
+
+## 2026-11-23: Other junk "people" removed from the site (Trang)
+
+- **Error:** 11 entries in the strict credits aren't people (13 credits, 84 of 9,681 strict reunion rows):
+  - **"revue"** (`Q918727`): Wikidata's item for the *revue* genre, linked as book writer of *Don't Bother Me, I Can't Cope* (1972), *Side by Side by Sondheim* (1977) and *Eubie!* (1978). Because it sits on three shows it made fake reunions: most of the 84 rows, and it showed up on Sondheim's ring in the collaboration graph.
+  - **Pieces of titles or text parsed as names:** "Filipino", "If", "Earth", "Wind", "Panama", "He", "Act", "Warriors", "The Ham Tree", "Gentlemen Prefer Blondes".
+- **Fixed in the site:** `JUNK_IDS` in `viz/js/data.js` drops them on load with the "Various …" placeholders (same code path: credits, reunion rows, model pairs and community rows). 3,175 people now instead of 3,189.
+- **Not fixed yet:** the pipeline still produces them, and the H1/H3 numbers include them. Mark them EXCLUDE in step 05's manual review and rerun 05→17. The fake "revue" reunions slightly inflate the observed reunion counts for the 1965–1975 windows.
+- **Kept on purpose (need merging, not removal):** surname-only entries that are real people already in the data under their full name, e.g. "Robbins" (Fiddler, Forum), "Prince" and "Fuller" (Merrily), "Sherrin" (Side by Side by Sondheim), "Kidd", "Logan", "Tharp", "Ockrent", "Greif"; and "Additional Lyrics Betty Comden" / "Additional Music Jule Styne" (Peter Pan), which should map to Comden and Styne. Until merged, each of these is a second, separate dot for the same person.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").
