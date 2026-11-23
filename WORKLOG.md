@@ -864,6 +864,8 @@ The show map will show where teams worked within NYC as time passes, so each sho
   - It's worth checking whether recent shows have fewer strict credits recorded.
   - This is correlation. Explanations to test: the end of the producer-run studio era, more revivals and jukebox musicals, more creators from outside Broadway (film, pop music).
 - **Why it matters for the project:** it explains why reunions are rare and getting rarer, and it gives the collaboration graph a guided question.
+- **In the collaboration graph tab:** the panel now shows the big-bunch share for the current graph and a small line of it for every 10-year window (dot = current window; clicking the line jumps the timeline there), with the prompt "Play from 1940 to 2010: what happens to the big bunch?". It computes the same measure in the browser (`giantShare` in `graph.js`), and gives 84% for 1955–1964 and 13% for 1980–1989, matching step 18.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").

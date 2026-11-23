@@ -33,6 +33,10 @@
 // Clicking a line lists both careers (shared shows in bold) with a link that opens both on the
 // Cohort & Career maps; clicking a person lists their career.
 //
+// Big bunch: the panel shows the share of people in the largest connected piece, and a small line
+// of that share for every 10-year window (scripts/18_network_fragmentation.py has the same measure
+// and who glues the network together). Clicking the line moves the timeline there.
+//
 // URL: #graph?year=1959&span=window|all&size=shows|lines&colour=none|comm&pair=Q1,Q2&person=Q1
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { esc, showTooltip, hideTooltip } from "../tooltip.js";
@@ -280,6 +284,51 @@ export function graphMode() {
     zoomG.selectAll(".g-labels text").attr("x", d => d.x).attr("y", d => d.y);
   }
 
+  /** Share of `people` in the largest connected piece, given links as [a, b] pairs (union-find). */
+  function giantShare(people, pairs) {
+    const parent = new Map(people.map(p => [p, p]));
+    const root = p => { while (parent.get(p) !== p) { parent.set(p, parent.get(parent.get(p))); p = parent.get(p); } return p; };
+    for (const [a, b] of pairs) parent.set(root(a), root(b));
+    const sizes = d3.rollup(people, v => v.length, root);
+    return people.length ? d3.max(sizes.values()) / people.length : 0;
+  }
+
+  /** "Big bunch" series: giant share of every 10-year window [Y-9, Y], computed once (same measure
+   *  as scripts/18_network_fragmentation.py, which also lists the people who glue it together). */
+  function bunchSeries() {
+    if (data.bunch) return data.bunch;
+    const years = d3.range(d3.min(data.teams, ([, t]) => t.year) + W - 1, d3.max(data.teams, ([, t]) => t.year) + 1);
+    data.bunch = years.map(Y => {
+      const inWin = data.teams.filter(([, t]) => t.year > Y - W && t.year <= Y).map(([, t]) => t.people);
+      const people = [...new Set(inWin.flat())];
+      return { year: Y, share: giantShare(people, inWin.flatMap(t => t.slice(1).map(p => [t[0], p]))) };
+    });
+    return data.bunch;
+  }
+
+  function drawBunch(el, year) {
+    const rows = bunchSeries(), w = el.clientWidth || 300, h = 64, m = { t: 6, r: 8, b: 16, l: 30 };
+    const x = d3.scaleLinear().domain(d3.extent(rows, r => r.year)).range([m.l, w - m.r]);
+    const y = d3.scaleLinear().domain([0, 1]).range([h - m.b, m.t]);
+    const css = getComputedStyle(document.documentElement), tok = n => css.getPropertyValue(n).trim();
+    const svgB = d3.select(el).append("svg").attr("width", w).attr("height", h).style("cursor", "pointer")
+      .attr("role", "img").attr("aria-label", "Share of people in the largest connected piece, every 10-year window");
+    for (const v of [0, 0.5, 1]) {
+      svgB.append("line").attr("x1", m.l).attr("x2", w - m.r).attr("y1", y(v)).attr("y2", y(v)).attr("stroke", tok("--grid"));
+      svgB.append("text").attr("x", m.l - 4).attr("y", y(v) + 3).attr("text-anchor", "end").attr("font-size", 10)
+        .attr("fill", tok("--text-muted")).text(d3.format(".0%")(v));
+    }
+    for (const t of x.ticks(5)) svgB.append("text").attr("x", x(t)).attr("y", h - 3).attr("text-anchor", "middle")
+      .attr("font-size", 10).attr("fill", tok("--text-muted")).text(t);
+    svgB.append("path").datum(rows).attr("fill", "none").attr("stroke", tok("--text-secondary")).attr("stroke-width", 1.5)
+      .attr("d", d3.line().x(r => x(r.year)).y(r => y(r.share)));
+    const now = rows.find(r => r.year === year);
+    if (now) svgB.append("circle").attr("cx", x(year)).attr("cy", y(now.share)).attr("r", 4)
+      .attr("fill", tok("--accent")).attr("stroke", tok("--surface-1")).attr("stroke-width", 1.5);
+    // click to jump the timeline to that window
+    svgB.on("click", e => ctxRef.setYear(Math.round(x.invert(d3.pointer(e)[0]))));
+  }
+
   const nearestCutoff = year => data.cutoffs.length
     ? data.cutoffs.reduce((b, c) => (Math.abs(c - (year + 1)) < Math.abs(b - (year + 1)) ? c : b)) : null;
 
@@ -328,6 +377,13 @@ export function graphMode() {
       <p class="hint">Prototype. Each dot is a person, each line a show they shared. ${nodes.length} people,
         ${g.links.length} pairs, ${g.nShows} shows; ${repeat} pairs (${d3.format(".0%")(repeat / Math.max(1, g.links.length))})
         are repeat collaborators (gold). ${debuts} debut${debuts === 1 ? "" : "s"} in ${year} (dashed rings).</p>
+      <div class="g-bunch" style="margin:10px 0 4px">
+        <p style="margin:0 0 4px"><strong>${d3.format(".0%")(giantShare([...g.showsIn.keys()], g.links.map(l => [l.a, l.b])))}</strong>
+          of these people are in one big bunch: connected to each other through some chain of collaborators.</p>
+        <div class="g-bunch-chart"></div>
+        <p class="hint" style="margin:2px 0 0">Big bunch in every 10-year window (dot: ${span === "all" ? "the window ending " : ""}${year};
+          click to jump). Play from 1940 to 2010: what happens to the big bunch?</p>
+      </div>
       <div class="g-controls" style="display:grid;grid-template-columns:max-content max-content;align-items:center;gap:8px 12px;margin:10px 0">
         <span>Years</span>${seg("span", span, [["window", "last 10 years"], ["all", "everything so far"]])}
         <span>Dot size</span>${seg("size", sizeBy, [["shows", "shows"], ["lines", "collaborators"]])}
@@ -343,6 +399,7 @@ export function graphMode() {
         ${colourBy === "comm" && T ? ` Colours: BigCLAM communities for ${T - 10}–${T - 1}, the nearest model window. Each colour is mostly one show's team.` : ""}</p>
       ${detail || `<p class="hint">Hover for names. Click a line to see how two people ended up working together, or a person for their
         career. Drag to rearrange, scroll to zoom. Labels mark the 8 people with the most shows.</p>`}`;
+    drawBunch(el.querySelector(".g-bunch-chart"), year);
     el.querySelectorAll(".seg[data-ctl] button").forEach(b => b.addEventListener("click", () => {
       const v = b.dataset.v, ctl = b.parentElement.dataset.ctl;
       if (ctl === "span") span = v; else if (ctl === "size") sizeBy = v; else colourBy = v;
