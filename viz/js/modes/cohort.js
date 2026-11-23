@@ -3,10 +3,10 @@
 // so teams scatter; when two people from the same starting team work together again, both dots
 // get a gold halo (a reunion). Dots are coloured by starting show or by community.
 //
-// URL: #cohort?from=1943&color=show|community&year=1950
+// URL: #cohort?from=1943&color=show|community&method=bigclam|weighted&year=1950
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { esc, showTooltip, hideTooltip } from "../tooltip.js";
-import { communitiesFor, cutoffFor } from "../communities.js";
+import { communitiesFor, cutoffFor, METHODS, methodsFor, showTeamCheck } from "../communities.js";
 
 const NETWORK = "strict";
 const SLOTS = 7;          // categorical colours (css --cat-1..7); the rest are grey "other"
@@ -63,7 +63,7 @@ function buildCohort(db, from) {
 
 export function cohortMode() {
   let root = null, pen = null, labelG = null, offZoom = null, ctxRef = null;
-  let cohort = null, from = null, colorBy = "show", year = null, focus = null;
+  let cohort = null, from = null, colorBy = "show", method = null, year = null, focus = null;
   let seats = new Map();   // member id -> { key: theatre id or "pen", i: seat number in that theatre's sunflower }
   let comm = null;   // { cutoff, method, slotOf: Map communityId -> slot, ranked: [{ id, members }] }
 
@@ -183,7 +183,7 @@ export function cohortMode() {
     return `<div class="t-title">${esc(m.person?.name ?? m.id)}</div>
       <div class="t-sub">started on <em>${esc(m.team.showObj?.title)}</em> (${from})</div>
       ${c && c.year > from ? `<div>${c.year === year ? "now" : `last, ${c.year}`}: <em>${esc(s?.title)}</em>${m.st.theatre ? ` · ${esc(m.st.theatre.name)}` : ""}</div>` : ""}
-      ${cid != null ? `<div class="t-sub">${comm.method === "stand-in" ? "stand-in " : ""}community ${cid}</div>` : ""}
+      ${cid != null ? `<div class="t-sub">${esc(METHODS[comm.method])} community ${cid}</div>` : ""}
       ${m.st.faded ? `<div class="t-sub">${m.person?.died != null && m.person.died < year ? `died ${m.person.died}` : `no new show since ${c?.year ?? from}`}</div>` : ""}`;
   }
 
@@ -210,6 +210,25 @@ export function cohortMode() {
     return `<ul class="cohort-legend">${rows.join("")}</ul>`;
   }
 
+  /** Method switch and the show-team check: how many communities are just one show's team. */
+  function methodBlock() {
+    const methods = methodsFor(ctxRef.db, NETWORK);
+    const chk = showTeamCheck(ctxRef.db, NETWORK, comm.cutoff, comm.method);
+    const share = chk.communities ? Math.round(100 * chk.single / chk.communities) : 0;
+    const about = {
+      bigclam: "BigCLAM learns overlapping groups from who worked with whom; every link counts the same.",
+      weighted: "Weighted BigCLAM counts a link by team size: sharing a duo's show counts 1, a 20-person revue 1/19. Exploratory, after H3.",
+      "stand-in": "Label propagation on the co-credit network, a stand-in until the BigCLAM export (models.json) is there.",
+    }[comm.method];
+    return `${methods.length > 1 ? `<div class="seg method-seg" role="group" aria-label="Community method">
+        ${methods.map(k => `<button type="button" data-method="${k}" aria-pressed="${k === comm.method}">${esc(METHODS[k])}</button>`).join("")}
+      </div>` : ""}
+      <p class="hint">${about} Network of ${comm.cutoff - 10}–${comm.cutoff - 1}.</p>
+      <p class="comm-check"><strong>${chk.single} of ${chk.communities}</strong> communities (${share}%) are just one show's team.
+        ${comm.method === "bigclam" ? "A community that is one show's team can't tell apart people who already shared that show, which is why BigCLAM didn't predict reunions (H3)." : ""}
+        ${comm.method === "weighted" ? "Fewer show teams means the communities reach across shows, which is where reunion signal lives." : ""}</p>`;
+  }
+
   function fillPanel() {
     const { db, panel } = ctxRef;
     const nameOf = id => db.personById.get(id)?.name ?? id;
@@ -230,9 +249,7 @@ export function cohortMode() {
           <button type="button" data-color="community" aria-pressed="${colorBy === "community"}">Community</button>
         </div>
       </div>
-      ${colorBy === "community" && comm ? `<p class="hint">${comm.method === "stand-in"
-        ? `Stand-in communities (label propagation on the ${comm.cutoff - 10}–${comm.cutoff - 1} network) until step 11's BigCLAM output is exported.`
-        : `BigCLAM communities, ${comm.cutoff - 10}–${comm.cutoff - 1} network.`}</p>` : ""}
+      ${colorBy === "community" && comm ? methodBlock() : ""}
       ${legendRows()}
       <p class="cohort-now"></p>
       <div class="legend">
@@ -249,11 +266,14 @@ export function cohortMode() {
           </div></li>`).join("") || `<li class="none">No two members of this cohort worked together again in our data.</li>`}
       </ol>`;
 
-    const goFrom = f => { location.hash = `#cohort?from=${f}&color=${colorBy}`; };
+    const goFrom = f => { location.hash = `#cohort?from=${f}&color=${colorBy}${method ? `&method=${method}` : ""}`; };
     panel.querySelectorAll("button.step").forEach(b => b.addEventListener("click", () => goFrom(from + +b.dataset.step)));
     panel.querySelector("input.from").addEventListener("change", ev => { if (+ev.target.value) goFrom(+ev.target.value); });
-    panel.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => {
-      if (b.dataset.color !== colorBy) location.hash = `#cohort?from=${from}&color=${b.dataset.color}&year=${year}`;
+    panel.querySelectorAll(".seg button[data-color]").forEach(b => b.addEventListener("click", () => {
+      if (b.dataset.color !== colorBy) location.hash = `#cohort?from=${from}&color=${b.dataset.color}${method ? `&method=${method}` : ""}&year=${year}`;
+    }));
+    panel.querySelectorAll(".seg button[data-method]").forEach(b => b.addEventListener("click", () => {
+      if (b.dataset.method !== comm?.method) location.hash = `#cohort?from=${from}&color=community&method=${b.dataset.method}&year=${year}`;
     }));
     panel.querySelectorAll(".event-list li[data-year]").forEach(li => li.addEventListener("click", () => ctxRef.setYear(+li.dataset.year)));
     panel.querySelectorAll(".cohort-legend li").forEach(li => {
@@ -286,7 +306,7 @@ export function cohortMode() {
   function setupCommunities() {
     const cutoff = cutoffFor(ctxRef.db, from);
     if (cutoff == null) { comm = null; return; }
-    const c = communitiesFor(ctxRef.db, NETWORK, cutoff);
+    const c = communitiesFor(ctxRef.db, NETWORK, cutoff, method ?? undefined);
     // colour the communities with the most cohort members
     const counts = d3.rollup(cohort.members, v => v.length, m => c.byPerson.get(m.id)?.[0]?.id);
     const ranked = [...counts].filter(([id]) => id != null).sort((a, b) => b[1] - a[1] || a[0] - b[0])
@@ -325,6 +345,7 @@ export function cohortMode() {
       // a link's cohort year, else the last cohort, else the year the timeline is on
       from = +p.get("from") || from || ctx.state.year || DEFAULT_FROM;
       colorBy = p.get("color") === "community" ? "community" : "show";
+      method = p.get("method") || method;
       ctx.theatres.dots.attr("class", "t theatre faint").transition("mode").duration(500).attr("r", 3).attr("opacity", 0.3);
       pen = ctx.map.layer("overlay").append("g").attr("class", "cohort-pen");
       pen.append("text").text("theatre unknown");
@@ -338,8 +359,10 @@ export function cohortMode() {
       const p = ctx.state.params;
       const nextFrom = +p.get("from") || from;
       const nextColor = p.get("color") === "community" ? "community" : "show";
-      if (nextFrom !== from) { from = nextFrom; colorBy = nextColor; build(ctx, { yearFromUrl: +p.get("year") }); return; }
-      if (nextColor !== colorBy) { colorBy = nextColor; fillPanel(); }
+      const nextMethod = p.get("method") || method;
+      if (nextFrom !== from) { from = nextFrom; colorBy = nextColor; method = nextMethod; build(ctx, { yearFromUrl: +p.get("year") }); return; }
+      if (nextMethod !== method) { method = nextMethod; setupCommunities(); colorBy = nextColor; fillPanel(); }
+      else if (nextColor !== colorBy) { colorBy = nextColor; fillPanel(); }
       update(ctx.state.year, false);
     },
 
@@ -353,7 +376,7 @@ export function cohortMode() {
       year = null;
     },
 
-    params: () => ({ from, color: colorBy }),
+    params: () => ({ from, color: colorBy, ...(colorBy === "community" && comm ? { method: comm.method } : {}) }),
     tip: t => `<div class="t-title">${esc(t.name)}</div>`,
   };
 }

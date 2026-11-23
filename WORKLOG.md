@@ -727,6 +727,37 @@ The show map will show where teams worked within NYC as time passes, so each sho
 - **Reading:** past partnership is the big effect. Team size matters most among first-time pairs (7–8% vs 1%).
 - **A dot plot was tried first and dropped.** The table is easier to read, and the plot and its script were deleted.
 
+## 2026-11-14 to 11-15: Career and Cohort fixes (Ruby)
+
+- **Career:** with 2+ people selected, gold reunion marks count only reunions between the selected people (one person: all reunions). Station text labels were dropped; a key box on the map shows each person's line, main roles (held on 25%+ of their shows) and latest show by the timeline year.
+- **Timeline:** play runs one year per second (was 0.45 s).
+- **Cohort:** dots keep their place at a theatre; a dot moves only when the person's latest show is at another theatre. Fading or recolouring no longer reshuffles a cluster.
+- Merged `bigclam-h3` into `main` (fast-forward; Trang had already merged `main` into it).
+
+## 2026-11-22: Model views: Chance (H1), Predict (H3), BigCLAM in Cohort (Ruby)
+
+- **Why:** the project's goal is to make the models understandable, and the views so far only showed the data. The three new pieces show what the null model, BigCLAM and the H3 scores found, using the models' own outputs.
+- **Reran Trang's steps locally** (no code changes): 11 (plain, both modes, 4 min), 11 `--weights newman` (both modes, 2 min), 15.
+  - Results match hers exactly: strict pooled AUC shows together 0.620, BigCLAM 0.492, activity 0.679.
+  - Her strict rows in the `bigclam_weighted_*` tables are identical; my run also fitted loose mode, so I restored her tables rather than commit the extra rows.
+- **New `scripts/17_export_model_viz.py` → `viz/data/models.json`** (755 KB, strict only). Nothing is refitted.
+  - communities from plain and weighted BigCLAM (4,663 and 4,367 member rows)
+  - the 9,681 candidate pairs with their scores (plus weighted BigCLAM F_a·F_b) and outcome
+  - AUC per window and pooled. Weighted BigCLAM: 0.636 (one-show pairs 0.565), matching Trang's entry of 11-13.
+- **`#chance` (H1):** observed reunion rate per window against the shuffled-careers band (pooled 4.3% vs 1.2%), and the window's shows on the map: gold above chance (p < 0.05), gold ring reunited within chance, grey none. The panel lists reunited teams by p-value and warns that about 1 in 20 pass by luck.
+- **`#predict` (H3):** pick a score; for the window on the timeline, AUC per score (window bar, pooled tick, chance at 0.5), reunion rate by score level over all windows, the top 20 pairs hit or miss, and reunited pairs ranked lowest ("missed"). Map: each top pair at the theatre of their last show together, with a gold arc to where they reunited. The panel says when a score ties most pairs (shows together: 95% of pairs have 1).
+- **Cohort, colour by community:** real BigCLAM communities (stand-in only for loose mode or without `models.json`), a switch between plain and weighted, and a check of how many communities are one show's team (1943 cohort, 1935–1944 network: plain 31 of 39, weighted 6 of 16). This is the H3 explanation made visible.
+- **Data problems these views exposed** (for the data fixes, with `outputs/tables/suspect_strict_credits.csv`):
+  - *Merrily We Roll Along* (1981) has the director as "Prince" and the choreographer as "Fuller", not linked to Harold Prince and Larry Fuller, so Sondheim–Prince shows as not reuniting after *Sweeney Todd*.
+  - *Operation Mincemeat* dated 1943 puts its 2023 team in a 1935–1944 weighted community.
+- **Predict: two charts for "partnerships, not circles"** (all windows, strict; a pair's team = the smallest show they shared in the window, bands as in step 16):
+  - *It's the pair, not the team:* plain BigCLAM's average score rises with team size (3.65 for teams of 2–3 → 7.99 for 9+) while the reunion rate falls (9.1% → 0.7%). Weighted BigCLAM falls with team size, by design.
+  - *Partnerships predict reunions:* reunion rate by team size × shows together in the window. Teams of 2–3: 5.9% after one show, 21% after two, 51% after 3+; teams of 4–5: 4.5%, 15%, 41%. Among first-time pairs, 5.9% (teams of 2–3) vs 0.7% (9+). Same pattern as Trang's step 16 table, which counts per show over 1900–2015.
+- **Story ideas (Ruby, to discuss; not decided):**
+  - Lead insight: **Broadway runs on partnerships, not circles.** Plain BigCLAM fails because its communities are show teams; weighting by team size moves it towards pairs and recovers some signal. Weighted BigCLAM is post-hoc and only ties shows together, so it supports the story, not H3.
+  - Fun views on the same models: "the reunions nobody saw coming" (reunited pairs every score ranked low), "partnerships that should have lasted" (top-ranked pairs who never reunited, e.g. Herbert Fields & Cole Porter), a "would they work together again?" quiz with the model's odds, and "who's the glue" (people linking teams).
+- **Not done:** the supervised "what predicts a reunion" model (the explorer's score switch can take it as one more score once it exists); loose mode in the model views.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").

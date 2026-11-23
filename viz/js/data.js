@@ -39,10 +39,24 @@ function expandH1(raw) {
   return h1;
 }
 
+/** models.json (scripts/17_export_model_viz.py): communities per method and scored pairs per window. */
+function expandModels(raw) {
+  if (!raw) return null;
+  const toObj = (cols, rows) => rows.map(r => Object.fromEntries(cols.map((c, i) => [c, r[i]])));
+  const cc = raw.communities.columns;
+  return {
+    mode: raw.mode, note: raw.note, scores: raw.scores, generated: raw.generated,
+    communities: { bigclam: toObj(cc, raw.communities.bigclam), weighted: toObj(cc, raw.communities.weighted) },
+    pairs: toObj(raw.pairs.columns, raw.pairs.rows),
+    auc: { windows: toObj(raw.auc.columns, raw.auc.windows), pooled: raw.auc.pooled, pooledOneShow: raw.auc.pooled_one_show },
+  };
+}
+
 export async function loadData() {
-  const [[meta, theatres, shows, people, credits, reunionsRaw, basemap], h1Raw] = await Promise.all([
-    Promise.all(FILES.map(fetchJson)), fetchOptional("h1")]);
+  const [[meta, theatres, shows, people, credits, reunionsRaw, basemap], h1Raw, modelsRaw] = await Promise.all([
+    Promise.all(FILES.map(fetchJson)), fetchOptional("h1"), fetchOptional("models")]);
   const h1 = expandH1(h1Raw);
+  const models = expandModels(modelsRaw);
 
   const theatreById = new Map(theatres.map(t => [t.id, t]));
   const showById = new Map(shows.map(s => [s.id, s]));
@@ -56,7 +70,7 @@ export async function loadData() {
   }
 
   const db = {
-    meta, theatres, shows, people, credits, reunions, basemap, h1,
+    meta, theatres, shows, people, credits, reunions, basemap, h1, models,
     theatreById, showById, personById,
     creditsByPerson: groupBy(credits, "person"),
     creditsByShow: groupBy(credits, "show"),

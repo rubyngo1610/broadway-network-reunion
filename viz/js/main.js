@@ -7,6 +7,8 @@ import { createStage } from "./stage.js";
 import { showsMode } from "./modes/shows.js";
 import { careerMode } from "./modes/career.js";
 import { cohortMode } from "./modes/cohort.js";
+import { chanceMode } from "./modes/chance.js";
+import { predictMode } from "./modes/predict.js";
 import { comingSoon } from "./modes/comingSoon.js";
 import { renderDataCheck } from "./views/dataCheck.js";
 
@@ -14,6 +16,8 @@ const MODES = [
   showsMode(),
   careerMode(),
   cohortMode(),
+  chanceMode(),
+  predictMode(),
   comingSoon({
     id: "birthplaces", label: "Birthplaces", caption: "where they came from", usesYear: true,
     title: "Birthplaces",

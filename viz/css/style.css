@@ -372,3 +372,64 @@ svg.chart .cohort-pen text { font-size: 10px; letter-spacing: 0.08em; text-trans
 .career-key .key-role { color: var(--text-secondary); text-transform: capitalize; }
 .career-key .key-now { color: var(--text-muted); }
 @media (max-width: 640px) { .career-key .key-now { display: none; } }
+
+/* small charts in the panel (chance, predict) */
+svg.chart .grid line { stroke: var(--grid); stroke-width: 1; }
+svg.chart .axis text { fill: var(--text-muted); font-size: 11px; }
+svg.chart .series-label { fill: var(--text-secondary); font-size: 11px; font-weight: 600; }
+svg.chart .series-label.muted { fill: var(--text-muted); font-weight: 500; }
+svg.chart .now-rule { stroke: var(--text-secondary); stroke-width: 1; stroke-dasharray: 3 3; }
+
+/* chance mode (H1) */
+svg.chart .null-band { fill: var(--text-muted); opacity: 0.22; }
+svg.chart .null-line { fill: none; stroke: var(--text-muted); stroke-width: 1.5; stroke-dasharray: 4 3; }
+svg.chart .obs-line { fill: none; stroke: var(--accent); stroke-width: 2; }
+svg.chart .obs-dot { fill: var(--accent); stroke: var(--surface-1); stroke-width: 2; pointer-events: none; }
+svg.chart .obs-dot.now { r: 6; stroke: var(--text-primary); }
+svg.chart .hdot { stroke: var(--surface-1); stroke-width: 1.5; cursor: pointer; transition: stroke-width .15s; }
+svg.chart .hdot.above { fill: var(--accent); }
+svg.chart .hdot.reunited { fill: var(--surface-1); stroke: var(--accent); stroke-width: 2; }
+svg.chart .hdot.none { fill: var(--text-muted); opacity: 0.55; }
+svg.chart .hdot.active { stroke: var(--text-primary); stroke-width: 3; }
+.h1-headline { font-size: 15px; margin: 8px 0; }
+.h1-chart-wrap { margin: 4px 0 2px; }
+.legend .key.h1-above { background: var(--accent); }
+.legend .key.h1-reunited { background: var(--surface-1); border: 2px solid var(--accent); }
+.legend .key.h1-none { background: var(--text-muted); opacity: .55; }
+.h1-list li.active, .pair-list li.active { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.method-seg { margin: 8px 0 4px; }
+.comm-check { font-size: 13px; margin: 4px 0 10px; padding: 6px 8px; border-left: 3px solid var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+
+/* predict mode (H3) */
+.score-seg { flex-wrap: wrap; margin: 6px 0 2px; }
+svg.chart .chance-rule { stroke: var(--text-muted); stroke-width: 1; stroke-dasharray: 3 3; }
+svg.chart .row-label { fill: var(--text-secondary); font-size: 12px; }
+svg.chart .auc-row.sel .row-label { fill: var(--text-primary); font-weight: 700; }
+svg.chart .auc-bar { fill: var(--text-muted); opacity: .55; }
+svg.chart .auc-row.sel .auc-bar { fill: var(--series-1); opacity: 1; }
+svg.chart .pooled-tick { stroke: var(--text-primary); stroke-width: 2; }
+svg.chart .auc-val { fill: var(--text-secondary); font-size: 11px; font-variant-numeric: tabular-nums; }
+svg.chart .auc-row .hit { cursor: pointer; }
+svg.chart .level-bar { fill: var(--series-1); }
+svg.chart .arc { fill: none; stroke: var(--accent); stroke-width: 2; opacity: .85; pointer-events: none; transition: opacity .15s; }
+svg.chart .pend { fill: var(--accent); stroke: var(--surface-1); stroke-width: 1.5; pointer-events: none; }
+svg.chart .pmark { stroke-width: 2.5; cursor: pointer; transition: opacity .15s; }
+svg.chart .pmark.hit { fill: var(--accent); stroke: var(--surface-1); }
+svg.chart .pmark.miss { fill: var(--surface-1); stroke: var(--text-muted); }
+svg.chart .pmark.active { stroke: var(--text-primary); stroke-width: 3; }
+svg.chart .dim { opacity: .2; }
+.pred-sum { font-size: 14px; margin: 4px 0 8px; }
+.legend .key.pred-hit { background: var(--accent); }
+.legend .key.pred-miss { background: var(--surface-1); border: 2px solid var(--text-muted); }
+.pair-list li { cursor: pointer; }
+.pair-list .again { color: var(--accent-ink); font-size: 12px; }
+.pair-list .still { color: var(--text-muted); font-size: 12px; }
+svg.chart .team-bar.score { fill: var(--series-1); }
+svg.chart .team-bar.rate { fill: var(--accent); }
+svg.chart .heat-cell { stroke: none; }
+svg.chart .heat-cell.few { fill: var(--surface-1); stroke: var(--grid); stroke-dasharray: 3 2; }
+svg.chart .heat-val { fill: var(--text-primary); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; pointer-events: none; }
+svg.chart .heat-val.on-dark { fill: var(--heat-ink-strong); }
+:root { --heat-ink-strong: #1d1a16; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --heat-ink-strong: #1c1913; } }
+:root[data-theme="dark"] { --heat-ink-strong: #1c1913; }
