@@ -842,6 +842,28 @@ The show map will show where teams worked within NYC as time passes, so each sho
 - **Not fixed yet:** the pipeline still produces them, and the H1/H3 numbers include them. Mark them EXCLUDE in step 05's manual review and rerun 05→17. The fake "revue" reunions slightly inflate the observed reunion counts for the 1965–1975 windows.
 - **Kept on purpose (need merging, not removal):** surname-only entries that are real people already in the data under their full name, e.g. "Robbins" (Fiddler, Forum), "Prince" and "Fuller" (Merrily), "Sherrin" (Side by Side by Sondheim), "Kidd", "Logan", "Tharp", "Ockrent", "Greif"; and "Additional Lyrics Betty Comden" / "Additional Music Jule Styne" (Peter Pan), which should map to Comden and Styne. Until merged, each of these is a second, separate dot for the same person.
 
+## 2026-11-23: Insight: Broadway's network breaks into islands after the 1960s (Trang)
+
+- **Seen first in the collaboration graph:** playing the timeline, the graph is one tight bunch until about the 1960s and then falls apart into many small separate pieces.
+- **Checked in the data:** `scripts/18_network_fragmentation.py` (new step 18) measures, per 10-year window, the **big bunch** (share of the window's people in the largest connected piece, i.e. connected through some chain of collaborators). Table: `outputs/tables/network_fragmentation.{csv,md}`.
+
+  | Windows | Big bunch | Separate pieces | Pairs who repeat in the window | People with 3+ shows |
+  |---|---|---|---|---|
+  | 1910–1964 | 69–84% (peak 84%, 1955–64) | 12–20 | 4–12% | 12–21% |
+  | 1965–1984 | 50–58% | 33–38 | 2.4–3.5% | 7–12% |
+  | 1980–2009 | **10–22%** | 32–57 | 1–2% | 2–5% |
+  | 2005–2019 | 38–61% | 34–48 | ~2% | 5–8% |
+  | 2015–2024 | 24% | 42 | 1.5% | 4% |
+
+- **Not team size:** average team size stays at 3–4 people in every window.
+- **The glue disappears:** the prolific core, people with 3+ shows in a window, shrinks from about 20% of creators (1910s–1930s) to 2–5% (1980s–2000s), and each show brings more new faces (people per show 1.7 → 2.9). Repeat pairs fall from about 12% (1920s) to 1–2%, the same decline as in steps 08 and 16.
+- **Who glues it together:** the people whose removal shrinks the big bunch the most. Early on these are prolific writers (Cole Porter, Guy Bolton, Kurt Weill, Jule Styne, Abe Burrows); from the 1950s more often directors and choreographers who work across teams (Onna White, Herbert Ross, Joe Layton, Susan Stroman, Casey Nicholaw). After 1980 single bridges matter a lot: the 2010–2019 rebound to 61% rests largely on Casey Nicholaw (removing him alone drops it 8 points), so the rebound is fragile.
+- **Caveats:**
+  - The measure is sensitive to a single bridge.
+  - Surname-only duplicate people (see the junk-names entry) split one person's links across two dots and can make the network look more broken than it is.
+  - It's worth checking whether recent shows have fewer strict credits recorded.
+  - This is correlation. Explanations to test: the end of the producer-run studio era, more revivals and jukebox musicals, more creators from outside Broadway (film, pop music).
+- **Why it matters for the project:** it explains why reunions are rare and getting rarer, and it gives the collaboration graph a guided question.
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").
