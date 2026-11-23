@@ -11,13 +11,24 @@
 //               "lines": the person's distinct collaborators in the window. A 15-person team gives
 //               everyone 14 lines from one show, so this mostly measures team size.
 //               radius = 2.5 + 2.2 * sqrt(shows)  or  2.5 + 2.2 * sqrt(lines / 2)
-//   line width  shows the pair did together inside the window: 0.6 px for one, +1.4 px per extra
+//   line width  shows the pair did together inside the window: 0.9 px for one, +1.4 px per extra
 //               show (+0.8 px if gold).
 //   line colour gold when the pair had done 2+ shows together by year Y (also counting shows
 //               before the window): repeat collaborators. Grey otherwise.
 //   dashed ring the person's first Broadway credit (in our data) is in year Y.
 //   node colour none, or the person's strongest BigCLAM community in the model window nearest to
 //               [Y-9, Y] (db.models, step 11); the 7 largest communities get colours, the rest grey.
+//
+// Position: a force layout (linked people attract, everyone repels), so teams form clusters and
+// people who bridge teams sit between them. Distances are only roughly meaningful, and the motion
+// after a change is the layout settling.
+//
+// Focus view: clicking a person (or a line) pauses the layout and glides, without bounce, the
+// selection to the centre and their collaborators to evenly spaced spots on a ring around it.
+// Everyone else stays where they were but fades almost out and can't be hovered or clicked, and
+// only the selection's own lines are drawn. From there the user can only (1) hover or click one
+// of those lines, (2) click someone on the ring to re-centre on them, or (3) click anywhere else
+// to glide everyone back to where they were in the full graph.
 //
 // Clicking a line lists both careers (shared shows in bold) with a link that opens both on the
 // Cohort & Career maps; clicking a person lists their career.
@@ -29,9 +40,13 @@ import { esc, showTooltip, hideTooltip } from "../tooltip.js";
 const NETWORK = "strict";
 const W = 10;
 const CAT = 7;   // categorical colours --cat-1..7; the rest grey
+const RING = 130;   // focus view: radius of the collaborators ring (px)
+const GLIDE = 650;  // focus view: ms to glide into or out of it
 
 export function graphMode() {
-  let ctxRef = null, host = null, svg = null, zoomG = null, sim = null;
+  let ctxRef = null, host = null, svg = null, zoomG = null, zoom = null, sim = null;
+  let lay = null, lastSelKey = "";                   // focus view: anchors, ring, target spots
+  let home = null, tween = null;                     // positions before the focus view; the running glide
   let data = null;                                   // built once from db
   let span = "window", sizeBy = "shows", colourBy = "none", selected = null;
   const nodeById = new Map();                        // persistent nodes: positions survive between years
@@ -98,14 +113,35 @@ export function graphMode() {
       .attr("aria-label", "Collaboration graph: people linked by shared shows");
     zoomG = svg.append("g");
     ["edges", "hits", "nodes", "labels"].forEach(c => zoomG.append("g").attr("class", `g-${c}`));
-    svg.call(d3.zoom().scaleExtent([0.3, 6]).on("zoom", e => zoomG.attr("transform", e.transform)));
+    zoom = d3.zoom().scaleExtent([0.3, 6]).on("zoom", e => zoomG.attr("transform", e.transform));
+    svg.call(zoom);
     svg.on("click", e => { if (e.target === svg.node()) select(null); });
+    // Layout: linked people pull together, everyone pushes everyone apart, so a show's team ends up
+    // as a tight cluster and people who bridge teams sit between clusters. The motion after a change
+    // is only the layout settling; alphaDecay makes it settle in about 2 s. Paused in the focus view.
     sim = d3.forceSimulation()
+      .alphaDecay(0.035).velocityDecay(0.45)
       .force("link", d3.forceLink().id(d => d.id).distance(34).strength(0.6))
       .force("charge", d3.forceManyBody().strength(-45).distanceMax(260))
       .force("x", d3.forceX().strength(0.05)).force("y", d3.forceY().strength(0.05))
       .force("collide", d3.forceCollide(d => d.r + 1.5))
       .on("tick", ticked);
+  }
+
+  /** Glide the people in `targets` (id -> [x, y]) to their spots with an ease-in-out, no bounce. */
+  function glide(targets, ms, done) {
+    tween?.stop();
+    const moving = sim.nodes().filter(n => targets.has(n.id)).map(n => ({ n, x0: n.x, y0: n.y, to: targets.get(n.id) }));
+    tween = d3.timer(elapsed => {
+      const k = d3.easeCubicInOut(Math.min(1, elapsed / ms));
+      for (const m of moving) {
+        m.n.x = m.x0 + (m.to[0] - m.x0) * k;
+        m.n.y = m.y0 + (m.to[1] - m.y0) * k;
+        m.n.vx = m.n.vy = 0;
+      }
+      ticked();
+      if (elapsed >= ms) { tween.stop(); tween = null; done?.(); }
+    });
   }
 
   function render() {
@@ -140,17 +176,48 @@ export function graphMode() {
       return s != null && s < CAT ? `var(--cat-${s + 1})` : "var(--map-theatre)";
     };
 
-    // a selected line or person dims everyone else
-    const focus = !selected ? null : new Set(selected.pair ?? [selected.person,
-      ...g.links.filter(l => l.a === selected.person || l.b === selected.person).flatMap(l => [l.a, l.b])]);
+    // focus view for a selected person or line: they go to the centre, their collaborators to a ring
+    const anchorIds = (selected?.pair ?? (selected ? [selected.person] : [])).filter(id => g.showsIn.has(id));
+    const anchors = new Map(anchorIds.length === 2 ? [[anchorIds[0], [-45, 0]], [anchorIds[1], [45, 0]]]
+      : anchorIds.map(id => [id, [0, 0]]));
+    const ring = new Set(g.links.filter(l => anchors.has(l.a) || anchors.has(l.b)).flatMap(l => [l.a, l.b]).filter(id => !anchors.has(id)));
+    lay = null;
+    if (anchors.size) {
+      // ring spots: evenly spaced angles, in the order people already sit around the centre (so
+      // nobody crosses over); a big ring alternates between two radii so neighbours don't touch
+      const R = RING + (anchors.size === 2 ? 30 : 0) + Math.max(0, ring.size - 24) * 2;
+      const around = [...ring].sort((a, b) => {
+        const pa = nodeById.get(a), pb = nodeById.get(b);
+        return Math.atan2(pa?.y ?? 0, pa?.x ?? 0) - Math.atan2(pb?.y ?? 0, pb?.x ?? 0);
+      });
+      const targets = new Map(anchors);
+      around.forEach((id, i) => {
+        const a = (2 * Math.PI * i) / around.length - Math.PI / 2, r = R + (around.length > 24 && i % 2 ? 40 : 0);
+        targets.set(id, [r * Math.cos(a), r * Math.sin(a)]);
+      });
+      lay = { anchors, ring, targets };
+    }
+    const focus = lay ? new Set([...anchors.keys(), ...ring]) : null;
     const key = l => `${l.a}|${l.b}`;
     const isSel = l => selected?.pair && key(l) === selected.pair.join("|");
-    const dim = (...ids) => focus && !ids.every(id => focus.has(id));
+    const live = d => !focus || focus.has(d.id);                       // in the focus view: drawn and clickable
+    const liveLine = l => !lay || anchors.has(l.a) || anchors.has(l.b); // only the selection's own lines
 
+    // Colours are also set as SVG attributes (resolved from the theme tokens), so the graph draws
+    // even where the stylesheet's graph rules don't apply: a line with no stroke is invisible.
+    // The CSS rules in style.css set the same values and win where they apply.
+    const css = getComputedStyle(document.documentElement), tok = n => css.getPropertyValue(n).trim();
+    const C = { muted: tok("--text-muted"), accent: tok("--accent"), red: tok("--series-1"), ink: tok("--text-primary"), bg: tok("--surface-1") };
+    host.style.background = C.bg;
     zoomG.select(".g-edges").selectAll("line").data(links, key).join("line")
-      .attr("class", l => `g-edge${l.byNow >= 2 ? " repeat" : ""}${isSel(l) ? " sel" : ""}${dim(l.a, l.b) ? " dim" : ""}`)
-      .attr("stroke-width", l => 0.6 + 1.4 * (l.shows.length - 1) + (l.byNow >= 2 ? 0.8 : 0));
+      .attr("class", l => `g-edge${l.byNow >= 2 ? " repeat" : ""}${isSel(l) ? " sel" : ""}`)
+      .attr("stroke", l => (isSel(l) ? C.red : l.byNow >= 2 ? C.accent : C.muted))
+      .attr("stroke-opacity", l => (isSel(l) || l.byNow >= 2 ? 1 : 0.55))
+      .attr("opacity", l => (liveLine(l) ? 1 : 0))
+      .attr("stroke-width", l => 0.9 + 1.4 * (l.shows.length - 1) + (l.byNow >= 2 ? 0.8 : 0));
     zoomG.select(".g-hits").selectAll("line").data(links, key).join("line").attr("class", "g-hit")
+      .attr("stroke", "transparent").attr("stroke-width", 9).style("cursor", "pointer")
+      .style("pointer-events", l => (liveLine(l) ? "stroke" : "none"))
       .on("pointermove", (e, l) => showTooltip(e, `<div class="t-title">${esc(nameOf(l.a))} &amp; ${esc(nameOf(l.b))}</div>
         <div>${l.shows.length} show${l.shows.length > 1 ? "s" : ""} together in this window; ${l.byNow} by ${year}</div>`))
       .on("pointerleave", hideTooltip)
@@ -158,27 +225,51 @@ export function graphMode() {
     zoomG.select(".g-nodes").selectAll("circle").data(nodes, d => d.id).join(
         enter => enter.append("circle").attr("r", 0).call(s => s.transition().duration(500).attr("r", d => d.r)),
         update => update.call(s => s.transition().duration(300).attr("r", d => d.r)))
-      .attr("class", d => `g-node${d.isNew ? " new" : ""}${selected?.person === d.id || selected?.pair?.includes(d.id) ? " sel" : ""}${dim(d.id) ? " dim" : ""}`)
+      .attr("class", d => `g-node${d.isNew ? " new" : ""}${selected?.person === d.id || selected?.pair?.includes(d.id) ? " sel" : ""}`)
       .attr("fill", fill)
+      .attr("stroke", d => (selected?.person === d.id || selected?.pair?.includes(d.id) ? C.red : d.isNew ? C.ink : C.bg))
+      .attr("stroke-width", d => (selected?.person === d.id || selected?.pair?.includes(d.id) ? 3 : d.isNew ? 1.8 : 1))
+      .attr("stroke-dasharray", d => (d.isNew ? "2 1.5" : null))
+      .attr("opacity", d => (live(d) ? 1 : 0.06))
+      .style("pointer-events", d => (live(d) ? null : "none"))
       .on("pointermove", (e, d) => showTooltip(e, `<div class="t-title">${esc(nameOf(d.id))}</div>
         <div>${d.shows} show${d.shows > 1 ? "s" : ""}, ${d.lines} collaborator${d.lines === 1 ? "" : "s"} in this window</div>
         ${d.isNew ? "<div>first Broadway credit this year</div>" : ""}`))
       .on("pointerleave", hideTooltip)
-      .on("click", (e, d) => { e.stopPropagation(); select({ person: d.id }); })
-      .call(d3.drag()
+      .on("click", (e, d) => { e.stopPropagation(); if (!anchors.has(d.id)) select({ person: d.id }); })
+      .call(d3.drag().filter(e => !lay && !e.ctrlKey && !e.button)   // no dragging in the focus view
         .on("start", (e, d) => { if (!e.active) sim.alphaTarget(0.2).restart(); d.fx = d.x; d.fy = d.y; })
         .on("drag", (e, d) => { d.fx = e.x; d.fy = e.y; })
         .on("end", (e, d) => { if (!e.active) sim.alphaTarget(0); d.fx = d.fy = null; }));
 
-    // landmarks: the 8 people with the most shows in the window, plus the selection
-    const named = new Set(nodes.slice().sort((a, b) => b.shows - a.shows).slice(0, 8).map(d => d.id));
-    (selected?.pair ?? (selected ? [selected.person] : [])).forEach(id => named.add(id));
+    // labels: the 8 people with the most shows in the window; in the focus view, the selection and
+    // (when it fits) the whole ring instead
+    const named = lay ? new Set([...anchors.keys(), ...(ring.size <= 30 ? ring : [])])
+      : new Set(nodes.slice().sort((a, b) => b.shows - a.shows).slice(0, 8).map(d => d.id));
     zoomG.select(".g-labels").selectAll("text").data(nodes.filter(d => named.has(d.id)), d => d.id).join("text")
-      .attr("class", "g-label").attr("dy", d => -d.r - 3).attr("text-anchor", "middle").text(d => lastName(d.id));
+      .attr("class", "g-label").attr("dy", d => -d.r - 3).attr("text-anchor", "middle")
+      .attr("font-size", 11).attr("fill", C.ink).attr("stroke", C.bg).attr("stroke-width", 3).attr("paint-order", "stroke")
+      .style("pointer-events", "none").text(d => lastName(d.id));
 
     sim.nodes(nodes);
     sim.force("link").links(links);
-    sim.alpha(nodes.length > 600 ? 0.25 : 0.4).restart();
+    const selKey = anchorIds.join(","), changed = selKey !== lastSelKey;
+    lastSelKey = selKey;
+    if (changed) svg.transition().duration(GLIDE).call(zoom.transform, d3.zoomIdentity);   // centre in view
+    if (lay) {
+      // into (or within) the focus view: remember where everyone was, pause the layout, glide
+      home ??= new Map(nodes.map(n => [n.id, [n.x, n.y]]));
+      sim.stop();
+      glide(lay.targets, changed ? GLIDE : 400);
+    } else if (home) {
+      // out of the focus view: glide everyone back, then let the layout settle anyone new
+      const back = home, fresh = nodes.some(n => !back.has(n.id));   // anyone who arrived during the focus view
+      home = null;
+      sim.stop();
+      glide(back, GLIDE, () => { if (fresh) sim.alpha(0.08).restart(); });
+    } else {
+      sim.alpha(nodes.length > 600 ? 0.2 : 0.3).restart();
+    }
     panel(g, nodes, T);
   }
 
@@ -196,7 +287,7 @@ export function graphMode() {
 
   // --- panel ---------------------------------------------------------------------------------
 
-  const seg = (name, value, options) => `<div class="seg" data-ctl="${name}">${options.map(([v, label]) =>
+  const seg = (name, value, options) => `<div class="seg" data-ctl="${name}" style="justify-self:start">${options.map(([v, label]) =>
     `<button type="button" data-v="${v}" aria-pressed="${v === value}">${label}</button>`).join("")}</div>`;
 
   function careerList(p, shared, year) {
@@ -219,7 +310,7 @@ export function graphMode() {
       const shared = new Set(sharedCredits.map(c => c.show));
       const byNow = sharedCredits.filter(c => c.year <= year).length;
       detail = `<h3 class="list-title">${esc(nameOf(a))} &amp; ${esc(nameOf(b))}</h3>
-        <p>${shared.size} show${shared.size > 1 ? "s" : ""} together in their careers, ${byNow} by ${year}. Shared shows in bold; faded = after ${year}.</p>
+        <p>${shared.size} show${shared.size > 1 ? "s" : ""} together in their careers, ${byNow} by ${year}. On the graph they sit in the centre with everyone either of them worked with in a ring around them; click empty space to go back to the full graph. Shared shows in bold; faded = after ${year}.</p>
         <p><a href="#cohort?from=${sharedCredits[0].year}&p=${a},${b}&year=${year}">Open both careers on the map →</a>
           · <button type="button" class="link-btn g-clear">clear</button></p>
         ${[a, b].map(p => `<h4>${esc(nameOf(p))}</h4>${careerList(p, shared, year)}`).join("")}`;
@@ -227,7 +318,7 @@ export function graphMode() {
       const p = selected.person;
       const mates = g.links.filter(l => l.a === p || l.b === p).length;
       detail = `<h3 class="list-title">${esc(nameOf(p))}</h3>
-        <p>${mates} collaborator${mates === 1 ? "" : "s"} in this window. Click one of their lines to compare two careers.</p>
+        <p>${mates} collaborator${mates === 1 ? "" : "s"} in this window, in the ring around them on the graph. Hover or click one of their lines to compare two careers, click someone on the ring to centre on them, or click empty space to go back to the full graph.</p>
         <p><a href="#cohort?from=${data.debut.get(p)}&p=${p}&year=${year}">Open their career on the map →</a>
           · <button type="button" class="link-btn g-clear">clear</button></p>
         ${careerList(p, new Set(), year)}`;
@@ -237,10 +328,10 @@ export function graphMode() {
       <p class="hint">Prototype. Each dot is a person, each line a show they shared. ${nodes.length} people,
         ${g.links.length} pairs, ${g.nShows} shows; ${repeat} pairs (${d3.format(".0%")(repeat / Math.max(1, g.links.length))})
         are repeat collaborators (gold). ${debuts} debut${debuts === 1 ? "" : "s"} in ${year} (dashed rings).</p>
-      <div class="g-controls">
-        <label>Years ${seg("span", span, [["window", "last 10 years"], ["all", "everything so far"]])}</label>
-        <label>Dot size ${seg("size", sizeBy, [["shows", "shows"], ["lines", "collaborators"]])}</label>
-        ${data.cutoffs.length ? `<label>Colour ${seg("colour", colourBy, [["none", "none"], ["comm", "BigCLAM community"]])}</label>` : ""}
+      <div class="g-controls" style="display:grid;grid-template-columns:max-content max-content;align-items:center;gap:8px 12px;margin:10px 0">
+        <span>Years</span>${seg("span", span, [["window", "last 10 years"], ["all", "everything so far"]])}
+        <span>Dot size</span>${seg("size", sizeBy, [["shows", "shows"], ["lines", "collaborators"]])}
+        ${data.cutoffs.length ? `<span>Colour</span>${seg("colour", colourBy, [["none", "none"], ["comm", "BigCLAM community"]])}` : ""}
       </div>
       <div class="legend">
         <span><i class="g-key"></i>shared a show (thicker = more shows in these years)</span>
@@ -298,7 +389,9 @@ export function graphMode() {
       hideTooltip();
       const box = host?.parentElement;
       host?.remove();
-      host = svg = zoomG = sim = null;
+      tween?.stop();
+      host = svg = zoomG = sim = tween = null;
+      lay = home = null; lastSelKey = "";
       box && [...box.children].forEach(c => { c.hidden = c.dataset.graphHidden === "1"; delete c.dataset.graphHidden; });
     },
   };
