@@ -48,7 +48,11 @@ export function createStage(el, db, modes, { startYear = 1927 } = {}) {
     </div>`;
 
   const mapEl = el.querySelector(".stage-map");
-  const map = createManhattanMap(mapEl, db, { height: Math.min(680, Math.max(420, mapEl.clientWidth * 0.9)) });
+  /** Map height that fills the screen below the map's top edge (page scrolled to the top). */
+  const fitHeight = box => Math.round(Math.max(420, Math.min(1500,
+    window.innerHeight - (box.getBoundingClientRect().top + window.scrollY) - 24)));
+  const map = createManhattanMap(mapEl, db, { height: fitHeight(mapEl) });
+  el.style.setProperty("--stage-h", `${map.height}px`);
   const panel = el.querySelector(".stage-panel");
   const timeline = el.querySelector(".timeline");
   const slider = el.querySelector("#tl-year"), out = el.querySelector("#tl-year-out");
@@ -70,9 +74,8 @@ export function createStage(el, db, modes, { startYear = 1927 } = {}) {
   function ensureSplit() {
     if (split) return split;
     const side = (mapBox, panelEl, isRight) => {
-      const w = mapBox.clientWidth || 480;
       // fill the screen below the timeline (no gap under the maps); the panels match this height
-      const h = Math.round(Math.max(520, Math.min(1000, window.innerHeight - mapBox.getBoundingClientRect().top - 24)));
+      const h = Math.max(520, fitHeight(mapBox));
       splitEl.style.setProperty("--split-h", `${h}px`);
       const m = createManhattanMap(mapBox, db, { height: h });
       const th = drawTheatres(m, db, {
@@ -145,6 +148,7 @@ export function createStage(el, db, modes, { startYear = 1927 } = {}) {
       slider.disabled = playBtn.disabled = !next.usesYear;
       setLayout(!!next.split);
       next.enter(ctx);
+      refitSoon();
       (next.split ? [split.left.panel, split.right.panel] : [panel]).forEach(p => p.animate([{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }],
         { duration: 280, easing: "ease-out" }));
     } else if (current.onParams) {
@@ -171,6 +175,29 @@ export function createStage(el, db, modes, { startYear = 1927 } = {}) {
       setYear(state.year >= range[1] ? range[0] : state.year + 1);
     });
   });
+
+  /** Fit the visible maps to the space they actually have (after the layout settles, a mode
+   *  switch, or a window resize) and size the panels to match. */
+  function refit() {
+    if (!mapEl.hidden) {
+      const h = fitHeight(mapEl);
+      el.style.setProperty("--stage-h", `${h}px`);
+      map.resize(mapEl.querySelector(".map-wrap").clientWidth, h);
+      // the panel starts level with the timeline: end it level with the map's bottom edge
+      requestAnimationFrame(() => {
+        const ph = Math.round(mapEl.getBoundingClientRect().bottom - panel.getBoundingClientRect().top);
+        if (ph > 200) el.style.setProperty("--panel-h", `${ph}px`);
+      });
+    }
+    if (split && !splitEl.hidden) {
+      const h = Math.max(520, fitHeight(splitEl));
+      splitEl.style.setProperty("--split-h", `${h}px`);
+      for (const side of [split.left, split.right]) side.map.resize(side.map.svg.node().parentNode.clientWidth, h);
+    }
+  }
+  const refitSoon = () => requestAnimationFrame(() => requestAnimationFrame(refit));
+  let resizeTimer = null;
+  window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(refit, 200); });
 
   return { go, ctx, get mode() { return current?.id; } };
 }

@@ -808,6 +808,12 @@ The show map will show where teams worked within NYC as time passes, so each sho
 - The year summary and the dot legend moved from the panel into a compact box on the cohort map: "In 1966: 1 of 35 from 1944 with a show opening · 9 theatres active · 10 reunions so far", legend "opening · at latest theatre · reunion this year after 5+ years apart". "Theatres active" counts where non-faded cohort members sit (latest show within 10 years).
 - The "theatre unknown" dots moved up, clear of the map credits.
 
+## 2026-11-26: Layout fits big screens (Ruby)
+
+- Every map fills the screen height below the timeline and the side panels end level with it (Shows, Chance and Predict too, not only Cohort & Career). On a laptop (1536×1020) the maps are 772 px tall; on a 2560×1440 monitor 1,192 px.
+- Above 1,700 px wide the page uses up to 96% of the window (max 2,400 px; was 1,200 px, or 1,760 px for Cohort & Career), with wider panels.
+- Resizing the window, or moving it to another screen, refits the maps without a reload (`map.resize()` in `manhattanMap.js`, `refit()` in `stage.js`); the zoom and marks stay. Text size is unchanged; browser zoom works on top.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").

@@ -19,7 +19,7 @@ const HOME = [[40.7330, -74.0060], [40.7760, -73.9700]];
 
 export function createManhattanMap(container, db, { height = 640, home = HOME, maxZoom = 16 } = {}) {
   const basemap = db.basemap;
-  const width = container.clientWidth || 800;
+  let width = container.clientWidth || 800;
   const wrap = d3.select(container).append("div").attr("class", "map-wrap");
   const svg = wrap.append("svg")
     .attr("class", "chart map").attr("viewBox", `0 0 ${width} ${height}`)
@@ -35,18 +35,22 @@ export function createManhattanMap(container, db, { height = 640, home = HOME, m
   }
 
   // --- basemap layers (scaled with the zoom) ---
-  svg.append("rect").attr("class", "water").attr("width", width).attr("height", height);
+  const water = svg.append("rect").attr("class", "water").attr("width", width).attr("height", height);
   const base = svg.append("g").attr("class", "basemap");
   const ring = rings => ({ type: "MultiPolygon", coordinates: rings.map(r => [r]) });
 
-  base.selectAll("path.land").data(basemap.land).join("path")
-    .attr("class", d => `land ${d.name === "Manhattan" ? "manhattan" : "other"}`)
-    .attr("d", d => path(ring(d.rings)));
-  base.append("path").attr("class", "parks")
-    .attr("d", path(ring(basemap.parks.flatMap(p => p.rings))));
   const line = lines => ({ type: "MultiLineString", coordinates: lines });
-  base.append("path").attr("class", "street minor").attr("d", path(line(basemap.streets.minor)));
-  base.append("path").attr("class", "street major").attr("d", path(line(basemap.streets.major)));
+  base.selectAll("path.land").data(basemap.land).join("path")
+    .attr("class", d => `land ${d.name === "Manhattan" ? "manhattan" : "other"}`);
+  base.append("path").attr("class", "parks").datum(ring(basemap.parks.flatMap(p => p.rings)));
+  base.append("path").attr("class", "street minor").datum(line(basemap.streets.minor));
+  base.append("path").attr("class", "street major").datum(line(basemap.streets.major));
+  /** (Re)draw the basemap with the current projection (again after a resize). */
+  function drawBase() {
+    base.selectAll("path.land").attr("d", d => path(ring(d.rings)));
+    base.selectAll("path.parks, path.street").attr("d", d => path(d));
+  }
+  drawBase();
 
   // --- point layers (re-placed on zoom, not scaled) ---
   const labelLayer = svg.append("g").attr("class", "map-labels");
@@ -71,13 +75,14 @@ export function createManhattanMap(container, db, { height = 640, home = HOME, m
   }
 
   const zoom = d3.zoom().scaleExtent([1, maxZoom])
-    .translateExtent([[-width, -height], [2 * width, 2 * height]])
     .on("zoom", ev => {
       transform = ev.transform;
       base.attr("transform", transform);
       placeLabels();
       for (const fn of listeners) fn(transform);
     });
+  const setExtent = () => zoom.translateExtent([[-width, -height], [2 * width, 2 * height]]);
+  setExtent();
   svg.call(zoom).on("dblclick.zoom", null);
 
   // zoom buttons (keyboard and touch friendly)
@@ -93,7 +98,24 @@ export function createManhattanMap(container, db, { height = 640, home = HOME, m
   placeLabels();
 
   return {
-    svg, projection, width, height,
+    svg, projection,
+    get width() { return width; },
+    get height() { return height; },
+    /** Refit to a new size (window resized, or the layout settled): Manhattan is re-fitted to the
+     *  new frame and every onZoom listener re-places its marks. */
+    resize(w, h) {
+      if (Math.abs(w - width) < 2 && Math.abs(h - height) < 2) return;
+      width = w; height = h;
+      svg.attr("viewBox", `0 0 ${width} ${height}`);
+      water.attr("width", width).attr("height", height);
+      fit(home);
+      drawBase();
+      setExtent();
+      // keep the current zoom (an animation in progress carries on) and re-place every mark
+      base.attr("transform", transform);
+      placeLabels();
+      for (const fn of listeners) fn(transform);
+    },
     layer: name => layers[name],
     xy,
     get transform() { return transform; },
