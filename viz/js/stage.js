@@ -71,7 +71,10 @@ export function createStage(el, db, modes, { startYear = 1927 } = {}) {
     if (split) return split;
     const side = (mapBox, panelEl, isRight) => {
       const w = mapBox.clientWidth || 480;
-      const m = createManhattanMap(mapBox, db, { height: Math.min(720, Math.max(460, w * 1.3)) });
+      // fill the screen below the timeline (no gap under the maps); the panels match this height
+      const h = Math.round(Math.max(520, Math.min(1000, window.innerHeight - mapBox.getBoundingClientRect().top - 24)));
+      splitEl.style.setProperty("--split-h", `${h}px`);
+      const m = createManhattanMap(mapBox, db, { height: h });
       const th = drawTheatres(m, db, {
         onHover: (ev, t) => { const html = (isRight ? current?.tipRight : current?.tip)?.(t, ctx); if (html) showTooltip(ev, html); },
         onLeave: hideTooltip,

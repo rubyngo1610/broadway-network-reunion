@@ -801,6 +801,13 @@ The show map will show where teams worked within NYC as time passes, so each sho
 - Styles in `style.css` under "Shuffle careers button".
 - Checked in headless Chrome, light and dark, for the 1930s and 1980s windows.
 
+## 2026-11-26: Cohort & Career layout tweaks (Ruby)
+
+- The two maps and both panels now fill the screen height below the timeline (no gap under the maps; 767 px tall on a 1536×1020 screen).
+- Cohort panel heading: "Shows that opened in 1943: 10 shows"; the long description is gone.
+- The year summary and the dot legend moved from the panel into a compact box on the cohort map: "In 1966: 1 of 35 from 1944 with a show opening · 9 theatres active · 10 reunions so far", legend "opening · at latest theatre · reunion this year after 5+ years apart". "Theatres active" counts where non-faded cohort members sit (latest show within 10 years).
+- The "theatre unknown" dots moved up, clear of the map credits.
+
 ## Open items (as of 2026-11-09)
 
 - **Original-production flag:** in the spotchecks, about 8 of 50 credits had an "unknown" flag the article answers. Surname-only names remain ("Kidd", "Robbins", "Hamlin").

@@ -132,7 +132,7 @@ export function cohortMode({ onPick = null } = {}) {
     const pos = new Map();
     for (const m of cohort.members) {
       const { key, i } = seats.get(m.id);
-      if (key === "pen") { pos.set(m.id, [26 + (i % 12) * 10, map.height - 40 - Math.floor(i / 12) * 10]); continue; }
+      if (key === "pen") { pos.set(m.id, [26 + (i % 12) * 10, map.height - 62 - Math.floor(i / 12) * 10]); continue; }
       const [x, y] = map.xy(m.st.theatre.lat, m.st.theatre.lon);
       const r = SPACING * Math.sqrt(i), a = i * 2.39996;   // golden angle
       pos.set(m.id, [x + r * Math.cos(a), y + r * Math.sin(a)]);
@@ -151,7 +151,7 @@ export function cohortMode({ onPick = null } = {}) {
       .attr("cx", m => pos.get(m.id)[0]).attr("cy", m => pos.get(m.id)[1]);
     const inPen = d3.max(cohort.members.filter(m => !m.st.theatre), m => seats.get(m.id).i + 1) ?? 0;
     pen.attr("display", inPen ? null : "none")
-      .select("text").attr("x", 21).attr("y", ctxRef.map.height - 52 - Math.floor((inPen - 1) / 12) * 10);
+      .select("text").attr("x", 21).attr("y", ctxRef.map.height - 74 - Math.floor((inPen - 1) / 12) * 10);
     placeLabels();
   }
 
@@ -220,15 +220,29 @@ export function cohortMode({ onPick = null } = {}) {
     </div>`;
   }
 
+  /** The box on the cohort map: where the cohort is this year, and what the dot styles mean. */
+  function mapKey() {
+    const wrap = ctxRef.map.svg.node().closest(".map-wrap");
+    let box = wrap.querySelector(".cohort-key");
+    if (!box) {
+      box = Object.assign(document.createElement("div"), { className: "cohort-key" });
+      box.innerHTML = `<p class="cohort-now"></p>
+        <div class="legend">
+          <span title="has a show opening this year"><span class="key dot-working"></span>opening</span>
+          <span title="no show this year: at the theatre of their latest show"><span class="key dot-idle"></span>at latest theatre</span>
+          <span><span class="key dot-halo"></span>reunion this year after ${REUNION_GAP}+ years apart</span>
+        </div>`;
+      wrap.append(box);
+    }
+    return box;
+  }
+
   function fillPanel() {
     const { db, panel } = ctxRef;
     const nameOf = id => db.personById.get(id)?.name ?? id;
     const nRe = cohort.events.filter(e => e.reunion).length;
     panel.innerHTML = `
-      <h2>The class of ${from}</h2>
-      <p class="sub">Everyone on a show that opened in ${from}: ${cohort.members.length} people on ${cohort.teams.length} shows.
-        Press play to follow them. Each dot moves to the theatre of the person's latest show; a gold halo marks a reunion:
-        people from the same starting team back together after ${REUNION_GAP}+ years apart.</p>
+      <h2>Shows that opened in ${from}: ${cohort.teams.length} show${cohort.teams.length === 1 ? "" : "s"}</h2>
       <div class="cohort-controls">
         <label>Cohort year
           <button type="button" class="btn step" data-step="-1" aria-label="Previous year">◀</button>
@@ -238,12 +252,6 @@ export function cohortMode({ onPick = null } = {}) {
       </div>
       ${pickedBlock()}
       ${legendRows()}
-      <p class="cohort-now"></p>
-      <div class="legend">
-        <span><span class="key dot-working"></span>has a show this year</span>
-        <span><span class="key dot-idle"></span>at their latest show's theatre</span>
-        <span><span class="key dot-halo"></span>reunion this year</span>
-      </div>
       <h3 class="list-title">Working together again (${nRe} reunion${nRe === 1 ? "" : "s"})</h3>
       <ol class="event-list">
         ${cohort.events.map(e => `<li data-year="${e.year}" class="${e.reunion ? "reunion" : ""}${picked && e.people.includes(picked) ? " picked" : ""}">
@@ -272,10 +280,10 @@ export function cohortMode({ onPick = null } = {}) {
     const working = cohort.members.filter(m => m.st.working).length;
     const scattered = new Set(cohort.members.filter(m => !m.st.faded && m.st.theatre).map(m => m.st.theatre.id)).size;
     const reunionsSoFar = cohort.events.filter(e => e.reunion && e.year <= year).length;
-    const now = panel.querySelector(".cohort-now");
+    const now = mapKey().querySelector(".cohort-now");
     if (now) now.innerHTML = year === from
       ? `In <strong>${year}</strong>: ${cohort.members.length} people at ${new Set(cohort.teams.filter(t => t.theatre).map(t => t.theatre.id)).size} theatres.`
-      : `In <strong>${year}</strong>: ${working} of ${cohort.members.length} have a show this year · the cohort is spread over ${scattered} theatre${scattered === 1 ? "" : "s"} · ${reunionsSoFar} reunion${reunionsSoFar === 1 ? "" : "s"} so far.`;
+      : `In <strong>${year}</strong>: ${working} of ${cohort.members.length} from ${from} with a show opening · ${scattered} theatre${scattered === 1 ? "" : "s"} active · ${reunionsSoFar} reunion${reunionsSoFar === 1 ? "" : "s"} so far.`;
     panel.querySelectorAll(".event-list li[data-year]").forEach(li => {
       li.classList.toggle("future", +li.dataset.year > year);
       li.classList.toggle("current", +li.dataset.year === year);
@@ -354,6 +362,7 @@ export function cohortMode({ onPick = null } = {}) {
     exit(ctx) {
       offZoom?.();
       if (cohort) saved = { from, year, transform: { ...ctx.map.transform }, scroll: ctx.panel.scrollTop };
+      ctx.map.svg.node().closest(".map-wrap")?.querySelector(".cohort-key")?.remove();
       for (const g of [root, pen, labelG]) g?.transition().duration(250).attr("opacity", 0).remove();
       root = pen = labelG = null;
       cohort = null;
